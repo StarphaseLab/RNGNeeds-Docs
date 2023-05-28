@@ -1,12 +1,12 @@
 ﻿import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { apiReferenceSectionLink } from "@/components/PageLinks";
+import { examplesSectionLink } from "@/components/PageLinks";
 
 const Index = () => {
     const router = useRouter();
 
     useEffect(() => {
-        router.push(apiReferenceSectionLink());
+        router.push(examplesSectionLink());
     }, [router]);
 
     return null;
