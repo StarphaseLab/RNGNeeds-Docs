@@ -48,10 +48,9 @@ export default function App({ Component, pageProps }) {
       <MDXProvider components={mdxComponents}>
         <Layout {...pageProps}>
           <Component {...pageProps} />
+            <Analytics />
         </Layout>
       </MDXProvider>
-        <Analytics />
     </>
   )
 }
-//G-VQVC58XE4F
