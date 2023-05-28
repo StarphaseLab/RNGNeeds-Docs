@@ -1,0 +1,140 @@
+import {Button, CodeGroup, Note, Properties, Property} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import exampleEmptyList from '@/images/screenshots/example-die-emptylist.png';
+import exampleAddedSides from '@/images/screenshots/example-die-addedsides.png';
+import exampleDirectInput from '@/images/screenshots/example-die-directinput.png';
+import {HeroPattern} from "@/components/HeroPattern";
+import {ASSET_STORE_RNGNEEDS_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+import {
+    ExamplesAdvancedPage,
+    ExamplesBasicPage, ExamplesDeepDivePage, ExamplesIntermediatePage,
+    ExamplesOverviewPage,
+    PreferencesPage,
+    TerminologyPage,
+    UserInterfacePage
+} from "@/components/PageLinks";
+export const description =
+  'This guide will get you all set up and ready to use the RNGNeeds. We’ll cover how to install the plugin and create your first probability distribution list.'
+
+<HeroPattern />
+
+# Getting Started
+
+This section will guide you through the process of installing RNGNeeds from the Unity Asset Store and quickly setting up your first probability list. {{ className: 'lead' }}
+
+<Note>
+    You can install RNGNeeds either by visiting <a href={ASSET_STORE_RNGNEEDS_LINK} target="_blank" rel="noopener noreferrer">the plugin page on the Asset Store</a>
+    or by opening the store inside the Unity Editor (Toolbar Menu &raquo; Window &raquo; Asset Store).
+</Note>
+---
+
+## Installation
+
+**1. Open the Unity Editor**<br/>
+Start by opening your Unity Editor. Make sure you have a project open, or create a new one if necessary.<br/><br/>
+**2. Access the Unity Asset Store**<br/>
+Navigate to the Unity Asset Store from within the Unity Editor. You can do this by clicking on **Window** from the menu bar and selecting **Asset Store** from the dropdown menu.<br/><br/>
+**3. Search for RNGNeeds**<br/>
+In the search bar of the Asset Store, type in "RNGNeeds" and hit Enter. The RNGNeeds plugin should appear in the search results.<br/><br/>
+**4. Download and Import the Plugin**<br/>
+Click on the RNGNeeds plugin from the search results to open its page. Here, click on the **Download** or **Import** button (the button's label will depend on whether you have downloaded the plugin before). If a window appears asking you to upgrade, you can just click Continue.<br/><br/>
+Once the download is complete, Unity will automatically prompt you to import the plugin into your project. Make sure all the files are checked in the Import Unity Package window and click Import.<br/><br/>
+
+<Note>
+    The RNGNeeds Plugin installs as a **Package**. This means that its contents will not appear in your Assets folder as usual, but instead in the **Packages/** folder.
+    This approach helps reduce clutter in your Assets folder and allows RNGNeeds to operate through the Package Manager.<br/><br/>
+    Open the **Package Manager &raquo; In Project &raquo; Packages - Starphase Lab**. You will see two packages listed in this section:<br/>
+    - **RNGNeeds** - *This is the main package for this plugin.*
+    - **Starphase Core** - *This is a dependency of RNGNeeds, and it's a small collection of common utilities.*
+</Note>
+
+**5. Verify the Installation**<br/>
+After the import is complete, verify the installation by opening RNGNeeds preferences by going to **Edit &raquo; Preferences &raquo; RNGNeeds**. After opening the RNGNeeds preferences window, a message about loading default preferences and color palettes should appear in the console.
+
+---
+
+## Quick Start
+
+To start using probability distribution in your project, add the generic `ProbabilityList<T>` class to one of your classes, or create a new script by right-clicking in the Project panel and choosing **Create &raquo; C# Script**
+
+<Note>
+    You can use multiple **ProbabilityList** in any of your `MonoBehaviour` or `ScriptableObject` classes and design probabilities using the Inspector.
+    Alternatively you can also use it in any other class and control the list and it's probability distribution using the API.
+</Note>
+
+For this example, we will create a biased die that rolls the six a bit more often. Name the script `Die` and open it.<br/>
+Inherit from `ScriptableObject` and add a Probability List of type `int`.
+
+```csharp {{ title: 'Adding the ProbabilityList'}}
+[CreateAssetMenu(fileName = "dXX", menuName = "My Die")]
+public class Die : ScriptableObject
+{
+    public ProbabilityList<int> die;
+}
+```
+
+In Unity Editor, right-click on the **Assets** folder and choose **Create &raquo; Die**.
+This will create a new Scriptable Object with the suggested name `dXX`. We will create a 6-sided die, so name the object `D6 Die`.
+Clicking on the object will display its properties in the Inspector, where you will see the Probability List Drawer.
+
+<ImageX className="w-full h-auto" src={exampleEmptyList} alt="Empty ProbabilityList" width={1000} />
+
+To add items into the list, click on the `Add` button on the right. These items will represent the sides of our die. Add six sides and specify their values.
+
+<ImageX className="w-full h-auto" src={exampleAddedSides} alt="ProbabilityList with items" width={1000} />
+
+Currently, the probabilities of items are even. We want to make the die roll the six more often, but retain the even chances among the other sides.
+
+<Note>
+    You can adjust item probabilities by dragging their rectangles or edges on the stripe, or by typing in the value directly. Direct input will recalculate other items with respect to their distribution ratio.
+</Note>
+
+Click on the 'side 6' probability `16.67%` and type in `0.2` (for 20%) and hit `Enter`. Probabilities of other items will drop to 16%.
+
+<ImageX className="w-full h-auto" src={exampleDirectInput} alt="Direct Input" width={1000} />
+
+Now it's time to roll the die. In RNGNeeds, you can select a value from the ProbabilityList easily by calling `.PickValue()`. Let's make our die object useful by adding a function that returns the roll.
+
+```csharp {{ title: 'Selecting values from list' }}
+[CreateAssetMenu(fileName = "DXX", menuName = "My Die")]
+public class Die : ScriptableObject
+{
+    public ProbabilityList<int> die;
+    
+    public int Roll()
+    {
+        return die.PickValue();
+    }
+}
+```
+
+Now, whenever you call Roll() on one of your dice, you will get a single `int` value based on probability distribution.
+<Note>
+    Using this approach, you can now create multiple dice for your project, such as `d10` or `d20` and roll them easily. Each of the Die ScriptableObjects can have its own number of items (sides of a die) and probability distributions.
+    Speaking of which, now would be a good idea to rename our six sided die to `D6 Die (biased)`.
+</Note>
+
+---
+
+## What's Next?
+Congratulations on setting up RNGNeeds and taking your first steps into the world of advanced probability control! However, there's still a lot more to discover. To help you navigate and make the most out of RNGNeeds, we recommend diving into the following resources:
+
+### Exploring the Basics
+Start by getting a strong grasp of the fundamentals. These articles will guide you through the user interface, introduce you to key terminology, and help you customize your setup via the Preferences Window:
+
+- <a href={UserInterfacePage.Link}>Understanding the User Interface</a>
+- <a href={PreferencesPage.Link}>Customizing RNGNeeds with the Preferences Window</a>
+- <a href={TerminologyPage.Link}>Key Terminology in RNGNeeds</a>
+
+<Button href={ExamplesOverviewPage.Link} arrow="right" children="Explore the RNGNeeds Example Usage" />
+
+### Unleashing the Full Power
+
+Once you're comfortable with the basics, it's time to explore some real-world applications and learn how to harness the full potential of RNGNeeds. These example tutorials will not only deepen your understanding but also inspire you with possibilities:
+
+- <a href={ExamplesBasicPage.Link}>Creating a Treasure Chest: A Basic RNGNeeds Example</a>
+- <a href={ExamplesIntermediatePage.Link}>Building a Monster Spawner: Intermediate RNGNeeds Usage</a>
+- <a href={ExamplesAdvancedPage.Link}>Designing a Card Deck: Advanced RNGNeeds Project</a>
+- <a href={ExamplesDeepDivePage.Link}>Mastering Probability Influence: A Deep Dive</a>
+
+Remember, RNGNeeds is a powerful tool designed to cater to your unique needs. So dive in, explore, and let your creativity reign!

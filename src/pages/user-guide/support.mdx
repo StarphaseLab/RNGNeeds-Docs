@@ -1,0 +1,38 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {Button} from "@/components/mdx";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+import {FAQPage, PreferencesPage, TerminologyPage, UserInterfacePage} from "@/components/PageLinks";
+export const description =
+    'Need assistance with RNGNeeds? Our Support section is here to help, ensuring a smooth experience with our plugin.'
+
+<HeroPattern />
+
+# Support
+
+Your satisfaction is a top priority here at Starphase Lab. RNGNeeds is designed with a user-first approach, prioritizing ease of use and a polished user experience. However, questions and issues can sometimes come up, and when they do, we're here to help.
+
+Before reaching out for direct support, you might find it useful to check out the various sections of this documentation and our FAQ. Many common questions and issues are covered there, and you might find the solution you're looking for more quickly.
+
+- <a href={FAQPage.Link}>{FAQPage.Title}</a>
+- <a href={UserInterfacePage.Link}>Understanding the User Interface</a>
+- <a href={PreferencesPage.Link}>Customizing RNGNeeds with the Preferences Window</a>
+- <a href={TerminologyPage.Link}>Key Terminology in RNGNeeds</a>
+
+## Email Support
+
+If you're still having difficulties, feel free to reach out directly via email. We will make every effort to respond to your inquiry as quickly as possible.
+
+<Button href={SUPPORT_EMAIL_LINK} variant="secondary" children="Support Email" />
+
+## Join Our Discord Community
+
+You're also invited to join our growing Discord community. It's a great place to chat with other users, find answers to common questions, and share or find inspiration for your projects. Please understand that while we strive to monitor and respond to inquiries on Discord, email remains the most reliable channel for urgent support requests.
+
+Discord is a vibrant platform that allows for real-time discussion and sharing. We look forward to seeing the incredible creations you bring to life with RNGNeeds!
+
+<Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" children="Join our Discord" />
+
+Your feedback is invaluable. If you have suggestions for improvements or features you'd like to see in RNGNeeds, don't hesitate to share them with us. Together, we can make RNGNeeds even better!
+
+
+

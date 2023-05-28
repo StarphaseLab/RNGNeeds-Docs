@@ -1,0 +1,53 @@
+import {Properties, Property} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+export const description =
+  'Get acquainted with the terms and concepts used in RNGNeeds. A solid understanding of these will make it easier to navigate the rest of the Documentation and the plugin itself.'
+
+<HeroPattern />
+# Terminology
+To make the most out of RNGNeeds, it's essential to understand the key terms and concepts used within the plugin. This page provides definitions for the primary terms you'll encounter.
+
+<Properties>
+    <Property name="Probability List">A Probability List is a collection of `Probability Items`, each representing a potential value that can be selected. This list defines a set of possible outcomes, each associated with its own probability.</Property>
+    <Property name="Probability Item">A Probability Item is an individual entry within a `Probability List`. It encapsulates a user-defined value (either a value type or a reference type) and associates it with a particular Base Probability. The item also stores additional information, such as enabled or locked states.</Property>
+    <Property name="Base Probability">Base Probability refers to the initial probability assigned to a `Probability Item`. This value can be manually adjusted but does not directly influence the selection process. It serves as a reference point for further adjustments and calculations.</Property>
+    <Property name="Probability">Probability refers to the adjusted likelihood of a `Probability Item` being selected. It's a calculated value derived from the Base Probability and any influences or adjustments. This probability is used during the selection process.</Property>
+    
+    <Property name="Enabled Probability">Enabled Probability refers to the accumulated probability of all enabled `Probability Items` in a list. Disabled items are not considered in this calculation. The Enabled Probability value is used during the selection process.</Property>
+    <Property name="Unlocked Probability">Unlocked Probability refers to the total probability of all unlocked `Probability Items` in a list. Unlocked probabilities can change as other items' probabilities are adjusted. This value is considered during probability normalization or recalculation when designing the list.</Property>
+    <Property name="Selection Method">Selection Method refers to the algorithm or process used to pick an item from the `Probability List`. Different selection methods may yield almost identical results but can differ in performance depending on the size of the list and the `Pick Count`.</Property>
+    <Property name="Pick Count">Pick Count is the number of items to be selected from the `Probability List` in a single operation. The `Pick Count` can be a fixed value or a range, offering flexibility for different scenarios.</Property>
+    <Property name="Repeat Prevention">Repeat Prevention is a feature that avoids consecutive selection of the same `Probability Item`. This feature enhances variety in selections, particularly useful in scenarios where repeated outcomes are undesirable.</Property>
+
+    <Property name="Influence Provider">A script inheriting from `IProbabilityInfluenceProvider` interface, defining an influence applied to probability of an item.</Property>
+    <Property name="Influenced List">The list is considered as `influenced` if any of its items has an `Influence Provider` assigned, or if any item itself is a provider.</Property>
+    <Property name="Influenced Probability">Influenced Probability refers to the Base Probability of a `Probability Item` after the application of an external influence, if one is configured via a `Probability Influence Provider`.</Property>
+    
+</Properties>
+
+---
+
+[//]: # (<Properties>)
+
+[//]: # (    <Property name="Probability List">Think of a `Probability List` as a bag full of `Probability Items` - each item is a possible pick with its own chances of being picked. The list is your playground for setting up these possibilities.</Property>)
+
+[//]: # (    <Property name="Probability Item">A `Probability Item` is like a ticket in your lottery drum, representing a value that might get picked. It carries its own Base Probability and keeps track of its status &#40;enabled, locked, and so on&#41;.</Property>)
+
+[//]: # (    <Property name="Base Probability">The `Base Probability` is the starting point for an item's chances of being picked. You can tweak it as you like, but remember - it's just a reference point and doesn't directly affect the picking process.</Property>)
+
+[//]: # (    <Property name="Probability">`Probability` is the real deal! It's the final chance of an item being picked, after considering the Base Probability and any other adjustments you've made. This is the number that matters when it's time to pick an item.</Property>)
+
+[//]: # (    <Property name="Influenced Probability">An `Influenced Probability` is what you get when you apply an external factor to an item's Base Probability. If you're using a Probability Influence Provider, this is where it comes into play.</Property>)
+
+[//]: # (    <Property name="Enabled Probability">The `Enabled Probability` is all about the active players in the game. It's the total probability of the items that are currently enabled and up for selection.</Property>)
+
+[//]: # (    <Property name="Unlocked Probability">`Unlocked Probability` is the sum of the probabilities of all the items that aren't locked down. When you're tweaking probabilities, this number helps keep everything balanced.</Property>)
+
+[//]: # (    <Property name="Selection Method">The `Selection Method` is your recipe for picking items from your list. While different methods might yield similar results, they can vary in speed and efficiency depending on your list size and `Pick Count`.</Property>)
+
+[//]: # (    <Property name="Pick Count">`Pick Count` is all about how many items you want to pick from your list at once. Whether it's a single pick or a range, you've got flexibility to suit your needs.</Property>)
+
+[//]: # (    <Property name="Repeat Prevention">`Repeat Prevention` stops the same item from being picked twice in a row, keeping things fresh and varied. It's a handy tool for when you're aiming for a nice mix of outcomes.</Property>)
+
+[//]: # (</Properties>)
+
