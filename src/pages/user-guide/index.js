@@ -7,7 +7,7 @@ const Index = () => {
 
     useEffect(() => {
         router.push(userGuideSectionLink());
-    }, []);
+    }, [router]);
 
     return null;
 };

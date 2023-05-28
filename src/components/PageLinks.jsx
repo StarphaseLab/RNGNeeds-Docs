@@ -49,6 +49,10 @@ export function userGuideSectionLink() {
     return IntroductionPage.Link;
 }
 
+export function examplesSectionLink() {
+    return ExamplesOverviewPage.Link;
+}
+
 export function apiReferenceSectionLink() {
     return API_Overview.Link;
 }

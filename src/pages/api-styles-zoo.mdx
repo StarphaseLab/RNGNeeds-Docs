@@ -1,0 +1,124 @@
+import {CodeGroup, Col, Properties, Property, Row} from "@/components/mdx";
+import {Libraries} from "@/components/Libraries";
+
+# API Styles ZOO
+
+## Tags
+
+## .PickValue() {{ tag: '(T, int)', label: 'label' }}
+
+[//]: # (Tag color map is defined in Tag.jsx)
+
+<CodeGroup title="Request" tag="(T, int)" label="label">
+    ```csharp
+    var pickedValue = myList.PickValue()
+    ```
+</CodeGroup>
+
+## .PickValue() {{ tag: 'POST', label: 'label' }}
+
+## .PickValue() {{ tag: 'PUT', label: 'label' }}
+
+## .PickValue() {{ tag: 'DELETE', label: 'label' }}
+
+---
+
+## Properties
+
+<Properties>
+    <Property name="id" type="string">
+        Unique identifier for the contact.
+    </Property>
+    <Property name="username" type="string">
+        The username for the contact.
+    </Property>
+    <Property name="phone_number" type="string">
+        The phone number for the contact.
+    </Property>
+</Properties>
+
+---
+
+## Libraries - grid of items
+
+<Libraries />
+
+---
+
+## Row / Col
+
+## List all contacts {{ tag: 'GET', label: '/v1/contacts' }}
+
+<Row>
+    <Col>
+
+        This endpoint allows you to retrieve a paginated list of all your contacts. By default, a maximum of ten contacts are shown per page.
+
+        ### Optional attributes
+
+        <Properties>
+            <Property name="limit" type="integer">
+                Limit the number of contacts returned.
+            </Property>
+        </Properties>
+
+    </Col>
+    <Col sticky>
+
+        <CodeGroup title="Request" tag="GET" label="/v1/contacts">
+
+            ```bash {{ title: 'cURL' }}
+            curl -G https://api.protocol.chat/v1/contacts \
+            -H "Authorization: Bearer {token}" \
+            -d active=true \
+            -d limit=10
+            ```
+
+            ```js
+            import ApiClient from '@example/protocol-api'
+
+            const client = new ApiClient(token)
+
+            await client.contacts.list()
+            ```
+
+            ```python
+            from protocol_api import ApiClient
+
+            client = ApiClient(token)
+
+            client.contacts.list()
+            ```
+
+            ```php
+            $client = new \Protocol\ApiClient($token);
+
+            $client->contacts->list();
+            ```
+
+        </CodeGroup>
+
+        ```json {{ title: 'Response' }}
+        {
+            "has_more": false,
+            "data": [
+        {
+            "id": "WAz8eIbvDR60rouK",
+            "username": "FrankMcCallister",
+            "phone_number": "1-800-759-3000",
+            "avatar_url": "https://assets.protocol.chat/avatars/frank.jpg",
+            "display_name": null,
+            "conversation_id": "xgQQXg3hrtjh7AvZ",
+            "last_active_at": 705103200,
+            "created_at": 692233200
+        },
+        {
+            "id": "hSIhXBhNe8X1d8Et"
+            // ...
+        }
+            ]
+        }
+        ```
+
+    </Col>
+</Row>
