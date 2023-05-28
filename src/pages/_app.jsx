@@ -22,21 +22,22 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-        <Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}/>
-        <Script
-            id='google-analytics'
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-                __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}', {
-            page_path: window.location.pathname,
-          });
-        `,
-            }}
-        />
+        <Analytics />
+        {/*<Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}/>*/}
+        {/*<Script*/}
+        {/*    id='google-analytics'*/}
+        {/*    strategy="afterInteractive"*/}
+        {/*    dangerouslySetInnerHTML={{*/}
+        {/*        __html: `*/}
+        {/*  window.dataLayer = window.dataLayer || [];*/}
+        {/*  function gtag(){dataLayer.push(arguments);}*/}
+        {/*  gtag('js', new Date());*/}
+        {/*  gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}', {*/}
+        {/*    page_path: window.location.pathname,*/}
+        {/*  });*/}
+        {/*`,*/}
+        {/*    }}*/}
+        {/*/>*/}
       <Head>
         {router.pathname === '/' ? (
           <title>RNGNeeds Documentation</title>
@@ -48,7 +49,6 @@ export default function App({ Component, pageProps }) {
       <MDXProvider components={mdxComponents}>
         <Layout {...pageProps}>
           <Component {...pageProps} />
-            <Analytics />
         </Layout>
       </MDXProvider>
     </>
