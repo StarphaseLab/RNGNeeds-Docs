@@ -197,45 +197,6 @@ export const navigation = sections.map(section => ({
   })),
 }));
 
-// export const navigation = [
-//   {
-//     title: 'User Guide',
-//     links: [
-//       { title: IntroductionPage.Title, href: IntroductionPage.Link },
-//       { title: GettingStartedPage.Title, href: GettingStartedPage.Link },
-//       { title: UserInterfacePage.Title, href: UserInterfacePage.Link },
-//       { title: PreferencesPage.Title, href: PreferencesPage.Link },
-//       { title: FAQPage.Title, href: FAQPage.Link },
-//       { title: SupportPage.Title, href: SupportPage.Link },
-//     ],
-//   },
-//   {
-//     title: 'Documentation',
-//     links: [
-//       { title: TerminologyPage.Title, href: TerminologyPage.Link },
-//       { title: 'Designing a List (TODO)', href: '/' },
-//       { title: 'Selecting Values (TODO)', href: '/' },
-//       { title: 'Repeat Prevention (TODO)', href: '/' },
-//       { title: 'Probability Influence (TODO)', href: '/' },
-//       { title: 'Testing Outcomes (TODO)', href: '/' },
-//       { title: 'Seeding Options (TODO)', href: '/' },
-//       { title: 'Pick History (TODO)', href: '/' },
-//       { title: 'Examples (WIP)', href: '/examples' },
-//       { title: ChangelogPage.Title, href: ChangelogPage.Link },
-//     ],
-//   },
-//   {
-//     title: 'API Reference',
-//     links: [
-//       { title: 'Contacts', href: '/contacts' },
-//       { title: 'Conversations', href: '/conversations' },
-//       { title: 'Messages', href: '/messages' },
-//       { title: 'Groups', href: '/groups' },
-//       { title: 'Attachments', href: '/attachments' },
-//     ],
-//   },
-// ]
-
 export function Navigation(props) {
   return (
     <nav {...props}>
