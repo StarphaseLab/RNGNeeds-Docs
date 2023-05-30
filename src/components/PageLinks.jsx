@@ -83,7 +83,7 @@ export const sections = [
             TestingOutcomesPage,
             SeedingOptionsPage,
             PickHistoryPage,
-            // ChangelogPage
+            ChangelogPage
         ],
     },
     {
