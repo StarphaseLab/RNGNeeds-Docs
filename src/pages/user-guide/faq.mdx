@@ -1,5 +1,11 @@
 ﻿import {HeroPattern} from "@/components/HeroPattern";
-import {GettingStartedPage, ProbabilityInfluencePage, RepeatPreventionPage, SupportPage} from "@/components/PageLinks";
+import {
+    GettingStartedPage,
+    PreferencesPage,
+    ProbabilityInfluencePage,
+    RepeatPreventionPage,
+    SupportPage
+} from "@/components/PageLinks";
 import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
 export const description =
     'Get answers to the most common questions about RNGNeeds in our FAQ section, covering everything from basic setup to advanced features.'
@@ -20,7 +26,7 @@ section and follow the installation guide.
 
 ## Does RNGNeeds work with my version of Unity?
 
-RNGNeeds is developed in Unity 2020 LTS and tested up to the 2023.2 Alpha version. Minimum version is 2020.2.
+RNGNeeds is developed in Unity 2020 LTS and tested up to the 2023.2 Alpha version. Minimum Unity version is 2020.2.
 
 ## What does Beta mean for RNGNeeds?
 
@@ -28,19 +34,27 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 
 ## Can I use RNGNeeds with my custom objects?
 
-Yes! RNGNeeds is designed to work with any value or reference type, be it Unity's or your own.
+Absolutely! RNGNeeds is engineered to function seamlessly with any value or reference type, whether it's a part of Unity's suite or your unique creation. It doesn't matter if it's an *int, Vector3, GameObject, Enum, AnimationCurve, LayerMask,* or your *'Monster' Scriptable Object*, -
+you can craft a `ProbabilityList<OfAnyType>` with ease.
+
+## Where can I find the plugin settings?
+
+RNGNeeds houses its settings within the Editor Preferences panel. To discover how to locate this, refer to the
+<a href={PreferencesPage.Link}>{PreferencesPage.Title}</a>
+section in our User Guide.
 
 ## How can I dynamically influence the odds of a particular outcome?
 
-RNGNeeds introduces the concept of 
-<a href={ProbabilityInfluencePage.Link}>Probability Influence Providers</a>
-With them, you can design rules to dynamically modify probabilities based on external factors.
+RNGNeeds introduces the concept of ***Probability Influence Providers***. With them, you can design rules to dynamically modify probabilities based on external factors. Please visit our
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+section of Documentation to learn more.
+
 
 ## Can I prevent the same item from being selected consecutively?
 
-Yes, RNGNeeds offers multiple
-<a href={RepeatPreventionPage.Link}>Repeat Prevention</a>
-techniques to avoid consecutive item selections.
+Yes, RNGNeeds offers multiple ***Repeat Prevention Techniques*** that limit or eliminate repeated picks. Please visit our
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a>
+section of Documentation to learn more.
 
 ## What kind of support is available if I run into issues?
 
