@@ -9,6 +9,7 @@ export function ImageX(props)
             alt={props.alt}
             width={props.width}
             height={props.height || props.width}
+            priority={props.priority}
         />
     )
 }
