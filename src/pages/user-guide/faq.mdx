@@ -1,6 +1,6 @@
 ﻿import {HeroPattern} from "@/components/HeroPattern";
 import {
-    GettingStartedPage,
+    GettingStartedPage, NestingListsPage,
     PreferencesPage,
     ProbabilityInfluencePage,
     RepeatPreventionPage,
@@ -14,7 +14,8 @@ export const description =
 
 # Frequently Asked Questions
 
-Welcome to the FAQ section of RNGNeeds documentation. This space is dedicated to addressing the most common questions and concerns related to the usage and functionality of the RNGNeeds plugin. While we've provided a set of initial questions and answers based on our understanding of potential inquiries, we understand that this is just the beginning. As we gather real user questions and feedback, this section will be regularly updated to reflect the evolving needs of our user base.
+Welcome to the FAQ section of RNGNeeds documentation. 
+This space is dedicated to addressing the most common questions and concerns related to the usage and functionality of the RNGNeeds plugin. While we've provided a set of initial questions and answers based on our understanding of potential inquiries, we understand that this is just the beginning. As we gather real user questions and feedback, this section will be regularly updated to reflect the evolving needs of our user base.
 
 ---
 
@@ -55,6 +56,14 @@ section of Documentation to learn more.
 Yes, RNGNeeds offers multiple ***Repeat Prevention Techniques*** that limit or eliminate repeated picks. Please visit our
 <a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a>
 section of Documentation to learn more.
+
+## Can I nest multiple Probability Lists?
+
+Certainly! However, please note that nesting a ProbabilityList within a generic List or Array may not be fully supported in the editor and can potentially cause repaint issues. 
+To conveniently handle nested lists, we recommend using our special class `PLCollection<T>`.
+For more information on how to effectively nest Probability Lists, please refer to the 
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> 
+section in our Documentation.
 
 ## What kind of support is available if I run into issues?
 

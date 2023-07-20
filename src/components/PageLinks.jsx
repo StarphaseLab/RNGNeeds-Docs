@@ -17,13 +17,15 @@ export const SupportPage = createPage("Support", "/support");
 
 export const DocsOverviewPage = createPage("Overview", "/docs-overview");
 export const TerminologyPage = createPage("Terminology", "/terminology");
-export const DesigningAListPage = createPage("Designing a List (WIP)", "/designing-a-list");
+export const DesigningAListPage = createPage("Designing a List", "/designing-a-list");
 export const SelectingValuesPage = createPage("Selecting Values (WIP)", "/selecting-values");
 export const RepeatPreventionPage = createPage("Repeat Prevention (WIP)", "/repeat-prevention");
 export const ProbabilityInfluencePage = createPage("Probability Influence (WIP)", "/probability-influence");
 export const TestingOutcomesPage = createPage("Testing Outcomes (WIP)", "/testing-outcomes");
 export const SeedingOptionsPage = createPage("Seeding Options (WIP)", "/seeding-options");
 export const PickHistoryPage = createPage("Pick History (WIP)", "/pick-history");
+export const NestingListsPage = createPage("Nesting Lists (WIP)", "/nesting-lists");
+export const CustomizingListsPage = createPage("Customizing Lists (WIP)", "/customizing-lists");
 
 export const ChangelogPage = createPage("Change Log", "/change-log");
 
@@ -40,6 +42,7 @@ export const API_ProbabilityItem = createPage("Probability Item (WIP)", "/probab
 export const API_PickHistory = createPage("Pick History (WIP)", "/pick-history");
 export const API_SelectionMethods = createPage("Selection Methods (WIP)", "/selection-methods");
 export const API_SeedProvider = createPage("Seed Provider (WIP)", "/seed-provider");
+export const API_PLCollection = createPage("PL Collection (WIP)", "/pl-collection");
 
 export function docsSectionLink() {
     return DocsOverviewPage.Link;
@@ -83,6 +86,8 @@ export const sections = [
             TestingOutcomesPage,
             SeedingOptionsPage,
             PickHistoryPage,
+            NestingListsPage,
+            CustomizingListsPage,
             ChangelogPage
         ],
     },
@@ -107,7 +112,8 @@ export const sections = [
             API_ProbabilityItem,
             API_PickHistory,
             API_SelectionMethods,
-            API_SeedProvider
+            API_SeedProvider,
+            API_PLCollection
         ],
     },
 ];
