@@ -42,6 +42,7 @@ myProbabilityList.RemoveItem("One");
 myProbabilityList.RemoveItem(someProbabilityItem);
 myProbabilityList.RemoveItemAtIndex(1);
 ```
+---
 
 ## Assigning Values to Items
 When working with value types, you can set the values directly within the entry based on their respective type. For reference types that are Unity objects (such as MonoBehaviours or ScriptableObjects), you can simply drag and drop the object into the object field of the entry. If you're dealing with custom classes, their contents will be displayed directly in the entry, and you can expand or collapse them using the foldout arrow.
@@ -54,6 +55,8 @@ myProbabilityList.GetProbabilityItem(1).Value = "New Value";
     
 To provide a visual representation of the object/class name or the value for value types, the stripe displays them in colored blocks. This allows for quick identification and easy differentiation within the Probability List.
 </Note>
+
+---
 
 ## Setting Item Properties
 
@@ -75,6 +78,8 @@ myProbabilityList.SetItemEnabled(1, false);
 myProbabilityList.SetItemLocked(2, true);
 myProbabilityList.SetItemProbability(0, .3f);   // will normalize the list after change
 ```
+
+---
 
 ## Customizing the List
 If you want to further customize your Probability List, including adding custom information and colors, 

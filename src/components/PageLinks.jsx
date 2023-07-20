@@ -98,8 +98,8 @@ export const sections = [
             ExamplesOverviewPage,
             ExamplesBasicPage,
             ExamplesIntermediatePage,
-            ExamplesAdvancedPage,
-            ExamplesDeepDivePage
+            // ExamplesAdvancedPage,
+            // ExamplesDeepDivePage
         ],
     },
     {
