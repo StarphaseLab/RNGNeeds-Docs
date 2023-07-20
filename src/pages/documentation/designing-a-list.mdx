@@ -1,9 +1,84 @@
+import {Button, CodeGroup, Note, Properties, Property} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
+import {CustomizingListsPage, GettingStartedPage, SelectingValuesPage} from "@/components/PageLinks";
 export const description =
     'Learn how to create and manage Probability Lists, the heart of RNGNeeds\' functionality.'
 
 <HeroPattern />
 
-# Designing a List
+# Designing a Probability List
+Welcome to the "Designing a Probability List" documentation page! This guide will walk you through the process of creating and customizing Probability Lists using the RNGNeeds plugin.
+
+<Note>
+    If you're new to RNGNeeds and want to learn how to add a ProbabilityList to your class, we recommend checking out the 
+    <a href={GettingStartedPage.Link + '#quick-start'}>{GettingStartedPage.Title}</a> 
+    page. It provides step-by-step instructions to help you integrate Probability Lists into your project.
+</Note>
 
 ---
+
+## Adding and Removing Items
+To add items to your Probability List, simply click the "Add" button. Each added entry represents an item with its associated probability. If you wish to remove an item, click the "X" button next to the entry. Adding or removing items will automatically recalculate their probabilities proportionally, ensuring that their ratios are maintained.
+
+```csharp {{ title: 'Adding / Removing Items in code'}}
+// Add ProbabilityItems manually
+myProbabilityList.AddItem(new ProbabilityItem<string>("One", .5f));
+myProbabilityList.AddItem(new ProbabilityItem<string>("Two", .1f));
+myProbabilityList.AddItem(someProbabilityItem);
+myProbabilityList.NormalizeProbabilities();
+
+// Or let ProbabilityItems be created automatically
+myProbabilityList.AddItem("One", .5f);
+myProbabilityList.AddItem("Two", .1f);
+myProbabilityList.AddItem("Three", .3f);
+myProbabilityList.NormalizeProbabilities();
+
+// If you don't specify a probability, the list will be normalized automatically
+// to ensure the new item gets some share of the total probability
+myProbabilityList.AddItem("Four");
+
+// Removing items
+myProbabilityList.RemoveItem("One");
+myProbabilityList.RemoveItem(someProbabilityItem);
+myProbabilityList.RemoveItemAtIndex(1);
+```
+
+## Assigning Values to Items
+When working with value types, you can set the values directly within the entry based on their respective type. For reference types that are Unity objects (such as MonoBehaviours or ScriptableObjects), you can simply drag and drop the object into the object field of the entry. If you're dealing with custom classes, their contents will be displayed directly in the entry, and you can expand or collapse them using the foldout arrow.
+
+```csharp {{ title: 'Assigning values in code'}}
+myProbabilityList.GetProbabilityItem(1).Value = "New Value";
+```
+<Note>
+**Displaying Names and Values**
+    
+To provide a visual representation of the object/class name or the value for value types, the stripe displays them in colored blocks. This allows for quick identification and easy differentiation within the Probability List.
+</Note>
+
+## Setting Item Properties
+
+To adjust probabilities for items in your Probability List, you can interact with the stripe by dragging the edges of the blocks or the blocks themselves.
+
+The enabled state of an item can be toggled by clicking on the toggle switch located in the left part of the entry.
+
+If you want to prevent an item from changing its probability (e.g., during normalization), you can lock its probability by clicking on the colored square next to the percentage value.
+
+<Note>
+- **Control & Shift**: These keys provide additional functionality for interacting with the stripe. Holding the Control key while left-clicking on the edge between blocks will evenly distribute the neighboring probabilities. Holding the Control key while hovering over a block allows you to adjust probabilities using the scroll wheel. Holding Shift along with Control while using the scroll wheel provides more refined adjustments.
+- **Direct Probability Input**: By clicking on the percentage value in the entry, an input field will be revealed, allowing you to specify the probability directly. After confirming the probability, the probabilities of other items will be recalculated accordingly.
+- **Picks and Disabled Items**: Disabled items will not be selected during the selection process. However, if a pick would have resulted in selecting a disabled item, the selection would be empty. You can learn more about how disabled items behave on
+    <a href={SelectingValuesPage.Link + '#disabled-items'}>{SelectingValuesPage.Title}</a> page.
+</Note>
+
+```csharp {{ title: 'Setting Item Properties in code'}}
+myProbabilityList.SetItemEnabled(1, false);
+myProbabilityList.SetItemLocked(2, true);
+myProbabilityList.SetItemProbability(0, .3f);   // will normalize the list after change
+```
+
+## Customizing the List
+If you want to further customize your Probability List, including adding custom information and colors, 
+you can do so by implementing the special interfaces `IProbabilityItemInfoProvider` and `IProbabilityItemColorProvider` in your reference types. 
+For more details on how to customize your list, refer to the <a href={CustomizingListsPage.Link + '#provider-interfaces'}>{CustomizingListsPage.Title}</a> page in our documentation.
+
+With these guidelines, you are ready to start designing your Probability Lists with RNGNeeds. Let your creativity flow and leverage the power of probability distribution in your game mechanics!

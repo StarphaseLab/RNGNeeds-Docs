@@ -66,6 +66,8 @@ For this example, we will create a biased die that rolls the six a bit more ofte
 Inherit from `ScriptableObject` and add a Probability List of type `int`.
 
 ```csharp {{ title: 'Adding the ProbabilityList'}}
+using RNGNeeds;
+
 [CreateAssetMenu(fileName = "dXX", menuName = "My Die")]
 public class Die : ScriptableObject
 {
