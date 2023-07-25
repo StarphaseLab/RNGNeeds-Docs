@@ -6,7 +6,43 @@ export const description =
 
 # Selecting Values
 
-TODO
+On this page, you'll learn how to select values from your Probability List of items. Whether you're a game designer, coder, or both,
+this guide will help you and your team decide how RNGNeeds returns your values. {{ className: 'lead' }}
+
+---
+
+## .PickValues()
+
+The most straightforward way of working with RNGNeeds is letting the game designer choose the outcome of the selection in the inspector.
+
+Consider the following example:
+
+```csharp {{ title: 'Dice Rolls by the designer'}}
+public ProbabilityList<int> myDie;
+
+var sumOfRolls = myDie.PickValues().Sum();
+```
+
+In this scenario, the designer sets the number of dice in the inspector by setting Pick Count, and the code only cares about the sum of the rolls.
+This way, the designer may decide if the dice roll is a 1D6, 2D10, or anything else.
+
+Alternatively, the coder may take control of the dice:
+
+```csharp {{ title: 'Dice Rolls by the coder'}}
+public ProbabilityList<int> myDie;
+
+// This will pick only one value
+var sumOfRolls = myDie.PickValues(1).Sum();
+
+// and is equivalent to this
+var result = myDie.PickValue();
+
+// This will pick 2 to 4 values
+myDie.LinkPickCounts = false;
+myDie.PickCountMin = 2;
+myDie.PickCountMax = 4;
+var sumOfRolls = myDie.PickValues().Sum();
+```
 
 ---
 

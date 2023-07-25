@@ -7,7 +7,7 @@ export const description =
 <HeroPattern />
 
 # Designing a Probability List
-Welcome to the "Designing a Probability List" documentation page! This guide will walk you through the process of creating and customizing Probability Lists using the RNGNeeds plugin.
+This guide will walk you through the process of creating and customizing Probability Lists using the RNGNeeds plugin. {{ className: 'lead' }}
 
 <Note>
     If you're new to RNGNeeds and want to learn how to add a ProbabilityList to your class, we recommend checking out the 
@@ -77,6 +77,30 @@ If you want to prevent an item from changing its probability (e.g., during norma
 myProbabilityList.SetItemEnabled(1, false);
 myProbabilityList.SetItemLocked(2, true);
 myProbabilityList.SetItemProbability(0, .3f);   // will normalize the list after change
+```
+
+---
+
+## Pick Counts
+
+Pick Counts allows you to control the number of items picked from the list in a single selection process.
+By default, the selection will pick one value from the list. If you need to select multiple values, or a random range of values, you can customize the settings in the **PICK** section of the drawer.
+
+By default, the minimum and maximum pick counts are linked, meaning the pick count is fixed at a specific value.
+To unlink the minimum and maximum pick counts, click on the link icon between the input fields.
+Once unlinked, you can set the minimum and maximum pick counts independently. The pick count will then be a random number between the specified minimum and maximum values.
+You can also use the Curve field to bias the random pick count.By adjusting the curve, you can influence the probability distribution of the pick counts.
+Using custom pick counts and the curve feature adds an extra layer of control and variability to your RNG needs. It allows you to create more dynamic and diverse gameplay experiences by influencing how many items are selected in each pick.
+
+```csharp {{ title: 'Setting Pick Counts in code'}}
+// Setting a random pick count range between 2 and 5
+myProbabilityList.LinkPickCounts = false;
+myProbabilityList.PickCountMin = 2;
+myProbabilityList.PickCountMax = 5;
+myProbabilityList.PickCountCurve = myCustomCurve;
+
+// From this point, the selection will pick 2 values
+myProbabilityList.LinkPickCounts = true;
 ```
 
 ---
