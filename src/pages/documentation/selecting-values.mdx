@@ -1,4 +1,6 @@
+import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
+import {ExamplesIntermediatePage} from "@/components/PageLinks";
 export const description =
     'Understand the different methods of selection available in RNGNeeds and how to use them effectively.'
 
@@ -11,39 +13,117 @@ this guide will help you and your team decide how RNGNeeds returns your values. 
 
 ---
 
-## .PickValues()
+## Selecting Values
 
-The most straightforward way of working with RNGNeeds is letting the game designer choose the outcome of the selection in the inspector.
+Whether you design your Probability Lists in the inspector, or set it's values, probabilities and other properties in code, selecting values 
+is a simple process.
+
+```csharp {{ title: 'Selecting values'}}
+public ProbabilityList<string> myProbabilityList;
+
+List<string> results = myProbabilityList.PickValues();
+```
+
+This will start the **selection process** and return values based on how the list is already set up. This includes pick counts, selection method, repeat prevention, etc.
+
+Letting the game designer set up your lists in the inspector is the most straightforward way of working with RNGNeeds.
 
 Consider the following example:
 
-```csharp {{ title: 'Dice Rolls by the designer'}}
-public ProbabilityList<int> myDie;
+```csharp {{ title: 'Dice Rolls set up by the designer'}}
+public ProbabilityList<int> dice;
 
-var sumOfRolls = myDie.PickValues().Sum();
+int sumOfRolls = dice.PickValues().Sum();
 ```
 
-In this scenario, the designer sets the number of dice in the inspector by setting Pick Count, and the code only cares about the sum of the rolls.
-This way, the designer may decide if the dice roll is a 1D6, 2D10, or anything else.
+In this scenario, the designer can create a dice roll in the inspector by 
+- setting the number items in the list (sides of the die)
+- and the desired Pick Count (number of dice) 
 
-Alternatively, the coder may take control of the dice:
+The code only cares about the sum of the rolls. This way, the designer may decide if the dice roll is a 1D6, 2D10, or anything they desire. For example, 
+if the designer adds three items to the list, with values of 1, 2 and 3, and sets the Pick Count to 2, they will effectively create a 2D3 dice roll.
 
-```csharp {{ title: 'Dice Rolls by the coder'}}
-public ProbabilityList<int> myDie;
+Alternatively, the coder may take control of the dice, overriding the setup of the list:
+
+```csharp {{ title: 'Dice Rolls set by the coder'}}
+public ProbabilityList<int> dice;
 
 // This will pick only one value
-var sumOfRolls = myDie.PickValues(1).Sum();
+int sumOfRolls = dice.PickValues(1).Sum();
 
 // and is equivalent to this
-var result = myDie.PickValue();
+int result = dice.PickValue();
 
-// This will pick 2 to 4 values
-myDie.LinkPickCounts = false;
-myDie.PickCountMin = 2;
-myDie.PickCountMax = 4;
-var sumOfRolls = myDie.PickValues().Sum();
+// This will configure the list to randomly select 2 to 4 values
+dice.LinkPickCounts = false;
+dice.PickCountMin = 2;
+dice.PickCountMax = 4;
+int sumOfRolls = dice.PickValues().Sum();
+
+// and is equivalent to this, without the need to configure pick counts manually
+int sumOfRolls = dice.PickValues(2, 4).Sum();
 ```
 
 ---
 
 ## Disabled Items
+
+Disabling items in list is a convenient method for preventing certain values from being picked in the selection process. This can be useful if you want 
+to disable a value and you are not yet ready to remove it from the list, for example during designing phase when testing various outcomes. However, there are 
+a couple of important concepts to understand when working with disabled items.
+
+<Note>
+    **(1) Disabled items may alter probability** - Disabled items still live in the list of probabilities. This means that the selection may still randomly pick a disabled item. However, if the probability 
+    would have resulted in picking a disabled item, the pick would be ignored.
+    
+    **(2) Disabled items may lower pick counts** - Following up on the first concept, if the pick is ignored, the resulting pick count might be lower than desired.
+</Note>
+
+**Consider the following example:** there are three items in the list, each having 33.3% probability. One of them is disabled.
+
+- When selecting 100 values from this list, the resulting pick count may be lower, because each time the selection picks a disabled item, it will be ignored. 
+There will probably be around 66 items picked, however the probability of the two enabled items would seem correct - about 33% each.
+
+- To respect the desired pick count, you can set `ProbabilityList.MaintainPickCountIfDisabled` to true. This will cause the selection process to continue until the 
+desired pick count is reached. The result will be 100 items, however, the probability of the two enabled items will be close to 50% each.
+
+```csharp {{ title: 'Selecting multiple values from a list with disabled items'}}
+public ProbabilityList<string> myProbabilityList;
+
+myProbabilityList.AddItem("Enabled Item 1", .33f);
+myProbabilityList.AddItem("Enabled Item 2", .33f);
+myProbabilityList.AddItem("Disabled Item", .33f, enabled: false);
+myProbabilityList.NormalizeProbabilities();
+
+// This will return a List<string> with about 66 values
+var results = myProbabilityList.PickValues(100);
+
+// This will return a List<string> with 100 values
+myProbabilityList.MaintainPickCountIfDisabled = true;
+var results = myProbabilityList.PickValues(100);
+```
+
+Selecting multiple values from a list with disabled items is quite easy to maintain, because the resulting `List<T>` will only contain successfully selected values. 
+
+However, when using functions that return a single value, such as `.PickValue()`, the outcome might depend on the `Type` your ProbabilityList holds. This is because if a 
+disabled item would be picked, `default` value of your Type will be returned. In some cases, the value returned might be indistinguishable from a real one. 
+
+For example with `value` types such as strings, boolean or ints, an empty string, a `false` or a `0` would be returned, respectively. If you need to determine the success 
+of a single value pick, you can use `.TryPickValue(out T value)`
+
+```csharp {{ title: 'Selecting a single value from a list with disabled items'}}
+if(myProbabilityList.TryPickValue(out var selectedValue))
+{
+    // do something with selectedValue
+}
+
+// Alternatively, you can also force the selection to pick an enabled item
+myProbabilityList.MaintainPickCountIfDisabled = true;
+var retult = myProbabilityList.PickValue();
+```
+
+Disabling items can also be a powerful design choice that brings flexibility to modular selections. Please explore our 
+<a href={ExamplesIntermediatePage.Link}>Treasure Chest</a> 
+sample for ideas on how to create a modular and easy-to-maintain selection systems.
+
+---
