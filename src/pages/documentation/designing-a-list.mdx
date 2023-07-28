@@ -1,6 +1,8 @@
 import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
 import {CustomizingListsPage, GettingStartedPage, SelectingValuesPage} from "@/components/PageLinks";
+import addingItems from '@/images/screenshots/adding-items.png';
+import {ImageX} from "@/components/ImageX";
 export const description =
     'Learn how to create and manage Probability Lists, the heart of RNGNeeds\' functionality.'
 
@@ -18,7 +20,13 @@ This guide will walk you through the process of creating and customizing Probabi
 ---
 
 ## Adding and Removing Items
-To add items to your Probability List, simply click the "Add" button. Each added entry represents an item with its associated probability. If you wish to remove an item, click the "X" button next to the entry. Adding or removing items will automatically recalculate their probabilities proportionally, ensuring that their ratios are maintained.
+To add items to your Probability List, simply click the "Add" button. Each added entry represents an item with its associated probability. If you wish to remove an item, click the "X" button next to the entry. 
+
+<ImageX className="w-full h-auto" src={addingItems} alt="Adding Items" width="1000"/>
+
+Adding or removing items will automatically recalculate their probabilities proportionally, ensuring that their ratios are maintained. 
+When an item is added through the inspector, it gets a share of the total probability equal to `1 / number of items`. 
+The same applies when adding an item via code without specifying the probability. 
 
 ```csharp {{ title: 'Adding / Removing Items in code'}}
 // Add ProbabilityItems manually
