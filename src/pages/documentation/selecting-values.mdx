@@ -1,6 +1,6 @@
 import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
-import {ExamplesIntermediatePage} from "@/components/PageLinks";
+import {ExamplesIntermediatePage, PreferencesPage} from "@/components/PageLinks";
 import diceRoll2d6 from '@/images/screenshots/dice-roll-2d6.png';
 import disabledItemEffect from '@/images/screenshots/disabled-item-effect.png';
 import {ImageX} from "@/components/ImageX";
@@ -99,8 +99,11 @@ Disabling items in the list is a convenient method for preventing certain values
 <Note>
     **Enabling the 'Maintain Pick Count' feature:**
 
-    - First, enable **Advanced Drawer Options** in the RNGNeeds Preferences window, which will allow you to set Maintain Pick Count in the **PICK** section of the drawer.
-    - Alternatively, you can set `myProbabilityList.MaintainPickCountIfDisabled` to true in code.
+    - First, set the **Drawer Options Level** to *Advanced* in the RNGNeeds <a href={PreferencesPage.Link}>Preferences window</a>.
+    Next, open the **PICK** section of the drawer and switch on the Maintain Pick Count button located just below the pick count settings.
+    - Alternatively, you can set `MaintainPickCountIfDisabled` to true in code. 
+    
+    *Note that the option is set for each Probability List individually.*
 </Note>
 
 ```csharp {{ title: 'Selecting multiple values from a list with disabled items'}}

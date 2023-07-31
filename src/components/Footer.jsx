@@ -6,6 +6,7 @@ import { Transition } from '@headlessui/react'
 import { Button } from '@/components/Button'
 import { navigation } from '@/components/Navigation'
 import {DISCORD_LINK, REDDIT_LINK, STARPHASELAB_LINK, TWITTER_LINK} from "@/components/RLinks";
+import {SupportPage} from "@/components/PageLinks";
 
 function CheckIcon(props) {
   return (
@@ -230,6 +231,11 @@ export function Footer() {
   return (
     <footer className="mx-auto max-w-2xl space-y-10 pb-16 lg:max-w-5xl">
       {/*<Feedback key={router.pathname} />*/}
+        <p className="mx-auto text-xs text-zinc-600 dark:text-zinc-400">
+            Please note that these documentation pages are a work in progress and are being updated regularly to provide the most accurate and comprehensive information. 
+            If you have any questions or need further assistance, please visit our <a href={SupportPage.Link}>Support Page</a> or join our <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord Community</a>. 
+            We appreciate your patience and support!
+        </p>
       <PageNavigation />
       <SmallPrint />
     </footer>
