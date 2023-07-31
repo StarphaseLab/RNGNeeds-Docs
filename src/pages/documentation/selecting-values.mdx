@@ -28,17 +28,21 @@ This will start the **selection process** and return values based on how the lis
 
 Letting the game designer set up your lists in the inspector is the most straightforward way of working with RNGNeeds.
 
-Consider the following example:
+**Consider the following example:**
+
+[Inspector IMAGE - TODO]
+
+In this scenario, the designer can create a dice roll in the inspector by
+- setting the number items in the list (sides of the die)
+- and the desired Pick Count (number of dice)
+
+Now let's look at the code:
 
 ```csharp {{ title: 'Dice Rolls set up by the designer'}}
 public ProbabilityList<int> dice;
 
 int sumOfRolls = dice.PickValues().Sum();
 ```
-
-In this scenario, the designer can create a dice roll in the inspector by 
-- setting the number items in the list (sides of the die)
-- and the desired Pick Count (number of dice) 
 
 The code only cares about the sum of the rolls. This way, the designer may decide if the dice roll is a 1D6, 2D10, or anything they desire. For example, 
 if the designer adds three items to the list, with values of 1, 2 and 3, and sets the Pick Count to 2, they will effectively create a 2D3 dice roll.
@@ -73,7 +77,7 @@ to disable a value and you are not yet ready to remove it from the list, for exa
 a couple of important concepts to understand when working with disabled items.
 
 <Note>
-    **(1) Disabled items may alter probability** - Disabled items still live in the list of probabilities. This means that the selection may still randomly pick a disabled item. However, if the probability 
+    **(1) Disabled items may alter probability distribution** - Disabled items still live in the list of probabilities. This means that the selection may still randomly pick a disabled item. However, if the probability 
     would have resulted in picking a disabled item, the pick would be ignored.
     
     **(2) Disabled items may lower pick counts** - Following up on the first concept, if the pick is ignored, the resulting pick count might be lower than desired.
@@ -105,11 +109,15 @@ var results = myProbabilityList.PickValues(100);
 
 Selecting multiple values from a list with disabled items is quite easy to maintain, because the resulting `List<T>` will only contain successfully selected values. 
 
-However, when using functions that return a single value, such as `.PickValue()`, the outcome might depend on the `Type` your ProbabilityList holds. This is because if a 
-disabled item would be picked, `default` value of your Type will be returned. In some cases, the value returned might be indistinguishable from a real one. 
+However, when using methods that return a single value, such as `.PickValue()`, the outcome might depend on the `Type` your ProbabilityList holds. This is because `.PickValue()` 
+has to return some value. If a disabled item would be picked from a ProbabilityList of `reference types`, the result would be a `null` and you could determine if the 
+pick was successful with a null-check. 
 
-For example with `value` types such as strings, boolean or ints, an empty string, a `false` or a `0` would be returned, respectively. If you need to determine the success 
-of a single value pick, you can use `.TryPickValue(out T value)`
+However if you are working with `value types`, the result of a unsuccessful pick would be the `default` value of your Type. 
+In some cases, the value returned from an unsuccessful pick might be indistinguishable from a real one. 
+For example with value types such as `string`, `boolean` or `int`, an empty string, a `false` or a `0` would be returned, respectively. 
+
+If you need to determine the success of a single value pick, you can use `.TryPickValue(out T value)`
 
 ```csharp {{ title: 'Selecting a single value from a list with disabled items'}}
 if(myProbabilityList.TryPickValue(out var selectedValue))
@@ -125,5 +133,17 @@ var retult = myProbabilityList.PickValue();
 Disabling items can also be a powerful design choice that brings flexibility to modular selections. Please explore our 
 <a href={ExamplesIntermediatePage.Link}>Treasure Chest</a> 
 sample for ideas on how to create a modular and easy-to-maintain selection systems.
+
+### Edge Cases with Disabled Items and Maintaining Pick Counts
+
+There are two situations to keep in mind when working with disabled items.
+
+1. **A single enabled item in list** - if there is only one enabled item in list and Maintain Pick Counts is enabled, 
+the selection process will be skipped, and a manually created list of items with the same value will be returned. 
+
+2. **Very small enabled probability** - if all enabled items in the list represent a very small probability (for example 0.0001%), 
+Maintain Pick Count effectively orders the selection process to continue until the pick count is reached. This could result in a very 
+long selection process, or a hang (the process might never finish). RNGNeeds calculates a factor based on the total enabled probability and number of items that should 
+be picked. If a threshold is reached, the selection will be skipped and no values will be returned. In such case, a warning is thrown in console, notifying of this edge case. 
 
 ---
