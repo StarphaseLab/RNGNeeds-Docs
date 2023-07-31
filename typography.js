@@ -312,6 +312,9 @@ module.exports = ({ theme }) => ({
       ':is(a, h1, h2, h3, blockquote, thead th) code': {
         color: 'inherit',
       },
+      // ':is(a) code' : {
+      //   textDecoration: 'underline',
+      // },
       'h2 code': {
         fontSize: theme('fontSize.base')[0],
         fontWeight: 'inherit',
