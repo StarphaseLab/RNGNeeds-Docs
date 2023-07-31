@@ -2,6 +2,10 @@ import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
 import {CustomizingListsPage, GettingStartedPage, SelectingValuesPage} from "@/components/PageLinks";
 import addingItems from '@/images/screenshots/adding-items.png';
+import assigningValuesObjects from '@/images/screenshots/assigning-values-objects.png';
+import assigningValuesCustom from '@/images/screenshots/assigning-values-custom.png';
+import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
+import pickCounts from '@/images/screenshots/pick-counts.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
     'Learn how to create and manage Probability Lists, the heart of RNGNeeds\' functionality.'
@@ -53,7 +57,16 @@ myProbabilityList.RemoveItemAtIndex(1);
 ---
 
 ## Assigning Values to Items
-When working with value types, you can set the values directly within the entry based on their respective type. For reference types that are Unity objects (such as MonoBehaviours or ScriptableObjects), you can simply drag and drop the object into the object field of the entry. If you're dealing with custom classes, their contents will be displayed directly in the entry, and you can expand or collapse them using the foldout arrow.
+
+Values in ProbabilityList work the same way they do when working with a standard generic `List`. When working with value types, you can set the values directly within the entry based on their respective type.
+
+For reference types that are Unity objects (such as MonoBehaviours or ScriptableObjects), you can simply drag and drop the object into the object field of the entry. 
+
+<ImageX className="w-full h-auto" src={assigningValuesObjects} alt="Assigning Objects" width="1000"/>
+
+If you're dealing with custom types, their contents will be displayed directly in the entry, and you can expand or collapse them using the foldout arrow.
+
+<ImageX className="w-full h-auto" src={assigningValuesCustom} alt="Assigning Custom Types" width="1000"/>
 
 ```csharp {{ title: 'Assigning values in code'}}
 myProbabilityList.GetProbabilityItem(1).Value = "New Value";
@@ -69,6 +82,8 @@ To provide a visual representation of the object/class name or the value for val
 ## Setting Item Properties
 
 To adjust probabilities for items in your Probability List, you can interact with the stripe by dragging the edges of the blocks or the blocks themselves.
+
+<ImageX className="w-full h-auto" src={adjustingProbabilities} alt="Adding Items" width="1000"/>
 
 The enabled state of an item can be toggled by clicking on the toggle switch located in the left part of the entry.
 
@@ -94,10 +109,13 @@ myProbabilityList.SetItemProbability(0, .3f);   // will normalize the list after
 Pick Counts allows you to control the number of items picked from the list in a single selection process.
 By default, the selection will pick one value from the list. If you need to select multiple values, or a random range of values, you can customize the settings in the **PICK** section of the drawer.
 
+<ImageX className="w-full h-auto" src={pickCounts} alt="Pick Counts" width="1000"/>
+
 By default, the minimum and maximum pick counts are linked, meaning the pick count is fixed at a specific value.
-To unlink the minimum and maximum pick counts, click on the link icon between the input fields.
+To unlink the minimum and maximum pick counts, click on the **link icon** between the input fields.
 Once unlinked, you can set the minimum and maximum pick counts independently. The pick count will then be a random number between the specified minimum and maximum values.
-You can also use the Curve field to bias the random pick count.By adjusting the curve, you can influence the probability distribution of the pick counts.
+
+You can also use the **Curve field** to bias the random pick count. By adjusting the curve, you can influence the probability distribution of the pick counts.
 Using custom pick counts and the curve feature adds an extra layer of control and variability to your RNG needs. It allows you to create more dynamic and diverse gameplay experiences by influencing how many items are selected in each pick.
 
 ```csharp {{ title: 'Setting Pick Counts in code'}}
@@ -115,7 +133,7 @@ myProbabilityList.LinkPickCounts = true;
 
 ## Customizing the List
 If you want to further customize your Probability List, including adding custom information and colors, 
-you can do so by implementing the special interfaces `IProbabilityItemInfoProvider` and `IProbabilityItemColorProvider` in your reference types. 
+you can do so by implementing the special interfaces `IProbabilityItemInfoProvider` and `IProbabilityItemColorProvider` in your custom class. 
 For more details on how to customize your list, refer to the <a href={CustomizingListsPage.Link + '#provider-interfaces'}>{CustomizingListsPage.Title}</a> page in our documentation.
 
 With these guidelines, you are ready to start designing your Probability Lists with RNGNeeds. Let your creativity flow and leverage the power of probability distribution in your game mechanics!
