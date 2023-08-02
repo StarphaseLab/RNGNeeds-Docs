@@ -1,9 +1,144 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {PickHistoryPage, PreferencesPage, TestingOutcomesPage} from "@/components/PageLinks";
+import repeatPrevention from '@/images/screenshots/repeat-prevention.png';
+import {ImageX} from "@/components/ImageX";
 export const description =
-    'Find out how RNGNeeds helps you avoid consecutive repetitions of the same item in a Probability List.'
+    'Learn how RNGNeeds helps you avoid consecutive repeats of the same item during selections, giving you more control over randomness in your game.'
 
 <HeroPattern />
 
 # Repeat Prevention
+
+In many scenarios, you may want to prevent or reduce the repetition of consecutive item selections from your Probability List. 
+RNGNeeds offers a flexible and powerful way to handle repeat prevention, allowing you to tailor the behavior to your specific needs. {{ className: 'lead' }}
+
+---
+
+## Overview
+
+Repeat prevention can be essential in various game mechanics, such as ensuring that the same random event doesn't occur back-to-back or that a player doesn't receive the same item repeatedly. 
+RNGNeeds provides three methods to handle repeat prevention, each with its trade-offs between speed, bias, and the degree of repeat prevention.
+
+<Note>
+    **Understanding Bias**
+    
+    Bias refers to the difference between the designed (desired) and the resulting probability. Methods of repeat prevention may introduce bias because they attempt to
+    correct a situation that resulted from a natural probability distribution selection process. Therefore, the resulting probability might be slightly off, depending on the method used,
+    the number of items in the list, and their actual distribution.
+
+    If there is an item with the majority of the distribution, it will be picked more often - naturally.
+    This also means that there is a greater chance of selecting the item twice in a row.
+    Therefore, the item will be re-picked more often, which could result in its perceived probability being lower than designed, and other items' probability being higher.
+</Note>
+
+<Note>
+    **Is Speed Important?**
+
+    ***Short answer:*** In most cases, no.
+
+    Speed refers to the time it takes to select values from the list based on the number of picks, chosen selection method, size of the list, repeat prevention method, etc.
+    In most cases in game development, you would only need to select one, two, or a handful of values at once. For example, a 2D10 dice roll is two picked values. Opening a treasure chest may be up to 20 selected values.
+    In these situations, speed is not a concern.
+
+    However, there may be times when you need to select millions of items at once - for example, if you need to pre-select items during initialization and use the <a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a> feature to retrieve pre-selected values during gameplay.
+    
+    Selecting one hundred million items at once may take a second, and using the Shuffle Repeat Prevention method with five iterations may bring it up to two seconds. This should still not be a concern if you are pre-selecting during initialization.
+    Speed is just something to keep in mind if you need to frequently select a large number of items at once during gameplay.
+
+    RNGNeeds offers BURST-compiled versions of selection methods that may significantly reduce the time needed. Please visit the <a href={TestingOutcomesPage.Link}>{TestingOutcomesPage.Title}</a> page of our documentation to learn
+    how you can test the results and speed of your setup.
+</Note>
+
+## Methods of Repeat Prevention
+
+- **Spread:** Eliminates all repeats, replacing them with the nearest enabled items. This method is fast but may introduce noticeable bias, especially for small lists or a low number of rolls.
+
+- **Repick:** Eliminates all repeats by re-rolling the selection. This method offers moderate speed and low bias but may slightly favor lower probability items and penalize higher probability items.
+
+- **Shuffle:** Greatly reduces repeats while preserving probabilities. This method can be potentially slow for large lists but introduces minimal to no bias. The order of picked items will be randomized.
+
+---
+
+## How Does Repeat Prevention Work?
+
+The **Spread** and **Repick** methods work *during the actual selection process*. Whenever an item is randomly selected twice in a row, the new selection is either *spread* to the nearest enabled item, 
+or *re-picked* until a non-repeated item is selected. This process works when selecting a number of items at once, and since it takes Pick History into consideration, it works between consecutive selections as well.
+
+The **Shuffle** method works a bit differently, as it is executed *after the selection*. The result of the selection is shuffled a number of times, based on the iterations you set in the inspector or in code. 
+Shuffle cannot eliminate all repeats, but it can greatly reduce them. The upside is that the probability distribution will not change and will reflect the designed settings. 
+
+<Note>
+    **Notes on Shuffle**
+
+    - Because shuffle operates after the selection and doesn't consider pick history, it may not prevent repeats between consecutive selections. 
+    The last item picked in one selection might be the same as the first item picked in the next. However, since shuffle can't completely eliminate all repeats, this is usually not a concern.
+    - Shuffle is not effective when selecting fewer than 3 items at once. It's designed to return a number of items in one pick, reducing repeats while respecting the original probability distribution.
+</Note>
+
+---
+
+## Setting up Repeat Prevention
+
+Like most other features of RNGNeeds, Repeat Prevention is set individually for each ProbabilityList. By default, the prevention is turned off. 
+You can enable repeat prevention in the inspector of your list by expanding the *PICK* section. Locate the button for choosing a Selection Method (Linear Search by default). 
+Clicking will show a dropdown with the Repeat Prevention methods.
+
+<ImageX className="w-full h-auto" src={repeatPrevention} alt="Repeat Prevention in Inspector" width="1000"/>
+
+<Note>
+    If you do not see the Selection Method dropdown as shown in the screenshot, please enable ***Advanced Drawer Options*** in the RNGNeeds <a href={PreferencesPage.Link}>Preferences window</a>.
+</Note>
+
+You can also define the method for preventing repeated item selections by using the PreventRepeat property:
+
+```csharp {{ title: 'Setting the Repeat Prevention in code'}}
+myProbabilityList.PreventRepeat = PreventRepeatMethod.Spread;
+```
+
+**Shuffle Iterations**
+If you choose the Shuffle method, you can specify the number of shuffle iterations used to reduce repeat selections. More iterations enhance the prevention of repeats, and the value is always constrained between 1 and 5.
+
+```csharp {{ title: 'Setting the Shuffle Iterations in code'}}
+myProbabilityList.ShuffleIterations = 3;
+```
+
+---
+
+## Examples
+
+Repeat prevention is a powerful feature that can add depth, realism, and unpredictability to various aspects of your game. 
+By ensuring that certain elements don't repeat consecutively, you can create a more engaging and immersive experience for players. 
+Here are some inspiring examples of where repeat prevention can be applied:
+
+- **Unit Responses:** Ensuring characters don't repeat the same lines consecutively, adding realism and immersion.
+- **Loot Drops:** Preventing the same item from dropping consecutively, ensuring diversity in rewards.
+- **Enemy Spawns:** Avoiding the same enemy type from spawning repeatedly, creating dynamic combat.
+- **Random Events or Encounters:** Maintaining novelty by ensuring different random events.
+- **Dialogue Choices in NPCs:** Making interactions feel more natural by preventing repeated dialogue.
+- **Music or Ambient Sound Selection:** Enhancing audio by avoiding repetition of the same track.
+- **Puzzle Generation:** Keeping gameplay diverse by ensuring different puzzles or challenges.
+- **Card Draws in Card Games:** Maintaining fairness by preventing the same card from being drawn consecutively.
+- **Weather Patterns:** Creating realistic environments by avoiding consecutive identical weather conditions.
+- **Randomized Quests or Missions:** Keeping gameplay fresh by ensuring different quests or missions.
+- **Skill or Ability Activation:** Ensuring diversity in combat by preventing consecutive activation of the same skill.
+- **Randomized Animations:** Adding fluidity by avoiding the same animation from playing consecutively.
+
+Repeat prevention may be a design choice that can add depth and variety to your game mechanics. 
+By understanding the different methods and how to apply them, you can create engaging and unpredictable experiences for your players. 
+Experiment with the different methods to find the one that best fits your specific needs and enjoy the creative possibilities that RNGNeeds opens up for you.
+
+---
+
+<Note>
+    **Considerations**
+
+    - Repeat prevention may alter the probability distribution results by reducing the chance of selecting recently picked items.
+    - The repeat prevention setting is ignored if there's only one enabled item in the list.
+    - While the **Spread** and **Repick** methods work between selections, this does not apply when testing outcomes in the inspector. This is because the test does not write to the Probability List's Pick History. 
+    Therefore, if you are testing subsequent selections of a single value, the test may produce the same value twice in a row even if repeat prevention is turned on. 
+    However, testing with these methods still works when selecting a number of values in one pick, as they operate during the selection process.
+
+</Note>
 
 ---
