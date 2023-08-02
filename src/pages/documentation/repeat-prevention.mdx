@@ -1,9 +1,65 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
 export const description =
     'Find out how RNGNeeds helps you avoid consecutive repetitions of the same item in a Probability List.'
 
 <HeroPattern />
 
 # Repeat Prevention
+
+In many scenarios, you may want to prevent or reduce the repetition of consecutive item selections from your Probability List. 
+RNGNeeds offers a flexible and powerful way to handle repeat prevention, allowing you to tailor the behavior to your specific needs.
+
+---
+
+## Overview
+
+Repeat prevention can be essential in various game mechanics, such as ensuring that the same random event doesn't occur back-to-back or that a player doesn't receive the same item repeatedly. 
+RNGNeeds provides three methods to handle repeat prevention, each with its trade-offs between speed, bias, and the degree of repeat prevention.
+
+<Note>
+    **Understanding Bias**
+    
+    Bias means the difference between the designed (desired) and the resulting probability. Methods of repeat prevention may introduce bias, because they are trying to 
+    fix a situation that resulted from a natural probability distribution selection process. Therefore, the resulting probability might be slightly off, depending on the method used,
+    number of items in list, and their actual distribution. 
+    
+    If there is an item with majority of the distribution, it will be picked more often - naturally. 
+    This also means that there is greater chance of selecting the item twice in a row. 
+    Therefore, the item will be re-picked more often, which would result in it's perceived probability be lower than designed, and other items probability would be higher. 
+</Note>
+
+## Methods of Repeat Prevention
+
+- **Spread:** Eliminates all repeats, replacing them with the nearest enabled items. This method is fast but may introduce noticeable bias, especially for small lists or a low number of rolls.
+
+- **Repick:** Eliminates all repeats by re-rolling the selection. This method offers moderate speed and low bias but may slightly favor lower probability items and penalize higher probability items.
+
+- **Shuffle:** Greatly reduces repeats while preserving probabilities. This method can be potentially slow for large lists but introduces minimal to no bias. The order of picked items will be randomized.
+
+## How to Use Repeat Prevention
+
+**Setting the Repeat Prevention Method**
+You can define the method for preventing repeated item selections by using the PreventRepeat property:
+
+```csharp {{ title: 'Setting the Repeat Prevention in code'}}
+myProbabilityList.PreventRepeat = PreventRepeatMethod.Spread;
+```
+
+**Shuffle Iterations**
+If you choose the Shuffle method, you can specify the number of shuffle iterations used to reduce repeat selections. More iterations enhance the prevention of repeats, and the value is always constrained between 1 and 5.
+
+```csharp {{ title: 'Setting the Shuffle Iterations in code'}}
+myProbabilityList.ShuffleIterations = 3;
+```
+
+<Note>
+    **Considerations**
+    
+    Repeat prevention may alter the probability distribution results by reducing the chance of selecting recently picked items.
+    The repeat prevention setting is ignored if there's only one enabled item in the list.
+</Note>
+
+Repeat prevention is a powerful feature that can add depth and variety to your game mechanics. By understanding the different methods and how to apply them, you can create engaging and unpredictable experiences for your players. Experiment with the different methods to find the one that best fits your specific needs and enjoy the creative possibilities that RNGNeeds opens up for you.
 
 ---
