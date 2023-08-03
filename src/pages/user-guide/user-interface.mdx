@@ -1,6 +1,7 @@
 ﻿import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
 import uiBasic from '@/images/screenshots/ui-basic.png';
+import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
 import {Note} from "@/components/mdx";
 import {PreferencesPage} from "@/components/PageLinks";
 export const description = 
@@ -24,7 +25,8 @@ The Header Bar is your control panel in the RNGNeeds Inspector drawer. It allows
 
 ### The Stripe
 
-A visual tool in the RNGNeeds Inspector that represents your items as colored blocks, with their width proportional to their probability. It allows you to visually adjust the probabilities of each item by dragging their edges or the blocks themselves.
+A visual tool in the RNGNeeds Inspector that represents your items as colored blocks, with their width proportional to their probability. 
+It allows you to visually adjust the probabilities of each item by dragging their edges or the blocks themselves.
 
 ### The List
 
@@ -43,6 +45,8 @@ There are also quick toggles, represented by small rectangular buttons, that all
 ## The Stripe
 
 The Stripe is a powerful visual tool that lets you design and adjust your probabilities intuitively. Each item in your Probability List is represented as a colored block (let's call them 'probability blocks') on the Stripe. The width of these blocks is proportional to their associated probabilities, and together they fill up the whole Stripe, representing a total probability value of 1.
+
+<ImageX className="w-full h-auto" src={adjustingProbabilities} alt="Adding Items" width="1000"/>
 
 By dragging the edges between these blocks or the blocks themselves, you can adjust the probabilities of your items. For fine-tuning, you can hold Ctrl while scrolling to adjust probabilities by 0.1%, or Ctrl+Shift for a precision of 0.01%. The colors of the blocks correspond to those of the items in the List, providing a visually consistent reference across the interface.
 
