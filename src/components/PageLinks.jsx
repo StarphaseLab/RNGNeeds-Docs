@@ -29,7 +29,7 @@ export const CustomizingListsPage = createPage("Customizing Lists (WIP)", "/cust
 
 export const ChangelogPage = createPage("Change Log", "/change-log");
 
-export const ExamplesOverviewPage = createPage("Overview (WIP)", "/examples-overview");
+export const ExamplesOverviewPage = createPage("Overview", "/examples-overview");
 export const ExamplesBasicPage = createPage("Basic Examples (WIP)", "/basic-examples");
 export const ExamplesIntermediatePage = createPage("Intermediate Examples (WIP)", "/intermediate-examples");
 export const ExamplesAdvancedPage = createPage("Advanced Examples (WIP)", "/advanced-examples");
