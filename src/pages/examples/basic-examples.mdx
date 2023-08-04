@@ -9,7 +9,7 @@ import samplesUnitAudioScene from '@/images/screenshots/samples-unit-audio-scene
 import samplesUnitAudioAnnie from '@/images/screenshots/samples-unit-audio-annie.png';
 import samplesMonsterSpawnerStructure from '@/images/screenshots/samples-monster-spawner-structure.png';
 import {DISCORD_LINK} from "@/components/RLinks";
-import { RepeatPreventionPage, SelectingValuesPage, DesigningAListPage } from "@/components/PageLinks";
+import { RepeatPreventionPage, SelectingValuesPage, DesigningAListPage, ProbabilityInfluencePage } from "@/components/PageLinks";
 
 export const description =
     'Start your RNGNeeds journey with our Basic Examples, illustrating the fundamental usage of the plugin.'
@@ -122,7 +122,32 @@ These ProbabilityLists make use of the
 
 ## Monster Spawner
 
+The Monster Spawner sample showcases the usage of **Probability Influence** system, which allows dynamic control over individual probabilities based on external factors. 
+This is a very powerful feature of RNGNeeds, which opens up a world of creative game design by breathing life into fixed odds, turning them into engaging game mechanics.
+
+In our sample, monsters will spawn with varying probability based on the player's distance to them. Their designed odds will dynamically change, ensuring the hero is attacked from locations close to him, 
+yet still having some small chance of spawning them in all locations. This time you control **Chancelor, the Unlucky**, a misfortunate fellow who happened to pop into his existence in the middle of a monster graveyard.
+
+First, let's explore the structure of this sample. Locate and open the **MonsterSpawner** scene, and inspect the *MonsterSpawner GameObject* within its hierarchy. 
+The attached `MonsterSpawner` script holds three Probability Lists of different types:
+
+- **Monster Types** - this list is of type `Monster` (Scriptable Object) and will handle random monster picks
+- **Monster Levels** - provides a random `int` which will define the monster level
+- **Spawn Locations** - this list provides `SpawnLocation` type, which is a MonoBehaviour placed in the scene
+
 <ImageX className="w-full h-auto" src={samplesMonsterSpawnerStructure} alt="Samples Monster Spawner Structure" width="1000"/>
+
+As you can see, all items in lists have a designed probability. However, take a closer look at Spawn Locations. The Center location has 40% chance, East and West locations have 30% each. 
+In addition, all locations are **"influenced"** - instead of a probability bar similar to items in other lists, sliders with handles are displayed in their place for items that are influenced.
+
+<Note>
+    To learn more about this concept, its philosophy and details of usage, please visit the 
+    <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> page. 
+    
+    **For the purposes of our example, we will only care about the result** - the probability of spawning a monster at a location will depend on the player's distance to it.
+</Note>
+
+
 
 ```csharp {{ title: 'Monster Spawner Code'}}
 public class MonsterSpawner : MonoBehaviour
