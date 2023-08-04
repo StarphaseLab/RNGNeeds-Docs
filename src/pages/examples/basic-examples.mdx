@@ -1,4 +1,16 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Col, Note, Row} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+
+import samplesDiceRoller from '@/images/screenshots/samples-dice-roller.png';
+import samplesBiasedDie from '@/images/screenshots/samples-biased-die.png';
+import samplesDicePlaygroundScene from '@/images/screenshots/samples-dice-playground-scene.png';
+import samplesUnitAudioScene from '@/images/screenshots/samples-unit-audio-scene.png';
+import samplesUnitAudioAnnie from '@/images/screenshots/samples-unit-audio-annie.png';
+import samplesMonsterSpawnerStructure from '@/images/screenshots/samples-monster-spawner-structure.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import { RepeatPreventionPage, SelectingValuesPage, DesigningAListPage } from "@/components/PageLinks";
+
 export const description =
     'Start your RNGNeeds journey with our Basic Examples, illustrating the fundamental usage of the plugin.'
 
@@ -6,25 +18,132 @@ export const description =
 
 # Basic Examples
 
-
+---
 
 ## Dice Playground
 
-Simulate various dice rolls and combinations.
+Welcome to the Dice Playground, a space where you can simulate various dice rolls and combinations. 
+Whether you want to create a dice that rolls only 1s or one that rolls a 6 less often, this playground offers you the tools and flexibility to experiment.
 
-Inside the **/Dice** folder you will find several `Die` Scriptable Objects, such as 1D6, 2D4, etc.
-You can modify these to create a dice which rolls only 1s, or rolls the 6 less often, etc.
-You can also create your own Dice by going to **Create &raquo; RNGNeeds &raquo; Dice Playground &raquo; Die**.
+### *The Die* (Scriptable Object)
 
-Inside the folder you will also find a `Dice Roller` Scriptable Object. This is a handy tool with a special inspector, into which you can drag your created dice and make them roll.
-The Dice Roller will show you how each dice rolled and will sum the rolls as well. You can bring the system to your own project and start using it.
-Just ask the DiceRoller to `.RollDice()` and it will return an `int` with sum of the rolls.
+Inside the **/Dice** folder, you'll find several `Die` Scriptable Objects, such as 1D6, 2D4, etc. 
+You can modify these to create dice with specific behaviors, or you can create your own Dice by going to **Create » RNGNeeds » Dice Playground » Die**.
 
-Last but certainly not the least, you will find a **DicePlayground** scene. 
-This is a deterministic dice roller simulator, designed to work with the `Die` objects.
-Enter into Play Mode and click the *Roll Dice* button. The dice will physically roll onto the surface with predetermined result - you will see the result before they
-enter the frame. This is done by simulating the physics of the roll, determining which side the simulated dice landed on, then rotating the material so that when the roll happens
-in real time, the resulting side will end facing up. This simulation sample is beyond the reach of RNGNeeds - our plugin merely provides the RNG aspect - the roll.
-However we felt that a deterministic dice roller example would be something fun to include.
+<ImageX className="w-full h-auto" src={samplesBiasedDie} alt="Samples Biased Die" width="1000"/>
+
+### *The Dice Roller* (Scriptable Object)
+
+Also in the folder, you'll discover a `Dice Roller` Scriptable Object. This handy tool features a special inspector, allowing you to drag your created dice and roll them. 
+The Dice Roller will display how each die rolled and will sum the rolls as well. You can integrate this system into your own project and start using it. 
+Just ask the DiceRoller to `.RollDice()`, and it will return an `int` with the sum of the rolls.
+
+<ImageX className="w-full h-auto" src={samplesDiceRoller} alt="Samples Dice Roller" width="1000"/>
+
+<Note>
+    **The Results Table** - roll results are displayed in a table with the following columns:
+
+    - **Die** - name of each Die Scriptable Object
+    - **Total** - sum of rolls for each die
+    - **Min & Max** - the specified minimum and maximum pick count for each die
+    - **Picks** - actual number of picks (based on a random value between Min & Max)
+    - **Rolled Values** - individual values of rolls (picks). Note that if the pick count is too high, these statistics will be truncated.
+</Note>
+
+### *Dice Playground* (Scene)
+
+Last but certainly not least, you'll find a **DicePlayground scene**. This is a deterministic dice roller simulator, designed to work with the Die objects. 
+Enter Play Mode and click the Roll Dice button. The dice will physically roll onto the surface with a predetermined result - you'll see the outcome before they enter the frame. 
+
+<ImageX className="w-full h-auto" src={samplesDicePlaygroundScene} alt="Samples Dice Playground Scene" width="1000"/>
+
+This is achieved by simulating the physics of the roll, determining which side the simulated dice landed on, then rotating the material so that when the roll happens in real time, 
+the resulting side will end up facing up. While this simulation sample goes beyond the reach of RNGNeeds - our plugin merely provides the RNG aspect, 
+or the roll - we felt that a deterministic dice roller example would be a fun and engaging addition.
+
+<Note>
+    If you want to experiment with a biased 6-sided die using the deterministic simulation, navigate to the **DICE THROWER** GameObject in the DicePlayground scene.
+    Find the attached `DiceSimulator` script and assign your custom die.
+</Note>
+
+**Pick Counts and Disabled Items** - by default, the assigned `1D6` die has only a single enabled item in the list - the side **one**. This means that the list will only pick that value, if the chances are right - based on its probability.
+If the random pick would have selected a disabled item, for example, the side six, the pick would be unsuccessful and would have returned nothing. This is where `Maintain Pick Count` feature comes into play.
+
+In the scene, you can control how many dice are rolled with a slider. You can also control whether the selection should respect the desired pick count - by enabling or disabling the **Maintain Pick Count** toggle. 
+If disabled, the actual number of rolled dice will be lower - just the ones that make it through the selection.
+
+You can learn more about pick counts on the 
+<a href={DesigningAListPage.Link + "#pick-counts"}>{DesigningAListPage.Title}</a> page, and how disabled items work on the 
+<a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> page.
+
+<Note>
+    ***Please note:*** the dice simulator currently works with 6-sided dice only. However, we designed the simulator to be extensible. 
+    To make it work with other dice types, such as a 10-sided die, a custom `Die Face Data` scriptable object has to be set up. 
+    While this is largely beyond the scope of RNGNeeds and its sample usages, if you need hints on how to extend the simulator, 
+    drop by our <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord server</a> and don't hesitate to ask.
+</Note>
 
 ---
+
+## Random Unit Audio
+
+Randomizing a game's audio is a common scenario where RNG can truly shine, whether it's for unit responses, dialogue choices, or ambient sounds. RNGNeeds is perfectly suited for these tasks, handling them as easily as a simple integer dice roll.
+To achieve this, you can define a `ProbabilityList` of type `AudioClip`. Picking a value from such a list returns the AudioClip, ready to be played.
+
+```csharp {{ title: 'ProbabilityList handling AudioClip Type'}}
+public ProbabilityList<AudioClip> randomAudio;
+
+if(audioSource.isPlaying == false) audioSource.PlayOneShot(randomAudio.PickValue());
+```
+
+To see this in action, open the **RandomAudioClip** scene. In this simple mini-game, you control Annie, an overly-enthusiastic and talkative lab assistant. You can find her audio setup by locating and opening
+the **Annie Lab Assistant** prefab in the **/Prefabs** folder. In the prefab hierarchy, locate the **UnitAudio** GameObject. 
+The attached `UnitAudio` script contains three Probability Lists - for Select, Move, and Interact responses.
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioAnnie} alt="Samples Random Unit Audio Annie" width="1000"/>
+
+The varying probabilities of these responses enable unique and rare reactions, like Annie's quirky line that plays infrequently.
+
+This flexibility in setting probabilities allows you to fine-tune the auditory experience. 
+For instance, if you receive feedback that a particular response is annoying to players, you can simply reduce its odds of being played instead of removing it altogether.
+
+These ProbabilityLists make use of the 
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> feature, ensuring that Annie does not say the same line twice in a row.
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioScene} alt="Samples Random Unit Audio Scene" width="1000"/>
+
+### Controlling Annie
+
+- **Left click to select the unit** (blue object). Repeated clicks will prompt a *Select Response*.
+- **Right click on the ground to initiate movement** and play a *Move Response*.
+- **Right click on a golden object to interact** and play an *Interact Response*
+
+---
+
+## Monster Spawner
+
+<ImageX className="w-full h-auto" src={samplesMonsterSpawnerStructure} alt="Samples Monster Spawner Structure" width="1000"/>
+
+```csharp {{ title: 'Monster Spawner Code'}}
+public class MonsterSpawner : MonoBehaviour
+{
+    public Transform playerLocation;
+    public ProbabilityList<Monster> monsterTypes;
+    public ProbabilityList<int> monsterLevels;
+    public ProbabilityList<SpawnLocation> spawnLocations;
+
+    private void Start()
+    {
+        InvokeRepeating(nameof(SpawnMonster), .5f, .5f);
+    }
+
+    public void SpawnMonster()
+    {
+        Monster monster = monsterTypes.PickValue();
+        if (spawnLocations.TryPickValue(out var location) == false) return;
+        var monsterObject = location.Spawn(monster.monsterPrefab);
+        var monsterController = monsterObject.GetComponent<MonsterController>();
+        monsterController.SetStatsByLevel(monsterLevels.PickValue(), playerLocation);
+    }
+}
+```
