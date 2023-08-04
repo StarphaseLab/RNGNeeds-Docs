@@ -6,4 +6,25 @@ export const description =
 
 # Basic Examples
 
+
+
+## Dice Playground
+
+Simulate various dice rolls and combinations.
+
+Inside the **/Dice** folder you will find several `Die` Scriptable Objects, such as 1D6, 2D4, etc.
+You can modify these to create a dice which rolls only 1s, or rolls the 6 less often, etc.
+You can also create your own Dice by going to **Create &raquo; RNGNeeds &raquo; Dice Playground &raquo; Die**.
+
+Inside the folder you will also find a `Dice Roller` Scriptable Object. This is a handy tool with a special inspector, into which you can drag your created dice and make them roll.
+The Dice Roller will show you how each dice rolled and will sum the rolls as well. You can bring the system to your own project and start using it.
+Just ask the DiceRoller to `.RollDice()` and it will return an `int` with sum of the rolls.
+
+Last but certainly not the least, you will find a **DicePlayground** scene. 
+This is a deterministic dice roller simulator, designed to work with the `Die` objects.
+Enter into Play Mode and click the *Roll Dice* button. The dice will physically roll onto the surface with predetermined result - you will see the result before they
+enter the frame. This is done by simulating the physics of the roll, determining which side the simulated dice landed on, then rotating the material so that when the roll happens
+in real time, the resulting side will end facing up. This simulation sample is beyond the reach of RNGNeeds - our plugin merely provides the RNG aspect - the roll.
+However we felt that a deterministic dice roller example would be something fun to include.
+
 ---

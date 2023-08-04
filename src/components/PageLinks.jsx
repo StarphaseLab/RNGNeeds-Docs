@@ -97,7 +97,7 @@ export const sections = [
         pages: [
             ExamplesOverviewPage,
             ExamplesBasicPage,
-            ExamplesIntermediatePage,
+            // ExamplesIntermediatePage,
             // ExamplesAdvancedPage,
             // ExamplesDeepDivePage
         ],
