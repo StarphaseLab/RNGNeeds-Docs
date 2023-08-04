@@ -1,4 +1,5 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
 export const description =
     'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
 
@@ -7,3 +8,34 @@ export const description =
 # Probability Influence
 
 ---
+
+### *What is Probability Influence?*
+
+Simply put, the influence is a `float` between **-1 and 1**, with **zero** meaning there is **no influence**.
+
+In RNGNeeds, you can define influence by implementing `IProbabilityInfluenceProvider` interface.
+An object or class implementing this interface can be assigned to any item in list, and will server as a provider of the value between -1 and 1, thus becoming an **Influence Provider**. In addition, values themselves
+can be influence providers. In this sample, the `SpawnLocation` MonoBehaviour is the provider and the logic and math of the value is defined by the player's distance.
+
+```csharp {{ title: 'Spawn Location Code'}}
+public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    // code not relevant for this guide was omitted
+    
+    public Transform playerLocation;
+    public float DistanceToPlayer => Vector3.Distance(transform.position, playerLocation.position);
+    
+    public float ProbabilityInfluence => DistanceToPlayer.Remap(0f, 30f, 1f, -1f);
+    public string InfluenceInfo => $"Distance to player: {DistanceToPlayer} = {ProbabilityInfluence}";
+}
+```
+
+In this case, the distance to player is remapped - if the distance is zero, the influence provided will be 1, meaning the maximum positive influence on the probability.
+And if the distance reaches 30, influence will be -1, the maximum negative influence.
+
+So how does this simple value actually alter the probability? Entering **Influence Spread** ...
+
+### *What is Influence Spread?*
+
+Spread defines the limits on how much the influence adjusts the probability. Remember the sliders with handles? That's spread, and using the slider, you can define the amount the probability raises or drops for each item individually. 
+
