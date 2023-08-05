@@ -30,10 +30,10 @@ export const CustomizingListsPage = createPage("Customizing Lists (WIP)", "/cust
 export const ChangelogPage = createPage("Change Log", "/change-log");
 
 export const ExamplesOverviewPage = createPage("Overview", "/examples-overview");
-export const ExamplesBasicPage = createPage("Basic Examples (WIP)", "/basic-examples");
-export const ExamplesIntermediatePage = createPage("Intermediate Examples (WIP)", "/intermediate-examples");
-export const ExamplesAdvancedPage = createPage("Advanced Examples (WIP)", "/advanced-examples");
-export const ExamplesDeepDivePage = createPage("Influence Deep Dive (WIP)", "/influence-deep-dive");
+export const ExamplesDicePlaygroundPage = createPage("Dice Playground", "/dice-playground");
+export const ExamplesRandomAudioPage = createPage("Random Audio", "/random-audio");
+export const ExamplesMonsterSpawnerPage = createPage("Monster Spawner", "/monster-spawner");
+export const ExamplesTreasureChestPage = createPage("Treasure Chest (WIP)", "/treasure-chest");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -96,10 +96,10 @@ export const sections = [
         link: '/examples',
         pages: [
             ExamplesOverviewPage,
-            ExamplesBasicPage,
-            // ExamplesIntermediatePage,
-            // ExamplesAdvancedPage,
-            // ExamplesDeepDivePage
+            ExamplesDicePlaygroundPage,
+            ExamplesRandomAudioPage,
+            ExamplesMonsterSpawnerPage,
+            // ExamplesTreasureChestPage,
         ],
     },
     {
