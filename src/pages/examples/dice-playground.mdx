@@ -1,0 +1,81 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+
+import samplesDiceRoller from '@/images/screenshots/samples-dice-roller.png';
+import samplesBiasedDie from '@/images/screenshots/samples-biased-die.png';
+import samplesDicePlaygroundScene from '@/images/screenshots/samples-dice-playground-scene.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import { SelectingValuesPage, DesigningAListPage } from "@/components/PageLinks";
+
+export const description =
+    'Explore the Dice Playground sample in RNGNeeds to simulate various dice rolls and combinations. Learn how to create custom dice, biased rolls, and more.'
+
+<HeroPattern />
+
+# Dice Playground
+
+Explore the world of virtual dice rolling with RNGNeeds' Dice Playground. This sample demonstrates how you can simulate various dice rolls and combinations, from simple 6-sided dice to complex biased rolls. 
+Whether you're looking to create a tabletop game or just want to experiment with probability, the Dice Playground offers a fun and interactive way to dive into the mechanics of randomness. {{ className: 'lead' }}
+
+---
+
+## The Die (Scriptable Object)
+
+Inside the **/Dice** folder, you'll find several `Die` Scriptable Objects, such as 1D6, 2D4, etc.
+You can modify these to create dice with specific behaviors, or you can create your own Dice by going to **Create » RNGNeeds » Dice Playground » Die**.
+
+<ImageX className="w-full h-auto" src={samplesBiasedDie} alt="Samples Biased Die" width="1000"/>
+
+## The Dice Roller (Scriptable Object)
+
+Also in the folder, you'll discover a `Dice Roller` Scriptable Object. This handy tool features a special inspector, allowing you to drag your created dice and roll them.
+The Dice Roller will display how each die rolled and will sum the rolls as well. You can integrate this system into your own project and start using it.
+Just ask the DiceRoller to `.RollDice()`, and it will return an `int` with the sum of the rolls.
+
+<ImageX className="w-full h-auto" src={samplesDiceRoller} alt="Samples Dice Roller" width="1000"/>
+
+<Note>
+    **The Results Table** - roll results are displayed in a table with the following columns:
+
+    - **Die** - name of each Die Scriptable Object
+    - **Total** - sum of rolls for each die
+    - **Min & Max** - the specified minimum and maximum pick count for each die
+    - **Picks** - actual number of picks (based on a random value between Min & Max)
+    - **Rolled Values** - individual values of rolls (picks). Note that if the pick count is too high, these statistics will be truncated.
+</Note>
+
+## Dice Playground (Scene)
+
+Last but certainly not least, you'll find a **DicePlayground scene**. This is a deterministic dice roller simulator, designed to work with the Die objects.
+Enter Play Mode and click the Roll Dice button. The dice will physically roll onto the surface with a predetermined result - you'll see the outcome before they enter the frame.
+
+<ImageX className="w-full h-auto" src={samplesDicePlaygroundScene} alt="Samples Dice Playground Scene" width="1000"/>
+
+This is achieved by simulating the physics of the roll, determining which side the simulated dice landed on, then rotating the material so that when the roll happens in real time,
+the resulting side will end facing up. While this simulation sample goes beyond the reach of RNGNeeds - our plugin merely provides the RNG aspect,
+or the roll - we felt that a deterministic dice roller example would be a fun and engaging addition.
+
+<Note>
+    If you want to experiment with a biased 6-sided die using the deterministic simulation, navigate to the **DICE THROWER** GameObject in the DicePlayground scene.
+    Find the attached `DiceSimulator` script and assign your custom 6-sided die.
+</Note>
+
+**Pick Counts and Disabled Items** - by default, the assigned `1D6` die has only a single enabled item in the list - the side **one**. This means that the list will only pick that value, if the chances are right - based on its probability.
+If the random pick would have selected a disabled item, for example, the side six, the pick would be unsuccessful and would have returned nothing. This is where `Maintain Pick Count` feature comes into play.
+
+In the scene, you can control how many dice are rolled with a slider. You can also control whether the selection should respect the desired pick count - by enabling or disabling the **Maintain Pick Count** toggle.
+If disabled, the actual number of rolled dice will be lower - just the ones that make it through the selection.
+
+You can learn more about pick counts on the
+<a href={DesigningAListPage.Link + "#pick-counts"}>{DesigningAListPage.Title}</a> page, and how disabled items work on the 
+<a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> page.
+
+<Note>
+    ***Please note:*** the dice simulator currently works with 6-sided dice only. However, we designed the simulator to be extensible.
+    To make it work with other dice types, such as a 10-sided die, a custom `Die Face Data` scriptable object has to be set up.
+    While this is largely beyond the scope of RNGNeeds and its sample usages, if you need hints on how to extend the simulator,
+    drop by our <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord server</a> and don't hesitate to ask.
+</Note>
+
+---
