@@ -6,14 +6,29 @@ export const description =
 
 # Changelog
 
----
-
-## 0.9.0 (Beta)
-
-Initial release of RNGNeeds.
+Welcome to the RNGNeeds Changelog page. Here, you'll find a detailed history of updates and improvements made to the plugin. 
+While our documentation reflects the most recent published version on the Asset Store, any new versions awaiting review will be updated in the docs once their submission is approved. {{ className: 'lead' }}
 
 ### What does Beta mean for RNGNeeds?
 
 RNGNeeds will remain in a Beta version for a short period following its release. All features planned for the v1 release have already been implemented and tested. However, as the plugin undergoes further real-world testing, certain aspects of feature usage or the API may undergo changes or optimizations.
+
+---
+
+## 0.9.1 (Beta) [Pending Asset Store Review]
+
+- **AddItem** method and its overloads now return the newly created **ProbabilityItem**. This allows modifying the item’s properties right after adding it to the list, without the need to manually retrieve it.
+- Default Editor Log Level will now show Warning messages as well. This will be the default behavior during Beta, and will be reverted back to Info & Hints later on. This change only applies to the default settings. You can always change your current log level in the preferences.
+- Introduced an editor warning message when inspecting a ProbabilityList handling non-serializable custom types.
+- Updated method summaries for Repeat Prevention methods.
+
+**BREAKING CHANGES**
+
+- Updated **ProbabilityItem** Constructor - We've made some improvements to the ProbabilityItem constructor to enhance clarity and make the process of creating items more intentional. The parameters **T value** and **float baseProbability** are no longer optional, ensuring that each item is explicitly initialized with a value and a base probability. By removing the option to create empty items or items with 0% probability, we aim to increase transparency within ProbabilityList and reduce any ambiguity associated with its behavior. This change enables developers to have a clearer understanding of their probability distributions, promoting a more predictable and organized approach when using ProbabilityList.
+- The methods **SetItemProbability** and **AdjustItemProbability** have been renamed to **SetItemBaseProbability** and **AdjustItemBaseProbability**, respectively. This change clarifies the distinction between the unaltered "base" probability and the adjusted probability, ensuring a more intuitive and accurate representation for users when designing lists.
+
+## 0.9.0 (Beta)
+
+Initial release of RNGNeeds.
 
 ---
