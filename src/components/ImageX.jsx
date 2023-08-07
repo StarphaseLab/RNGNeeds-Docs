@@ -10,7 +10,8 @@ export function ImageX(props)
             width={props.width}
             height={props.height || props.width}
             priority={props.priority}
-            quality={100}
+            // quality={100}
+            unoptimized={true}
         />
     )
 }
