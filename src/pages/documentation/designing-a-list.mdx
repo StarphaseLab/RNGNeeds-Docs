@@ -48,6 +48,13 @@ myProbabilityList.NormalizeProbabilities();
 // to ensure the new item gets some share of the total probability
 myProbabilityList.AddItem("Four");
 
+// AddItem method and overloads return the newly created ProbabilityItem
+var newItem = myProbabilityList.AddItem("Five");
+newItem.Value = "New Value";
+newItem.BaseProbability = 0.2f;
+newItem.Enabled = false;
+// etc.
+
 // Removing items
 myProbabilityList.RemoveItem("One");
 myProbabilityList.RemoveItem(someProbabilityItem);
@@ -100,7 +107,7 @@ If you want to prevent an item from changing its probability (e.g., during norma
 ```csharp {{ title: 'Setting Item Properties in code'}}
 myProbabilityList.SetItemEnabled(1, false);
 myProbabilityList.SetItemLocked(2, true);
-myProbabilityList.SetItemProbability(0, .3f);   // will normalize the list after change
+myProbabilityList.SetItemBaseProbability(0, .3f);   // will normalize the list after change
 ```
 
 ---
