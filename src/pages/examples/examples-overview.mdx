@@ -42,20 +42,25 @@ Once the samples are imported, you'll find them in the Assets folder of your pro
 
 <ImageX className="w-full h-auto" src={installingSamplesAssetsFolder} alt="Samples in Assets Folder" width="1000"/>
 
+<Note>
+    **Upgrading Materials**
+
+    When importing Samples into a URP or HDRP project, materials might appear pink and will require conversion. This is because RNGNeeds is distributed using the built-in render pipeline.
+
+    **Upgrading to URP** - Use the *Render Pipeline Converter* following
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/features/rp-converter.html" target="_blank" rel="noopener noreferrer">this guide.</a>
+
+    **Upgrading to HDRP** - Follow the guide provided 
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@16.0/manual/Upgrading-To-HDRP.html" target="_blank" rel="noopener noreferrer">here.</a>
+
+</Note>
+
 ---
 
 ## Exploring the Samples
 
-The samples provided with RNGNeeds cover various use cases and scenarios. Feel free to dive into the code, tweak settings, and see how everything works. These samples are designed to be both educational and inspirational, giving you a solid foundation to build upon.
-
-<Note>
-    **Issues in RNGNeeds 0.9.0 Beta**
-    
-    - When importing Samples into URP project, materials might appear pink and will have to be converted.
-    - Some scene materials and other visuals of Samples are not displaying as intended in URP Render Pipeline.
-    
-    We are sorry for the inconvenience. These issues will be fixed in the upcoming update.
-</Note>
+The samples provided with RNGNeeds cover various use cases and scenarios. Feel free to dive into the code, tweak settings, and see how everything works. 
+These samples are designed to be both educational and inspirational, giving you a solid foundation to build upon.
 
 Here's a brief overview of some of the samples you'll find:
 
