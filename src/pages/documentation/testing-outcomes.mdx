@@ -1,6 +1,11 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
 import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
+import obstacleSpawner from '@/images/screenshots/testing-outcomes-obstacle-spawner.png';
+import obstacleSpawnerTest from '@/images/screenshots/testing-outcomes-obstacle-spawner-test.png';
+import testingOutcomesConsole from '@/images/screenshots/testing-outcomes-console.png';
+import {ImageX} from "@/components/ImageX";
+
 export const description =
     'Learn how to test the outcome of your settings in the Inspector and evaluate variations.'
 
@@ -19,15 +24,33 @@ There are times when you need to see the probability distribution and other sett
 **Consider the following example** - this setup picks random obstacles for an endless runner type game. The code tries to pick one obstacle and spawns it. 
 There are six different obstacles with various probabilities to choose from, one of which is disabled in the list. 
 
-(code & image of inspector)
+<ImageX className="w-full h-auto" src={obstacleSpawner} alt="Obstacle Spawner Inspector" width="1000"/>
+
+```csharp {{ title: 'Obstacle Spawner Code'}}
+public class ObstacleSpawner : MonoBehaviour
+{
+    public ProbabilityList<GameObject> obstacles;
+
+    public void SpawnObstacle()
+    {
+        if (obstacles.TryPickValue(out var obstacle))
+        {
+            // Spawn Obstacle
+        }
+    }
+}
+```
 
 Let's say you expect to have an average of 180 obstacles spawned in one minute of gameplay. To see the statistical outcome of this scenario, open the **PICK** section 
 of the drawer, set pick count to 180 and click test. 
 
-(image of test results)
+<ImageX className="w-full h-auto" src={obstacleSpawnerTest} alt="Obstacle Spawner Test" width="1000"/>
 
-Test results will be displayed in the inspector for each item individually - how many times the item was picked and the resulting probability. 
-Additional results are logged into console with info about the chosen selection method, pick counts, percentage of repeats, etc.
+Test results will be displayed in the inspector for each item individually - number of times the item was picked, and the resulting probability.
+
+Additional results are logged into console with info about the chosen selection method, seed, pick counts, percentage of repeats, etc.
+
+<ImageX className="w-full h-auto" src={testingOutcomesConsole} alt="Testing Outcomes Console" width="1000"/>
 
 ## Reading test results
 
@@ -47,8 +70,6 @@ A good practice is to multiply the pick counts to get more precise results.
     **Sensitivity** - Additionally, you can also adjust the bias (sensitivity) of the coloring. This setting can be adjusted individually for each drawer in its system settings. 
     Visit our <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page of the documentation to learn more.
 </Note>
-
-
 
 You can clear the test results by clicking on the X button next to the TEST button.
 
