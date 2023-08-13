@@ -1,4 +1,6 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
 export const description =
     'Learn how to test the outcome of your settings in the Inspector and evaluate variations.'
 
@@ -6,4 +8,49 @@ export const description =
 
 # Testing Outcomes
 
+In this guide we'll look at the ways you can test various scenarios and get a better feel of the outcomes of your designed probabilities and other settings.
+
 ---
+
+## Testing
+
+There are times when you need to see the probability distribution and other settings of your list in action quickly and without frequent jumping into playmode. 
+
+**Consider the following example** - this setup picks random obstacles for an endless runner type game. The code tries to pick one obstacle and spawns it. 
+There are six different obstacles with various probabilities to choose from, one of which is disabled in the list. 
+
+(code & image of inspector)
+
+Let's say you expect to have an average of 180 obstacles spawned in one minute of gameplay. To see the statistical outcome of this scenario, open the **PICK** section 
+of the drawer, set pick count to 180 and click test. 
+
+(image of test results)
+
+Test results will be displayed in the inspector for each item individually - how many times the item was picked and the resulting probability. 
+Additional results are logged into console with info about the chosen selection method, pick counts, percentage of repeats, etc.
+
+## Reading test results
+
+As a designer, you can read these results as "in one minute of my gameplay, about 7 exploding barrels will spawn as an obstacle". 
+The resulting percentage is color coded, showing difference between designed and resulting probability. By default, lower than expected results are tinted orange, 
+and higher are tinted green. 
+
+However, 180 picks is still a relatively small number to be considered a meaningful statistics. If you repeat the test, the results will vary slightly.
+A good practice is to multiply the pick counts to get more precise results. 
+
+<Note>
+    **Customizing Test Results**
+    
+    **Color Tint** - You can change the tint in the <a href={PreferencesPage.Link}>{PreferencesPage.Title}</a> window by adjusting the *Test Color Gradient*. 
+    This is a global setting shared by all Probability List drawers.
+    
+    **Sensitivity** - Additionally, you can also adjust the bias (sensitivity) of the coloring. This setting can be adjusted individually for each drawer in its system settings. 
+    Visit our <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page of the documentation to learn more.
+</Note>
+
+
+
+You can clear the test results by clicking on the X button next to the TEST button.
+
+
+
