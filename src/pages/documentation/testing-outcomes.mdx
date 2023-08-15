@@ -1,6 +1,6 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
-import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
+import {CustomizingListsPage, PreferencesPage, RepeatPreventionPage, SelectingValuesPage} from "@/components/PageLinks";
 import obstacleSpawner from '@/images/screenshots/testing-outcomes-obstacle-spawner.png';
 import obstacleSpawnerTest from '@/images/screenshots/testing-outcomes-obstacle-spawner-test.png';
 import testingOutcomesConsole from '@/images/screenshots/testing-outcomes-console.png';
@@ -17,9 +17,10 @@ In this guide we'll look at the ways you can test various scenarios and get a be
 
 ---
 
-## Testing
+## Testing in Inspector
 
 There are times when you need to see the probability distribution and other settings of your list in action quickly and without frequent jumping into playmode. 
+Testing allows you to turn percentages into number of picked values and statistics to better understand certain situations.
 
 **Consider the following example** - this setup picks random obstacles for an endless runner type game. The code tries to pick one obstacle and spawns it. 
 There are six different obstacles with various probabilities to choose from, one of which is disabled in the list. 
@@ -42,11 +43,26 @@ public class ObstacleSpawner : MonoBehaviour
 ```
 
 Let's say you expect to have an average of 180 obstacles spawned in one minute of gameplay. To see the statistical outcome of this scenario, open the **PICK** section 
-of the drawer, set pick count to 180 and click test. 
+of the drawer, set pick count to 180 and click the **TEST** button. 
 
 <ImageX className="w-full h-auto" src={obstacleSpawnerTest} alt="Obstacle Spawner Test" width="1000"/>
 
-Test results will be displayed in the inspector for each item individually - number of times the item was picked, and the resulting probability.
+Test results will be displayed in the inspector for each item individually - number of times the item was picked, and the resulting probability. 
+The resulting **percentage is color coded**, showing variation between designed and resulting probability. 
+By default, lower than expected results are tinted orange, and higher are tinted green.
+
+<Note>
+    **Customizing Test Results**
+
+    **Color Tint** - You can change the tints in the <a href={PreferencesPage.Link}>{PreferencesPage.Title}</a> window by adjusting the *Test Color Gradient*.
+    This is a global setting shared by all Probability List drawers.
+
+    **Sensitivity** - Additionally, you can also adjust the bias (sensitivity) of the coloring. This setting can be adjusted individually for each drawer in its system settings.
+    
+    **Percentage Digits** - you can adjust the displayed precision by dragging the *Test % Digits* slider in the drawer's system settings.
+
+    Visit our <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page of the documentation to learn more.
+</Note>
 
 Additional results are logged into console with info about the chosen selection method, seed, pick counts, percentage of repeats, etc.
 
@@ -54,24 +70,55 @@ Additional results are logged into console with info about the chosen selection 
 
 ## Reading test results
 
-As a designer, you can read these results as "in one minute of my gameplay, about 7 exploding barrels will spawn as an obstacle". 
-The resulting percentage is color coded, showing difference between designed and resulting probability. By default, lower than expected results are tinted orange, 
-and higher are tinted green. 
-
-However, 180 picks is still a relatively small number to be considered a meaningful statistics. If you repeat the test, the results will vary slightly.
-A good practice is to multiply the pick counts to get more precise results. 
+As a designer, you can read these results as *"in one minute of my gameplay, about 34 exploding barrels will spawn as an obstacle"*. 
+Drawing from the data logged in the console, you can deduce that *"about 158 obstacles will spawn and 32 of them will be repeats"*. 
+You might notice that the number of picked items is lower than 180 - this is due to the disabled item in the list.
 
 <Note>
-    **Customizing Test Results**
-    
-    **Color Tint** - You can change the tint in the <a href={PreferencesPage.Link}>{PreferencesPage.Title}</a> window by adjusting the *Test Color Gradient*. 
-    This is a global setting shared by all Probability List drawers.
-    
-    **Sensitivity** - Additionally, you can also adjust the bias (sensitivity) of the coloring. This setting can be adjusted individually for each drawer in its system settings. 
-    Visit our <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page of the documentation to learn more.
+    You can learn more about how disabled items work and alter pick counts or probabilities on <a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> page. 
+    To learn about how to reduce or eliminate repeated consecutive picks, see our <a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> page.
 </Note>
 
-You can clear the test results by clicking on the X button next to the TEST button.
+However, 180 picks is still a relatively small number to be considered a meaningful statistics. If you repeat the test, the results will vary slightly.
+A good approach is to multiply the pick counts to get more precise results. Testing with 1800 picks will produce higher pick counts, however the resulting percentage will be much closer to the designed probabilities.
 
+After you are done testing, you can clear the test results by clicking on the X button next to the TEST button. 
+This is not mandatory, as the results are not stored with the list. They are part of drawer data that is cleared when switching inspectors.
 
+--- 
 
+## Testing in Code
+
+If you need to test your settings in runtime, or for whatever other reason you need to explore test statistics form code, you can run the test and obtain the `TestResults`.
+
+```csharp {{ title: 'Testing in code'}}
+var testResults = myProbabilityList.RunTest();
+testResults.Print();
+```
+
+`TestResults` is a class that stores the results in `Dictionary<int, int> indexPicks`, where the key is the index of item in list and value is number of times it was picked. 
+In addition, the following info can be obtained from this class:
+
+- `string selectionMethodName` - the name of the chosen selection method
+- `PreventRepeatMethod preventRepeat` - repeat prevention method
+- `uint seed` - seed generated before the selection
+- `int pickCountMin` - the designed minimum pick count
+- `int pickCountMax` - the designed maximum pick count
+- `int pickCount` - pick count randomly selected from min and max range
+- `int actualPickCount` - the actual number of items picked
+- `int repeatCount` - number of identical consecutive picks
+- `double testDuration` - duration of the test
+- `float RepeatsPercentage` - this property returns `repeatCount / actualPickCount`
+
+In addition, `TestResults` provides couple of helper properties and methods for formatting and outputting the results:
+
+- `void Print()` - will output the results as when testing through inspector
+- `string SelectionMethodInfo` - info about the selection method, repeat prevention and seed
+- `string PickCountInfo` - the minimum, maximum, and randomly selected pick count from the range
+- `string ActualPickCountInfo` - number of items picked, repeat percentage and count
+- `string TestDurationInfo` - test duration in a readable format
+- `string GetFormattedResults()` - returns the various results without details
+- `string GetFormattedPickDetails()` - returns detailed results for each index
+- `string GetFormattedResultsWithDetails()` - combines the two previous outputs into one
+
+If you need to clear the test results, just call `myTestResults.Clear();`
