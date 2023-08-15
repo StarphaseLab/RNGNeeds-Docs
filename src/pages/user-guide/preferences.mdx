@@ -1,6 +1,7 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Col, Note, Row} from "@/components/mdx";
 import {ImageX} from "@/components/ImageX";
+import {CustomizingListsPage} from "@/components/PageLinks";
 import preferencesWindow from '@/images/screenshots/preferences-window.png';
 export const description =
   'Understand and customize your user experience in the RNGNeeds plugin. Learn about options for drawer interaction, button displays, scroll direction, and theme-based visual preferences.'
@@ -66,14 +67,17 @@ The RNGNeeds preferences are located next to other Editor preferences in your Un
       
       **Reset to Defaults** - Clears the current list of palettes and imports the factory-defaults.
       
-      ** Color Palettes** - Expand this list to modify the palettes. You can change existing or add new ones.
+      **Color Palettes** - Expand this list to modify the palettes. You can change existing or add new ones.
   </Col>
   <Col sticky>
-
       <ImageX className="w-full h-auto" src={preferencesWindow} alt="RNGNeeds Inspectors" width={807} />
-
   </Col>
 </Row>
+
+You can learn how to adjust individual options for each drawer on our 
+<a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page.
+
+---
 
 ## Persistent Drawer Settings
 
