@@ -60,6 +60,7 @@ For this example, we will create a biased die that rolls the six a bit more ofte
 Inherit from `ScriptableObject` and add a Probability List of type `int`.
 
 ```csharp {{ title: 'Adding the ProbabilityList'}}
+using UnityEngine;
 using RNGNeeds;
 
 [CreateAssetMenu(fileName = "dXX", menuName = "My Die")]
@@ -69,7 +70,7 @@ public class Die : ScriptableObject
 }
 ```
 
-In Unity Editor, right-click on the **Assets** folder and choose **Create &raquo; Die**.
+In Unity Editor, right-click on the **Assets** folder and choose **Create &raquo; My Die**.
 This will create a new Scriptable Object with the suggested name `dXX`. We will create a 6-sided die, so name the object `D6 Die`.
 Clicking on the object will display its properties in the Inspector, where you will see the Probability List Drawer.
 
@@ -92,6 +93,9 @@ Click on the 'side 6' probability `16.67%` and type in `0.2` (for 20%) and hit `
 Now it's time to roll the die. In RNGNeeds, you can select a value from the ProbabilityList easily by calling `.PickValue()`. Let's make our die object useful by adding a function that returns the roll.
 
 ```csharp {{ title: 'Selecting values from list' }}
+using UnityEngine;
+using RNGNeeds;
+
 [CreateAssetMenu(fileName = "DXX", menuName = "My Die")]
 public class Die : ScriptableObject
 {
