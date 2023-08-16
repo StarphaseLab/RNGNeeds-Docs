@@ -25,7 +25,7 @@ export const TestingOutcomesPage = createPage("Testing Outcomes", "/testing-outc
 export const SeedingOptionsPage = createPage("Seeding Options (WIP)", "/seeding-options");
 export const PickHistoryPage = createPage("Pick History (WIP)", "/pick-history");
 export const NestingListsPage = createPage("Nesting Lists (WIP)", "/nesting-lists");
-export const CustomizingListsPage = createPage("Customizing Lists (WIP)", "/customizing-lists");
+export const CustomizingListsPage = createPage("Customizing Lists", "/customizing-lists");
 
 export const ChangelogPage = createPage("Change Log", "/change-log");
 

@@ -1,6 +1,16 @@
 import {Button, CodeGroup, Note, Properties, Property} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
-import {API_PLCollection, GettingStartedPage, SelectingValuesPage} from "@/components/PageLinks";
+import drawerButtonsInfo from '@/images/screenshots/drawer-buttons-info.png';
+import drawerButtonsBars from '@/images/screenshots/drawer-buttons-bars.png';
+import drawerButtonsTheme from '@/images/screenshots/drawer-buttons-theme.png';
+import drawerButtonsThemeMonochrome from '@/images/screenshots/drawer-buttons-theme-monochrome.png';
+import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
+import providerInterfacesNoProvider from '@/images/screenshots/provider-interfaces-no-provider.png';
+import providerInterfacesInfoProvider from '@/images/screenshots/provider-interfaces-info-provider.png';
+import providerInterfacesInfoProviderAlt from '@/images/screenshots/provider-interfaces-info-provider-alt.png';
+import providerInterfacesColorProvider from '@/images/screenshots/provider-interfaces-color-provider.png';
+import {API_PLCollection, GettingStartedPage, PreferencesPage, SelectingValuesPage} from "@/components/PageLinks";
+import {ImageX} from "@/components/ImageX";
 export const description =
     'Explore various Probability List drawer options.'
 
@@ -8,38 +18,191 @@ export const description =
 
 # Customizing Lists
 
-While designing a game, we spend most of our times looking at Unity Inspectors. That is why the RNGNeeds' custom drawer for Probability List was designed to feel inviting with a wide 
-variety of options to customize the appearance. ...
+As game developers, we often find ourselves immersed in Unity's Inspector. 
+Recognizing this, RNGNeeds' custom drawer for Probability List has been meticulously crafted to be both intuitive and feature-rich, offering a plethora of customization options to enhance your workflow. {{ className: 'lead' }}
 
 ---
 
 ## Appearance & Colors
 
-The most prominent feature of the drawer is the Stripe - set of colored blocks displaying probabilities in an intuitive way. 
-In addition, the blocks display info about items which can be toggled by three buttons in the left section of the drawer.
+The drawer offers a suite of customization options for both display information and color schemes, ensuring a tailored experience for every designer.
 
-(image of the buttons)
+### The Stripe
 
-- **#** - show/hide index of item
-- **i** - show/hide name or value of item
-- **%** - show/hide probability percentage
+A standout feature of the drawer is the **Stripe**. This visual element consists of colored blocks that represent probabilities in an intuitive manner. You can adjust the height of the stripe via the Stripe Options sub-menu, accessible by clicking the **STRIPE** button. Moreover, these blocks can display additional item information, which can be toggled using the three buttons on the left section of the drawer.
 
-Note that the info is hidden if for narrow blocks on the stripe. 
-In this case, a mouse-over highlight still provides visual connection between items in list and their representation in the stripe. 
-Hovering the mouse over block or item highlights them both. 
+<ImageX className="w-full h-auto" src={drawerButtonsInfo} alt="Drawer Buttons - Info" width="1000"/>
 
-By default, individual colors are dimmed by their probability, with higher probable items being brighter. 
+<Note>
+    It's worth noting that information might be hidden for narrower blocks on the stripe. However, a mouse-over highlight still establishes a visual link between list items and their stripe representation. Hovering over a block or item will highlight both.
+</Note>
+
+### Preview Bars
+
+Each item row in the list features a **Preview Bar**. This is a visual representation of probability, depicted as proportional horizontal bars. This visualization offers an alternative perspective on the distribution of probabilities. The next three buttons in the drawer header provide further customization options.
+
+<ImageX className="w-full h-auto" src={drawerButtonsBars} alt="Drawer Buttons - Bars" width="1000"/>
+
+- **Color Dimming** - By default, individual colors dim according to their probability, with higher probable items appearing brighter. This feature can be toggled on or off.
+- **Colorize Preview Bars** - Toggle the colorization of preview bars. When off, the bars adopt a neutral hue.
+- **Normalize Preview Bars** - This stretches the bars such that the item with the highest probability fills the entire length, with other bars adjusting proportionally.
+
+### Color Palettes
+
+Given that designers may manage hundreds of objects, color palettes serve as an organizational tool, allowing them to categorize and color-code various object types. Custom palettes can also be crafted in the preferences window. A plethora of palettes, organized into distinct categories, are available for selection.
+
+To choose a palette for a particular drawer, click the **THEME** button and then select your desired palette from the dropdown.
+
+<ImageX className="w-full h-auto" src={drawerButtonsTheme} alt="Drawer Buttons - Theme" width="1000"/>
+
+Palette Categories:
+
+- **DimeTone** - Features ten distinct colors, ideal for easily distinguishing a large number of items.
+- **Gradients** - Suitable for incrementing or decrementing values.
+- **Duality** - Perfect for binary values (e.g., true/false) or quaternary systems (e.g., north, east, south, west).
+- **Item Rarity** - Incorporates popular rarity color schemes from renowned games.
+- And many other thematic palettes.
+
+The **Monochrome** option at the end of the palette dropdown is particularly noteworthy. While a default color can be set in the preferences window, each drawer can have its unique monochrome shade. When combined with color dimming, monochrome palettes can effectively highlight subtle differences.
+
+<ImageX className="w-full h-auto" src={drawerButtonsThemeMonochrome} alt="Drawer Buttons - Theme Monochrome" width="1000"/>
+
+---
+
+## Additional Drawer Options
+
+Dive deeper into customization with the drawer's Additional Options Sub-menu. Access it by clicking the RNGNeeds symbol located at the top left corner of the drawer.
+
+<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
+
+<Note>
+    By default, the drawer displays only the essential options. 
+    If you're missing some options shown in the screenshot, switch the Drawer Options Level to Advanced in the <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window.
+</Note>
+
+### Basic Drawer Options
+
+- **Reset Probabilities**: Evens out the probabilities for all unlocked items in the list.
+- **Reset Settings to Default**: Reverts the drawer's settings to the default values found in Preferences.
+- **Get New Drawer ID**: Useful when duplicating objects that might share drawer settings. This action ensures the current drawer has a unique, independent setting.
+- **Set as Default Settings (!)**: This will set the current drawer's settings as the default in Preferences. New drawers will inherit these defaults, while previously initialized drawers remain unchanged.
+
+### Advanced Drawer Options
+
+- **Stripe % Digits**: Adjusts the number of digits displayed on the stripe.
+- **Item % Digits**: Sets the number of digits shown for individual items in the list.
+- **Test % Digits**: Determines the number of digits in the test results.
+- **Test Color Bias**: Modifies the intensity of the test results coloring.
+- **Item Utility Space**: Specifies the width of the list element reserved for item data and values.
+
+### Options for Probability Influence Usage
+
+- **Spread % Digits**: Sets the number of digits displayed in Influence Spread.
+- **Spread Color Bias**: Adjusts the intensity of the spread coloring.
+- **Show Spread on Bars**: Splits the preview bars to visually represent the spread.
+
+---
+
+## Advanced Customization
+
+For those who are open to a touch of straightforward coding, RNGNeeds offers an expanded realm of customization. Through Provider Interfaces, users can enable object or reference values to deliver tailored information and colors to the Probability List.
+
+### Probability Item Info Provider
+
+The `IProbabilityItemInfoProvider` interface allows you to supply custom information to the Probability Item. This information is then displayed within the respective colored block on the stripe. This becomes especially handy when dealing with custom serializable types, which might otherwise only display the type's name.
+
+<ImageX className="w-full h-auto" src={providerInterfacesNoProvider} alt="Provider Interfaces - No Provider" width="1000"/>
+
+Below is a code snippet illustrating how to implement the interface:
+
+```csharp {{ title: 'Implementing IProbabilityItemInfoProvider interface'}}
+[Serializable]
+public class MyCustomType : IProbabilityItemInfoProvider
+{
+    public string ItemInfo => customInfo;
+
+    public string customInfo;
+    public Vector3 somePosition;
+    public bool someBool;
+}
+```
+
+By implementing the interface, we can direct the `string customInfo` to the interface property `string ItemInfo`. This ensures that the probability list drawer displays the desired information, enabling users to easily identify instances of their custom types.
+
+<ImageX className="w-full h-auto" src={providerInterfacesInfoProvider} alt="Provider Interfaces - Info Provider" width="1000"/>
+
+Of course, the logic behind the custom information is entirely up to the user. In the following example, we've opted to forgo the `customInfo` field and instead relay the `Vector3 somePosition` to the interface property.
+
+```csharp {{ title: 'Alternative Implementation'}}
+[Serializable]
+public class MyCustomType : IProbabilityItemInfoProvider
+{
+    public string ItemInfo => somePosition.ToString();
+
+    public Vector3 somePosition;
+    public bool someBool;
+}
+```
+
+With this setup, the drawer will exclusively display the `Vector3` string output.
+
+<ImageX className="w-full h-auto" src={providerInterfacesInfoProviderAlt} alt="Provider Interfaces - Info Provider Alt" width="1000"/>
+
+<Note>
+    The same principles apply when working with `MonoBehaviour` or `ScriptableObject`. Provider interfaces can be integrated with any reference types. The only distinction when using Unity's objects is that the list items will display object reference fields, while the custom information will be showcased on the stripe.
+</Note>
+
+---
+
+### Probability Item Color Provider
+
+The `IProbabilityItemColorProvider` interface allows you to bring custom colors to the Probability List, giving you even more control over the visual representation of your items. This is especially useful when you want certain items to stand out or when you're working with a theme that requires specific color coding.
+
+Consider the following example, taken from our **Treasure Chest** sample. Here, the `ItemRarity` ScriptableObject implements both provider interfaces.
+
+```csharp {{ title: 'Implementing IProbabilityItemColorProvider interface'}}
+[CreateAssetMenu(fileName = "New Item Rarity", menuName = "RNGNeeds/Treasure Chest/Item Rarity")]
+public class ItemRarity : ScriptableObject, IProbabilityItemColorProvider, IProbabilityItemInfoProvider
+{
+    public string title;
+    public Color rarityColor;
+    public Color ItemColor => rarityColor;
+    public string ItemInfo => title;
+}
+```
+
+By implementing the interface, the `customColor` field feeds into the interface property `Color ItemColor`. 
+This means the Probability List drawer will now display the items with the colors you've specified, making it easier to visually identify different types or categories.
+In the screenshot below, the drawer employs the Monochrome theme, but the designated item rarities introduce their unique colors. The Color Provider can be merged with any palette.
+
+<ImageX className="w-full h-auto" src={providerInterfacesColorProvider} alt="Provider Interfaces - Color Provider" width="1000"/>
+
+Just like with the `IProbabilityItemInfoProvider`, the logic behind the custom color is entirely up to you. For instance, you might want to color-code items based on certain conditions or attributes. 
+You can also explore our **Deck Builder** and **Treasure Chest** samples, which utilize the color provider to easily distinguish between item rarity colors.
+
+<Note>
+    The Info and Color provider interfaces are tailored to complement the RNGNeeds Editor features. While they can be beneficial and utilized at runtime, if you don't require the info during runtime, 
+    you can exclude them from the build.
+</Note>
+
+```csharp {{ title: 'Excluding Provider Interfaces from Build'}}
+public class MyComponent : MonoBehaviour
+    #if UNITY_EDITOR
+    , IProbabilityItemColorProvider, IProbabilityItemInfoProvider
+    #endif
+{
+    #if UNITY_EDITOR
+    public Color ItemColor => customColor;
+    public string ItemInfo => customInfo;
+
+    public string customInfo;
+    public Color customColor;
+    #endif
+    
+    // runtime relevant code
+}
+```
+
+---
 
 
-THEME Button - color palettes, 40 of them, organized into various categories. 
-DimeTone - palettes with ten distinct colors for easy recognizing of high number of items
-Gradients - good for incrementing or decrementing values. 
-Duality - good for bi-values (true/false) or quad (north, east, south, west, or other)
-Item Rarity - popular rarity color setups from known games
-+ many other thematic palettes
-Last option in dropdown - Monochrome - default color can be set in preferences window, but a custom monochrome color can be set for each drawer individually. Monochrome is great with color dimming, easily tell small differences.
-stripe height - compact, short, normal, tall
-
-
-## 
-## Provider Interfaces
