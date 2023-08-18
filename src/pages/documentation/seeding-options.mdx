@@ -1,4 +1,6 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {PreferencesPage} from "@/components/PageLinks";
 export const description =
     'Explore the options for seeding in RNGNeeds or learn how to use your own Seed Provider.'
 
@@ -6,4 +8,44 @@ export const description =
 
 # Seeding Options
 
+Seeding is a fundamental concept in random number generation. By providing a seed, you can ensure that a sequence of random numbers is reproducible. This is invaluable in scenarios where you want to recreate a specific sequence of events, like replaying a game level with the same random challenges. Let's dive into how RNGNeeds handles seeding.
+
 ---
+
+## Seeding in RNGNeeds
+
+At its core, RNGNeeds leverages the **Unity.Mathematics Random** object for all random number generation tasks. This object requires initialization with a `uint` seed.
+
+Here's a step-by-step breakdown of how our selection methods utilize seeds:
+
+1. At the start of a selection process, the Probability List is passed to the Selection Method.
+2. The Selection Method then requests the Seed from the List using the `ProbabilityList.Seed` property and uses this seed to initialize a new Random object.
+3. This freshly seeded Random object is then employed to generate random numbers throughout the selection process.
+
+<Note>
+    The **Selection Process** is the intricate algorithm responsible for fetching values from the List based on its various settings, such as pick counts, selection method, repeat prevention, and more. Here's the key takeaway: When you invoke `PickValues()`, it prompts the list for its seed at the beginning. This seed is then used consistently throughout the entire process to determine values based on their set probabilities, ensuring that the ordered amount of picks is based on that specific seed.
+</Note>
+
+By default, invoking `ProbabilityList.Seed` generates a new seed. In simpler terms, each time you pick values, the list uses a unique seed to produce results.
+
+After the selection process, the newly generated seed that was just used for selection, is retained in the list. 
+This value can be obtained through `ProbabilityList.CurrentSeed` property.
+
+---
+
+## Keep Seed
+
+Keep Seed is the option that disables the re-seeding of the list during the selection process. Keep Seed can be enabled in the drawer's **PICK** section after setting 
+*Drawer Options Level* to Advanced in the 
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window.
+
+
+```csharp {{ title: 'Keep Seed in Code'}}
+var result = myProbabilityList.PickValue();     // new seed is generated
+myProbabilityList.KeepSeed = true;
+var newResult = myProbabilityList.PickValue();  // produces same results
+```
+
+---
+
+## Seed Provider
