@@ -1,9 +1,115 @@
 import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {PreferencesPage} from "@/components/PageLinks";
+import seedingOptionsInspector from '@/images/screenshots/seeding-options-inspector.png';
+import {ImageX} from "@/components/ImageX";
 export const description =
     'Explore the options for seeding in RNGNeeds or learn how to use your own Seed Provider.'
 
 <HeroPattern />
 
 # Seeding Options
+
+Seeding is a fundamental concept in random number generation. By providing a seed, you can ensure that a sequence of random numbers is reproducible. This is invaluable in scenarios where you want to recreate a specific sequence of events, like replaying a game level with the same random challenges. Let's dive into how RNGNeeds handles seeding.
+
+---
+
+## Seeding in RNGNeeds
+
+At its core, the plugin leverages the **Unity.Mathematics Random** object for all random number generation tasks. This object requires initialization with a `uint` seed. 
+RNGNeeds features an extensible **Seed Provider**, responsible for providing the `uint` value. Later in this section, you'll learn how to make your own Seed Provider.
+
+Here's a step-by-step breakdown of how our selection methods utilize seeds:
+
+1. At the start of a selection process, the Probability List is passed to the Selection Method.
+2. The Selection Method then requests the Seed from the List using the `ProbabilityList.Seed` property and uses this seed to initialize a new Random object.
+3. This freshly seeded Random object is then employed to generate random numbers throughout the selection process.
+
+<Note>
+    The **Selection Process** is the intricate algorithm responsible for fetching values from the List based on its various settings, such as pick counts, selection method, repeat prevention, and more. Here's the key takeaway: When you invoke `PickValues()`, it prompts the list for its seed at the beginning. This seed is then used consistently throughout the entire process to determine values based on their set probabilities, ensuring that the ordered amount of picks is based on that specific seed.
+</Note>
+
+By default, invoking `ProbabilityList.Seed` generates a new seed using the RNGNeeds **Seed Provider**. In simpler terms, each time you pick values, the list uses a unique seed to produce results.
+
+After the selection process, the list retains the newly generated seed that was used. You can access this value using the `ProbabilityList.CurrentSeed` property.
+
+### Default Seed Provider
+
+RNGNeeds comes with a built-in seed provider named `DefaultSeedProvider`. This provider uses the .NET `System.Random` class in conjunction with the current UTC time's ticks to generate a seed. The combination ensures a high degree of randomness. To prevent potential threading issues, the seed generation is thread-safe, using a lock mechanism.
+
+```csharp {{ title: 'Default Seed Provider Code'}}
+public class DefaultSeedProvider : ISeedProvider
+{
+    private readonly System.Random _random = new System.Random();
+    private readonly object _lockObject = new object();
+
+    public uint NewSeed
+    {
+        get
+        {
+            lock (_lockObject)
+            {
+                return (uint)(_random.Next() * DateTime.UtcNow.Ticks % uint.MaxValue);
+            }
+        }
+    }
+}
+```
+
+---
+
+## Keep Seed
+
+The "Keep Seed" feature allows you to maintain the same seed between selections, by disabling the seed automatic generation. To enable "Keep Seed", navigate to the **PICK** section of the drawer. Ensure that the *Drawer Options Level* is set to Advanced in the
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window.
+
+<ImageX className="w-full h-auto" src={seedingOptionsInspector} alt="Seeding Options - Inspector" width="1000"/>
+
+```csharp {{ title: 'Enabling Keep Seed in Code'}}
+var result = myProbabilityList.PickValue();     // a new seed is generated
+myProbabilityList.KeepSeed = true;
+var newResult = myProbabilityList.PickValue();  // produces the same results
+```
+
+<Note>
+    **Important**: We've identified an issue in the current version of RNGNeeds where the "Keep Seed" option doesn't function correctly when using a random pick count range. We're actively working on a fix and will release an update soon. We apologize for any inconvenience this may have caused.
+</Note>
+---
+
+
+## Seed Provider
+
+If you want more control over the seed generation mechanics, you can implement the `ISeedProvider` interface and design your custom seeding logic.
+
+Here's a step-by-step guide:
+
+1. Start by creating a new class that implements the `ISeedProvider` interface:
+
+```csharp {{ title: 'Custom Seed Provider Example'}}
+using System;
+using RNGNeeds;
+
+public class MySeedProvider : ISeedProvider
+{
+    public uint NewSeed
+    {
+        get
+        {
+            // Replace this with your custom seed generation logic
+            return (uint)(DateTime.UtcNow.Ticks % uint.MaxValue);
+        }
+    }
+}
+```
+
+2. Next, register your custom seed provider with the `RNGNeedsCore` class:
+
+```csharp {{ title: 'Setting Custom Seed Provider'}}
+RNGNeedsCore.SetSeedProvider(new MySeedProvider());
+```
+
+Once set, all Probability Lists will utilize your custom seed generation logic. And if you ever need a new seed for other purposes, you can obtain it using `RNGNeedsCore.NewSeed`.
+
+To revert to the default seed provider, simply call `RNGNeedsCore.ResetSeedProvider()`.
 
 ---
