@@ -1,5 +1,6 @@
-import {Button, CodeGroup, Note, Properties, Property} from "@/components/mdx";
+import {Button, CodeGroup, Col, Note, Properties, Property, Row} from "@/components/mdx";
 import {ImageX} from "@/components/ImageX";
+import welcomeWindow from '@/images/screenshots/welcome-window.png';
 import exampleEmptyList from '@/images/screenshots/example-die-emptylist.png';
 import exampleAddedSides from '@/images/screenshots/example-die-addedsides.png';
 import exampleDirectInput from '@/images/screenshots/example-die-directinput.png';
@@ -31,8 +32,31 @@ Navigate to the Unity Asset Store from within the Unity Editor. You can do this 
 **3. Search for RNGNeeds**<br/>
 In the search bar of the Asset Store, type in "RNGNeeds" and hit Enter. The RNGNeeds plugin should appear in the search results.<br/><br/>
 **4. Download and Import the Plugin**<br/>
-Click on the RNGNeeds plugin from the search results to open its page. Here, click on the **Download** or **Import** button (the button's label will depend on whether you have downloaded the plugin before). If a window appears asking you to upgrade, you can just click Continue.<br/><br/>
-Once the download is complete, Unity will automatically prompt you to import the plugin into your project. Make sure all the files are checked in the Import Unity Package window and click Import.<br/><br/>
+Click on the RNGNeeds plugin from the search results to open its page. 
+Here, click on the **Download** or **Import** button (the button's label will depend on whether you have downloaded the plugin before). 
+If a window appears asking you to upgrade, you can just click Continue.<br/><br/>
+Once the download is complete, Unity will automatically prompt you to import the plugin into your project. 
+Make sure all the files are checked in the Import Unity Package window and click Import.<br/><br/>
+
+<Row>
+    <Col>
+        **5. Verify the Installation**<br/>
+        After the import is complete, a Welcome Window should pop up. 
+        It provides handy links to our documentation, a getting started guide, instructions for importing samples, and a direct shortcut to the RNGNeeds preferences window.
+        
+        To verify the installation, open RNGNeeds Preferences Window by either clicking on the shortcut button, or navigate through the Unity Menu:
+        
+        - **On Windows** - click on the **Editor Menu Bar &raquo; Edit &raquo; Preferences**.
+        - **On Mac** - in the top bar, click on **Unity &raquo; Settings**
+
+        In the window that appears, click on **RNGNeeds** in the left part.
+        
+        After opening the RNGNeeds preferences window, a message about loading default preferences and color palettes should appear in the console.
+    </Col>
+    <Col sticky>
+        <ImageX className="w-80 h-auto" src={welcomeWindow} alt="RNGNeeds Inspectors" width={425} />
+    </Col>
+</Row>
 
 <Note>
     The RNGNeeds Plugin installs as a **Package**. This means that its contents will not appear in your Assets folder as usual, but instead in the **Packages/** folder.
@@ -41,9 +65,6 @@ Once the download is complete, Unity will automatically prompt you to import the
     - **RNGNeeds** - *This is the main package for this plugin.*
     - **Starphase Core** - *This is a dependency of RNGNeeds, and it's a small collection of common utilities.*
 </Note>
-
-**5. Verify the Installation**<br/>
-After the import is complete, verify the installation by opening RNGNeeds preferences by going to **Edit &raquo; Preferences &raquo; RNGNeeds**. After opening the RNGNeeds preferences window, a message about loading default preferences and color palettes should appear in the console.
 
 ---
 

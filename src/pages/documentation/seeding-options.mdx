@@ -21,9 +21,11 @@ RNGNeeds features an extensible **Seed Provider**, responsible for providing the
 
 Here's a step-by-step breakdown of how our selection methods utilize seeds:
 
-1. At the start of a selection process, the Probability List is passed to the Selection Method.
-2. The Selection Method then requests the Seed from the List using the `ProbabilityList.Seed` property and uses this seed to initialize a new Random object.
-3. This freshly seeded Random object is then employed to generate random numbers throughout the selection process.
+1. At the start of a selection process, the Probability List generates a new seed using the `ProbabilityList.Seed` property.
+2. This generated seed determines the random pick count, either supplied via parameters or derived from the List's `PickCountMin` and `PickCountMax` properties, depending on the `PickValues()` overload used.
+3. The Probability List is subsequently passed to the chosen Selection Method. 
+As the Seed is included with the List, the selection method retrieves it through the `ProbabilityList.CurrentSeed` property to initialize a new Random object.
+4. This newly initialized Random object is then used to generate random numbers for the entire selection process.
 
 <Note>
     The **Selection Process** is the intricate algorithm responsible for fetching values from the List based on its various settings, such as pick counts, selection method, repeat prevention, and more. Here's the key takeaway: When you invoke `PickValues()`, it prompts the list for its seed at the beginning. This seed is then used consistently throughout the entire process to determine values based on their set probabilities, ensuring that the ordered amount of picks is based on that specific seed.
@@ -72,7 +74,9 @@ var newResult = myProbabilityList.PickValue();  // produces the same results
 ```
 
 <Note>
-    **Important**: We've identified an issue in the current version of RNGNeeds where the "Keep Seed" option doesn't function correctly when using a random pick count range. We're actively working on a fix and will release an update soon. We apologize for any inconvenience this may have caused.
+    **Important**: We've identified an issue where the "Keep Seed" option doesn't function correctly when using a random pick count range.
+    
+    **This issue was fixed in version 0.9.2.** Please make sure to update RNGNeeds to the latest version.
 </Note>
 ---
 
