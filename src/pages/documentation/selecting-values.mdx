@@ -1,6 +1,6 @@
 import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
-import { PreferencesPage, ExamplesTreasureChestPage} from "@/components/PageLinks";
+import {PreferencesPage, ExamplesTreasureChestPage, PickHistoryPage} from "@/components/PageLinks";
 import diceRoll2d6 from '@/images/screenshots/dice-roll-2d6.png';
 import disabledItemEffect from '@/images/screenshots/disabled-item-effect.png';
 import {ImageX} from "@/components/ImageX";
@@ -74,6 +74,85 @@ int sumOfRolls = dice.PickValues().Sum();
 
 // and is equivalent to this, without the need to configure pick counts manually
 int sumOfRolls = dice.PickValues(2, 4).Sum();
+```
+
+---
+
+## Understanding Returns
+
+One of the primary objectives of RNGNeeds from its inception was performance. To achieve this, we've designed the system to minimize GC Allocations wherever possible. As a result, some selection methods return a set of values as a reference to an internal list, rather than creating a new List.
+
+Internally, after the random selection of values is completed, the results are first written to the List's Pick History. From the beginning of the selection process up to this point, the system only deals with indices. The actual result is produced by returning either the `LastPickedValue` or `LastPickedValues` property, depending on the method used. These properties fetch the results from the history of picked indices, mapping them to the actual values stored within the list.
+
+In essence, all value selections pass through history.
+
+<Note>
+    The default history capacity is capped at 1000 entries. This means that without increasing the capacity, the maximum number of returned items is 1000 by default. Dive deeper into how history functions on our
+    <a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a>
+    page.
+</Note>
+
+### Methods that return a single value
+
+These methods produce a singular result:
+
+- `T PickValue()`
+- `bool TryPickValue(out T value)`
+- `(T Value, int Index) PickValueWithIndex()`
+- `bool TryPickValueWithIndex(out T Value, out int Index)`
+
+They are straightforward - they return the `T value` directly via the `LastPickedValue` property immediately after the selection. The only exception arises when a selection fails due to picking a disabled item from the list, in which case these methods return the `default` value for the type. To ascertain the success of a pick, you can utilize the **TryPick** versions. Learn more about how disabled items function later on this page.
+
+### Methods that return a shared list of values
+
+These methods return a reference to a list owned by the Probability List:
+
+- `List<T> PickValues()`
+- `List<T> PickValues(int pickCount)`
+- `List<T> PickValues(int pickCountMin, int pickCountMax)`
+
+These methods refrain from creating a new List. Instead, they return a reference to a `private List<T>` owned by the Probability List.
+
+However, since the list is shared between picks, and you're only receiving the reference, the subsequent pick will alter its contents. Consider the following example:
+
+```csharp {{ title: 'Results in a shared list'}}
+public ProbabilityList<int> myProbabilityList;
+
+var firstResult = myProbabilityList.PickValues(3);
+            
+// firstResult now contains a set of picked values, let's say 3, 5, 7
+
+Debug.Log(firstResult[0]);  // outputs '3'
+
+var secondResult = myProbabilityList.PickValues(3);
+
+// secondResult contains new values, let's say 1, 2, 5
+
+// However, firstResult is still a reference to the same list as secondResult
+// so the values 3, 5, 7 are overwritten
+
+Debug.Log(firstResult[0]);  // outputs '1'
+```
+
+### Methods that fill Lists
+
+If you wish to retain the values in lists, you can employ the methods that, instead of returning a shared list, append the values to the list you provide.
+
+- `bool PickValues(List<T> listToFill)`
+- `bool PickValues(List<T> listToFill, int pickCount)`
+- `bool PickValues(List<T> listToFill, int pickCountMin, int pickCountMax)`
+
+These methods operate similarly, but instead of returning the shared list, they add values to the list you provide. 
+They don't clear the list and add values via `listToFill.AddRange(LastPickedValues)`. 
+This approach is handy if you need to select multiple sets of results and allows you to manage the list creation.
+
+```csharp {{ title: 'Adding results to your list'}}
+public ProbabilityList<int> myProbabilityList;
+
+List<int> myResults = new List<int>();
+
+myProbabilityList.PickValues(myResults, 3);     // will add three values to your list
+myProbabilityList.PickValues(myResults, 2, 5);  // will add an additional two to five values
 ```
 
 ---
