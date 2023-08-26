@@ -23,7 +23,7 @@ export const RepeatPreventionPage = createPage("Repeat Prevention", "/repeat-pre
 export const ProbabilityInfluencePage = createPage("Probability Influence (WIP)", "/probability-influence");
 export const TestingOutcomesPage = createPage("Testing Outcomes", "/testing-outcomes");
 export const SeedingOptionsPage = createPage("Seeding Options", "/seeding-options");
-export const PickHistoryPage = createPage("Pick History (WIP)", "/pick-history");
+export const PickHistoryPage = createPage("Pick History", "/pick-history");
 export const NestingListsPage = createPage("Nesting Lists (WIP)", "/nesting-lists");
 export const CustomizingListsPage = createPage("Customizing Lists", "/customizing-lists");
 
