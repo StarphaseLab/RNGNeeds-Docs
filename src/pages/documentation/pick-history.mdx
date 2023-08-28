@@ -56,7 +56,11 @@ As you make more selections, older entries are pushed downwards, and once they e
 For instance, if you first select 1000 items and then make another selection of 500, the history will showcase the 500 recent picks, followed by the latter half of the initial 1000-item selection.
 
 ```csharp {{ title: 'Setting the History Capacity'}}
+// Setting the history capacity directly via the PickHistory property
 myProbabilityList.PickHistory.Capacity = 100;
+
+// Using a dedicated method to set the history capacity
+myProbabilityList.SetHistoryCapacity(100);
 ```
 
 Adjusting the List's History capacity lets you fine-tune the memory usage of the list. 
