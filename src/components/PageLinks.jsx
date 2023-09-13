@@ -34,6 +34,7 @@ export const ExamplesDicePlaygroundPage = createPage("Dice Playground", "/dice-p
 export const ExamplesRandomAudioPage = createPage("Random Audio", "/random-audio");
 export const ExamplesMonsterSpawnerPage = createPage("Monster Spawner", "/monster-spawner");
 export const ExamplesTreasureChestPage = createPage("Treasure Chest (WIP)", "/treasure-chest");
+export const ExamplesOtherGuidesPage = createPage("Other Guides", "/other-guides");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -99,6 +100,7 @@ export const sections = [
             ExamplesDicePlaygroundPage,
             ExamplesRandomAudioPage,
             ExamplesMonsterSpawnerPage,
+            ExamplesOtherGuidesPage
             // ExamplesTreasureChestPage,
         ],
     },
