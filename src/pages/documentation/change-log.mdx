@@ -27,7 +27,7 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 
 - Resolved an issue where removing an item from the list in the editor would sometimes cause a NullReferenceException.
 - Fixed an issue where the fail-safe warning about a very long selection process would stop selection in cases where it was not necessary.
-- Addressed a problem where the fail-safe warning for a potentially lengthy selection process would prematurely halt selections, even when unnecessary.
+- Fixed an issue where selections would never pick items with very low probabilities.
 - Fixed an issue where Struct types were not identified as Influence Providers by the drawer.
 
 ## 0.9.3 (Beta) Released 12 Sept 2023
