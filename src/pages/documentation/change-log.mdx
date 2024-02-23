@@ -16,6 +16,20 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 
 ---
 
+## 0.9.4 (Beta) Submitted 23 Feb 2024 [Pending Asset Store Review]
+
+- **[NEW]** Seed Specification in Drawer: The Seed can now be directly specified in the drawer. Activate the Keep Seed button to enable the Seed input field.
+- **[NEW]** ProbabilityList Convenience Properties:
+    - **.UnlockedItemsCount** - Retrieves the number of unlocked items in list.
+    - **.EnabledItemsCount** - Retrieves the number of enabled items in list.
+
+**Bug Fixes:**
+
+- Resolved an issue where removing an item from the list in the editor would sometimes cause a NullReferenceException.
+- Fixed an issue where the fail-safe warning about a very long selection process would stop selection in cases where it was not necessary.
+- Addressed a problem where the fail-safe warning for a potentially lengthy selection process would prematurely halt selections, even when unnecessary.
+- Fixed an issue where Struct types were not identified as Influence Providers by the drawer.
+
 ## 0.9.3 (Beta) Released 12 Sept 2023
 
 - **[NEW]** Informative Section Buttons: Introducing a new mode for drawer section buttons that displays selected themes, stripe options, and pick count information directly inside the button. This enhancement improves the readability of Probability List settings without the need to expand the sections.
