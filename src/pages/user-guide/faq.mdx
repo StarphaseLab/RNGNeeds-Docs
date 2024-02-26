@@ -4,7 +4,7 @@ import {
     PreferencesPage, ExamplesOverviewPage,
     ProbabilityInfluencePage,
     RepeatPreventionPage,
-    SupportPage
+    SupportPage, ExamplesOtherGuidesPage
 } from "@/components/PageLinks";
 import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
 export const description =
@@ -55,6 +55,11 @@ section in our User Guide.
 RNGNeeds introduces the concept of ***Probability Influence Providers***. With them, you can design rules to dynamically modify probabilities based on external factors. Please visit our
 <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
 section of Documentation to learn more.
+
+## How can I select distinct values only?
+To select unique values, please follow the method outlined in 
+<a href={ExamplesOtherGuidesPage.Link + "#selecting-distinct-values"}>this guide</a>. 
+We're planning to introduce a more streamlined solution in a future update with the addition of Depletable Lists.
 
 ## Can I prevent the same item from being selected consecutively?
 
