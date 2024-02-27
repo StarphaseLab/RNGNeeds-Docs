@@ -1,9 +1,12 @@
 ﻿import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
 import uiBasic from '@/images/screenshots/ui-basic.png';
+import headerBarFull from '@/images/screenshots/header-bar-options-full.png';
+import headerBarCompact from '@/images/screenshots/header-bar-options-compact.png';
+import headerBarInformative from '@/images/screenshots/header-bar-options-informative.png';
 import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
 import {Note} from "@/components/mdx";
-import {PreferencesPage} from "@/components/PageLinks";
+import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
 export const description = 
     'Discover RNGNeeds\' user-friendly interface for managing randomness in Unity. Learn how to use the Header Bar, Probability Stripe, and Probability Item List, and take full control of your game\'s random events.'
 
@@ -36,15 +39,37 @@ This is where your items are displayed in the RNGNeeds Inspector. Each entry pro
 
 ## Header Bar
 
-The Header Bar sits at the top of the RNGNeeds Inspector drawer. It's where you make global adjustments and customizations. Here, you can see the name of your property displayed next to the Add button, which is used for adding new items to your Probability List.
+The Header Bar sits at the top of the RNGNeeds Inspector drawer. It's where you make global adjustments and customizations.
+Here, you can see the name of your property displayed next to the Add button, which is used for adding new items to your Probability List.
 
-There are also quick toggles, represented by small rectangular buttons, that allow you to control various display options. These include showing or hiding item information on the Stripe, dimming colors, and managing preview bars in the List.
+<ImageX className="w-full h-auto" src={headerBarFull} alt="Header Bar - Full Option Buttons" width="1000"/>
+
+In the left section of the header bar, **Quick Toggles** are located, represented by small rectangular buttons, that allow you to control various display options.
+These include showing or hiding item information on the Stripe, dimming colors, and managing preview bars in the List.
+Learn more about these options on our
+<a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page of the docs.
+
+Next to the Quick Toggles on the right, there are **Option Buttons**, which expand a sub-section of the drawer for customizing the Theme colors, Stripe height, and Pick controls.
+
+There are three settings for the appearance of these Option Buttons that you can customize globally in the RNGNeeds
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a>:
+
+- **Full** - the default setting where the buttons display the name of the section in full.
+- **Compact** - useful if you have limited inspector space. Only the expanded section will display the full name.
+- **Informative** - with this setting, the Option Buttons will display the settings of the section directly within the button.
+
+<ImageX className="w-full h-auto" src={headerBarCompact} alt="Header Bar - Compact Option Buttons" width="1000"/>
+
+<ImageX className="w-full h-auto" src={headerBarInformative} alt="Header Bar - Informative Option Buttons" width="1000"/>
+
+With Informative Option Buttons, the color palette, stripe height, and the pick settings are shown within the button. The Pick button will display the number of picks as well as the letter **M** if the Maintain Pick Count feature is turned on.
+
 
 ---
 
 ## The Stripe
 
-The Stripe is a powerful visual tool that lets you design and adjust your probabilities intuitively. Each item in your Probability List is represented as a colored block (let's call them 'probability blocks') on the Stripe. The width of these blocks is proportional to their associated probabilities, and together they fill up the whole Stripe, representing a total probability value of 1.
+The Stripe is a powerful visual tool that lets you design and adjust your probabilities intuitively. Each item in your Probability List is represented as a colored block on the Stripe. The width of these blocks is proportional to their associated probabilities, and together they fill up the whole Stripe, representing a total probability value of 1.
 
 <ImageX className="w-full h-auto" src={adjustingProbabilities} alt="Adding Items" width="1000"/>
 

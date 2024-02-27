@@ -2,6 +2,7 @@ import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
 import {PreferencesPage} from "@/components/PageLinks";
 import seedingOptionsInspector from '@/images/screenshots/seeding-options-inspector.png';
+import seedingOptionsCustomSeed from '@/images/screenshots/seeding-options-custom-seed.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
     'Explore the options for seeding in RNGNeeds or learn how to use your own Seed Provider.'
@@ -64,8 +65,11 @@ public class DefaultSeedProvider : ISeedProvider
 
 ## Keep Seed
 
-The "Keep Seed" feature allows you to maintain the same seed between selections, by disabling the seed automatic generation. To enable "Keep Seed", navigate to the **PICK** section of the drawer. Ensure that the *Drawer Options Level* is set to Advanced in the
+The "Keep Seed" feature allows you to maintain the same seed between selections, by disabling the seed automatic generation. To enable "Keep Seed", navigate to the **PICK** section of the drawer. 
+Ensure that the *Drawer Options Level* is set to Advanced in the
 <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window.
+
+The **Seed Readout Field** shows the last used seed of that particular Probability List. If you enable Keep Seed, the field becomes editable, allowing you to specify your custom seed.
 
 <ImageX className="w-full h-auto" src={seedingOptionsInspector} alt="Seeding Options - Inspector" width="1000"/>
 
@@ -82,6 +86,22 @@ var newResult = myProbabilityList.PickValue();  // produces the same results
 </Note>
 ---
 
+## Custom Seed
+
+Once you enable the **Keep Seed** option (effectively disabling the auto-seed functionality), you can specify a custom seed. The Seed Readout Field becomes editable, and you can input your custom seed.
+
+The seed is a `uint` value ranging from `1 to 4294967295`.
+
+<ImageX className="w-full h-auto" src={seedingOptionsCustomSeed} alt="Seeding Options - Custom Seed" width="1000"/>
+
+```csharp {{ title: 'Setting Custom Seed in Code'}}
+myProbabilityList.KeepSeed = true;
+myProbabilityList.Seed = 1337;
+```
+
+From now on, this Probability List will use seed 1337, producing identical results. To return to the default automatic seed generation, simply disable the Keep Seed feature either in the inspector, or use `myProbabilityList.KeepSeed = false;` in code.
+
+---
 
 ## Seed Provider
 
