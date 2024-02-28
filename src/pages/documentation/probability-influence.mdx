@@ -15,10 +15,12 @@ Note: this guide is a work in progress and is based on the
 
 ### *What is Probability Influence?*
 
-Simply put, the influence is a `float` between **-1 and 1**, with **zero** meaning there is **no influence**.
+Simply put, Probability Influence means how much can a designed probability be influenced (or altered). 
+
+The influence is a `float` value between **-1 and 1**, with **zero** meaning there is **no influence**.
 
 In RNGNeeds, you can define influence by implementing `IProbabilityInfluenceProvider` interface.
-An object or class implementing this interface can be assigned to any item in list, and will server as a provider of the value between -1 and 1, thus becoming an **Influence Provider**. In addition, values themselves
+An object or class implementing this interface can be assigned to any item in list, and will serve as a provider of the value between -1 and 1, thus becoming an **Influence Provider**. In addition, values themselves
 can be influence providers. In this sample, the `SpawnLocation` MonoBehaviour is the provider and the logic and math of the value is defined by the player's distance.
 
 ```csharp {{ title: 'Spawn Location Code'}}
