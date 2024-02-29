@@ -13,11 +13,37 @@ Note: this guide is a work in progress and is based on the
 
 ---
 
-### *What is Probability Influence?*
+## What is Probability Influence?
 
-Simply put, Probability Influence means how much can a designed probability be influenced (or altered). 
+Simply put, Probability Influence is an **adjustment to the designed probability**.
 
-The influence is a `float` value between **-1 and 1**, with **zero** meaning there is **no influence**.
+Let's say you design a 3% chance of dropping a rare item for the player. 
+Using probability influence, this chance can be increased or decreased dynamically during gameplay based on external factors. 
+For instance, you may want to increase the chance if the player is performing well, or decrease the odds if a rare item was dropped recently. 
+
+Once the logic and rules are set-up by the coder, the game designer can start crafting unique game mechanics.
+
+### *How does it work?*
+
+The influence is a `float` value between `-1 and 1`, with **zero** meaning there is **no influence**.
+
+This value is provided to the ProbabilityL ist by an **Influence Provider**, a script or an object utilizing a special interface. But more on that later.
+
+The influence value (-1 to 1) would not be much useful if there was no control of how much it adjusts individual items in the list. 
+Therefore, an **Influence Spread** comes into play as a way for game designer to fine tune the actual influence over the designed probabilities.
+
+
+
+Whenever values are selected, the Probability List will first check if any of its items are *influenced*. 
+If so, RNGNeeds will calculate the adjusted probabilities based on any influence provided. 
+Once this is done, the selection process continues with the adjusted probabilities.
+
+<Note>
+    Calculating the influence right before the selection creates a dynamic environment where probabilities are adjusted at runtime based on logic coming from external factors. 
+    Take a look at the <a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> sample, where monsters are spawned randomly from three locations based on the player's distance to them.
+</Note>
+
+
 
 In RNGNeeds, you can define influence by implementing `IProbabilityInfluenceProvider` interface.
 An object or class implementing this interface can be assigned to any item in list, and will serve as a provider of the value between -1 and 1, thus becoming an **Influence Provider**. In addition, values themselves
