@@ -1,6 +1,8 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
 import { ExamplesMonsterSpawnerPage } from "@/components/PageLinks";
+import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
+import {ImageX} from "@/components/ImageX";
 export const description =
     'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
 
@@ -27,9 +29,11 @@ Once the logic and rules are set-up by the coder, the game designer can start cr
 
 The influence is a `float` value between `-1 and 1`, with **zero** meaning there is **no influence**.
 
-This value is provided to the ProbabilityL ist by an **Influence Provider**, a script or an object utilizing a special interface. But more on that later.
+<ImageX className="w-full h-auto" src={probabilityInfluenceFloatValue} alt="Probability Influence - Float Value" width="1000"/>
 
-The influence value (-1 to 1) would not be much useful if there was no control of how much it adjusts individual items in the list. 
+This value is provided to the Probability List by an **Influence Provider**, a script or an object utilizing a special interface. But more on that later.
+
+The influence value (-1 to 1) would not be much useful if there was no control over how much it adjusts individual items in the list. 
 Therefore, an **Influence Spread** comes into play as a way for game designer to fine tune the actual influence over the designed probabilities.
 
 
