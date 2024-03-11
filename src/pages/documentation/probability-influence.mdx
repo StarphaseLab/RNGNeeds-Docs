@@ -25,6 +25,8 @@ For instance, you may want to increase the chance if the player is performing we
 
 Once the logic and rules are set-up by the coder, the game designer can start crafting unique game mechanics.
 
+For the purposes of this guide we will be using item drop rates as a well known game mechanic example. 
+
 ### *How does it work?*
 
 The influence is a `float` value between `-1 and 1`, with **zero** meaning there is **no influence**.
@@ -34,7 +36,17 @@ The influence is a `float` value between `-1 and 1`, with **zero** meaning there
 This value is provided to the Probability List by an **Influence Provider**, a script or an object utilizing a special interface. But more on that later.
 
 The influence value (-1 to 1) would not be much useful if there was no control over how much it adjusts individual items in the list. 
-Therefore, an **Influence Spread** comes into play as a way for game designer to fine tune the actual influence over the designed probabilities.
+Therefore, an **Influence Spread** comes into play as a way for the game designer to fine tune the actual influence over designed probabilities.
+
+Spread maps the influence range onto the actual adjustment of probabilities.
+
+**IMAGE - spread mapped onto a Health Globe Pickup - 20% chance (10% to 50%).**
+
+In the example above, the chance a monster drops a health globe is designed as 20%. 
+The game designer wants this chance to be influenced by the amount of player's health to increase the odds of a health globe drop when the player is injured, or decrease if the player is healthy, respectively.
+
+The maximum negative influence (-1) will reduce the probability of the item to 10%, and the maximum positive influence (1) 
+will increase the probability to 50%. Any value between -1 and 1 will map onto the spread range proportionally.
 
 
 
