@@ -2,6 +2,7 @@ import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
 import { ExamplesMonsterSpawnerPage } from "@/components/PageLinks";
 import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
+import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
 import {ImageX} from "@/components/ImageX";
 export const description =
     'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
@@ -14,52 +15,64 @@ Note: this guide is a work in progress and is based on the
 <a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> Sample. Expect an update with the full guide in the coming days.
 
 ---
-
 ## What is Probability Influence?
 
-Simply put, Probability Influence is an **adjustment to the designed probability**.
+At its core, Probability Influence is an **adjustment to predetermined probabilities**.
 
-Let's say you design a 3% chance of dropping a rare item for the player. 
-Using probability influence, this chance can be increased or decreased dynamically during gameplay based on external factors. 
-For instance, you may want to increase the chance if the player is performing well, or decrease the odds if a rare item was dropped recently. 
+Imagine you've set a 3% chance for a player to find a rare item. Probability Influence allows you to dynamically modify this chance based on gameplay factors. 
+For example, you could boost the drop rate as a reward for excellent performance, or lower it if a rare item was recently acquired.
 
-Once the logic and rules are set-up by the coder, the game designer can start crafting unique game mechanics.
+This concept introduces **dynamic probability** into gameplay, enabling a vast array of innovative mechanics. 
+Events can now be influenced by virtually any game element. 
+From linking critical hit chances to player stats, adjusting NPC interactions based on faction relationships, to varying the spawn rate of rare creatures as the in-game time approaches midnight, 
+or intensifying combat when the player cranks up the music volume. The possibilities are endless, and we've made it straightforward to implement.
 
-For the purposes of this guide we will be using item drop rates as a well known game mechanic example. 
+**Influence Providers** are the key. These are objects coded to supply dynamic adjustments to your fixed probabilities. For example, a Health Manager might track the player's health percentage. 
+The game designer then decides how to apply this information, assigning these providers to items in Probability Lists and using **Influence Spread** to fine-tune the impact on each probability.
 
-### *How does it work?*
+---
+
+## Influence & Spread
 
 The influence is a `float` value between `-1 and 1`, with **zero** meaning there is **no influence**.
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceFloatValue} alt="Probability Influence - Float Value" width="1000"/>
 
-This value is provided to the Probability List by an **Influence Provider**, a script or an object utilizing a special interface. But more on that later.
+This value is provided to the Probability List by an **Influence Provider**, a script or an object utilizing a special interface. More details on this will be discussed later.
 
-The influence value (-1 to 1) would not be much useful if there was no control over how much it adjusts individual items in the list. 
-Therefore, an **Influence Spread** comes into play as a way for the game designer to fine tune the actual influence over designed probabilities.
+The influence value, ranging from -1 to 1, wouldn't be particularly useful without a mechanism to control how it adjusts individual items in the list.
+This is where **Influence Spread** comes into play, allowing game designers to fine-tune the actual impact of influence on designed probabilities.
 
-Spread maps the influence range onto the actual adjustment of probabilities.
+Spread maps the influence range onto the actual adjustment of probabilities. Using Spread, game designers can set limits on how much the incoming influence adjusts individual probabilities.
 
-**IMAGE - spread mapped onto a Health Globe Pickup - 20% chance (10% to 50%).**
+In the example below, the chance of a monster dropping a health globe is designed to be 20%.
+The game designer wants this chance to be influenced by the player's health level, increasing the odds of a health globe drop when the player is injured, and decreasing it when the player is healthy.
 
-In the example above, the chance a monster drops a health globe is designed as 20%. 
-The game designer wants this chance to be influenced by the amount of player's health to increase the odds of a health globe drop when the player is injured, or decrease if the player is healthy, respectively.
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpreadMapping} alt="Probability Influence - Spread Mapping" width="1000"/>
 
-The maximum negative influence (-1) will reduce the probability of the item to 10%, and the maximum positive influence (1) 
-will increase the probability to 50%. Any value between -1 and 1 will map onto the spread range proportionally.
+Observe how the curved line maps the influence range onto the influence spread. The maximum negative influence (-1) reduces the probability of the item to 10%, while the maximum positive influence (1)
+increases the probability to 40%. Any value between -1 and 1 is proportionally mapped onto the spread range, with 0 influence mapping onto the designed probability of 20%.
 
+### Influenced Items & Lists
 
+Whenever any item in a list is influenced, the list is considered as influenced as well, meaning it will recalculate probabilities before each pick. 
+This is because if one item's probabilities can change, naturally, so does the other's. 
 
-Whenever values are selected, the Probability List will first check if any of its items are *influenced*. 
-If so, RNGNeeds will calculate the adjusted probabilities based on any influence provided. 
-Once this is done, the selection process continues with the adjusted probabilities.
+### Logic of Selecting Influenced Items
+
+Whenever values are selected, the Probability List first checks if any of its items are *influenced*.
+If so, RNGNeeds calculates the adjusted probabilities based on the provided influence.
+After this adjustment, the selection process proceeds with these new probabilities.
 
 <Note>
-    Calculating the influence right before the selection creates a dynamic environment where probabilities are adjusted at runtime based on logic coming from external factors. 
-    Take a look at the <a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> sample, where monsters are spawned randomly from three locations based on the player's distance to them.
+    Calculating the influence just before selection creates a dynamic environment where probabilities are adjusted in real-time, based on logic from external factors.
+    For an example, see the <a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> sample, where monsters spawn randomly from three locations, influenced by the player's proximity to them.
 </Note>
 
 
+---
+
+## Influence Provider
 
 In RNGNeeds, you can define influence by implementing `IProbabilityInfluenceProvider` interface.
 An object or class implementing this interface can be assigned to any item in list, and will serve as a provider of the value between -1 and 1, thus becoming an **Influence Provider**. In addition, values themselves
@@ -82,8 +95,3 @@ In this case, the distance to player is remapped - if the distance is zero, the 
 And if the distance reaches 30, influence will be -1, the maximum negative influence.
 
 So how does this simple value actually alter the probability? Entering **Influence Spread** ...
-
-### *What is Influence Spread?*
-
-Spread defines the limits on how much the influence adjusts the probability. Remember the sliders with handles? That's spread, and using the slider, you can define the amount the probability raises or drops for each item individually. 
-
