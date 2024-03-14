@@ -1,6 +1,6 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
-import { ExamplesMonsterSpawnerPage } from "@/components/PageLinks";
+import {CustomizingListsPage, ExamplesMonsterSpawnerPage, PreferencesPage} from "@/components/PageLinks";
 import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
 import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
 import {ImageX} from "@/components/ImageX";
@@ -56,7 +56,25 @@ increases the probability to 40%. Any value between -1 and 1 is proportionally m
 ### Influenced Items & Lists
 
 Whenever any item in a list is influenced, the list is considered as influenced as well, meaning it will recalculate probabilities before each pick. 
-This is because if one item's probabilities can change, naturally, so does the other's. 
+This is because if one item's probabilities are allowed to change dynamically, so will the other's, naturally. 
+
+To help estimate the outcomes of such dynamic environment, the Probability List inspector displays the outcome percentages of influenced probabilities.
+
+Percentages to the left of the probability bars show the resulting probabilities **when all incoming influences are -1** and percentages to the right show scenario if **all incoming influences are 1**.
+
+The results are color-coded - by default, they turn red if the resulting probability will be lower than designed, and blue if higher. 
+
+<Note>
+    You can customize the color coding gradient globally in the
+    <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window. 
+    Look for **Spread Color Gradient** setting.
+    
+    You can also fine tune the coloring sensitivity of the difference for each individual drawer.
+    Just open the 
+    <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a> 
+    and look for **Spread Color Bias** slider.
+</Note>
+
 
 ### Logic of Selecting Influenced Items
 
