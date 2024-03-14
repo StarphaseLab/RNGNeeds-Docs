@@ -3,6 +3,10 @@ import {Note} from "@/components/mdx";
 import {CustomizingListsPage, ExamplesMonsterSpawnerPage, PreferencesPage} from "@/components/PageLinks";
 import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
 import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
+import probabilityInfluencePercentagePreview from '@/images/screenshots/probability-influence-percentage-preview.png';
+import probabilityInfluenceExternalProvider from '@/images/screenshots/probability-influence-external-provider.png';
+import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
+import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
     'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
@@ -30,6 +34,10 @@ or intensifying combat when the player cranks up the music volume. The possibili
 **Influence Providers** are the key. These are objects coded to supply dynamic adjustments to your fixed probabilities. For example, a Health Manager might track the player's health percentage. 
 The game designer then decides how to apply this information, assigning these providers to items in Probability Lists and using **Influence Spread** to fine-tune the impact on each probability.
 
+<Note>
+    Each item within the list can be assigned its own unique Influence Provider, allowing for a rich and dynamic interplay of external factors. This setup enables you to incorporate a variety of influences that work in concert to dynamically adjust the probabilities and outcomes. Whether it's the player's health, the time of day, or any other game state, you can tailor the influence on each item to reflect these changing conditions, offering a nuanced and responsive gameplay experience.
+</Note>
+
 ---
 
 ## Influence & Spread
@@ -55,30 +63,36 @@ increases the probability to 40%. Any value between -1 and 1 is proportionally m
 
 ### Influenced Items & Lists
 
-Whenever any item in a list is influenced, the list is considered as influenced as well, meaning it will recalculate probabilities before each pick. 
-This is because if one item's probabilities are allowed to change dynamically, so will the other's, naturally. 
+Whenever any item in a list is influenced, the entire list is considered influenced as well. This means it will recalculate probabilities before each pick.
+This recalibration is necessary because if one item's probabilities can change dynamically, the probabilities of the others will naturally adjust in response.
 
-To help estimate the outcomes of such dynamic environment, the Probability List inspector displays the outcome percentages of influenced probabilities.
+To aid in predicting the outcomes in such a dynamic environment, the Probability List inspector displays the outcome percentages of influenced probabilities.
 
-Percentages to the left of the probability bars show the resulting probabilities **when all incoming influences are -1** and percentages to the right show scenario if **all incoming influences are 1**.
+Percentages to the left of the probability bars represent the resulting probabilities **when all incoming influences are at -1**, and percentages to the right show the scenario **if all incoming influences are at 1**.
+The results are color-coded: by default, they turn red if the resulting probability will be lower than designed, and blue if higher.
 
-The results are color-coded - by default, they turn red if the resulting probability will be lower than designed, and blue if higher. 
+<ImageX className="w-full h-auto" src={probabilityInfluencePercentagePreview} alt="Probability Influence - Percentage Preview" width="1000"/>
+
+In the example above, there are four directions with equal designed probabilities of 25%. The **South** direction is influenced. Maximum negative influence would reduce its chance to 0%.
+In such a scenario, only three directions would be available to choose from, hence the preview displays their probabilities as equal. The South direction's preview percentage is red, indicating it is lower than the designed 25% probability.
+The remaining directions are coded blue because their probability would be higher than designed.
+
+Conversely, if the influence is at maximum positive, the South direction's probability would increase, causing the total probability of the items to exceed 100%. Therefore, the preview of resulting probabilities is normalized.
 
 <Note>
     You can customize the color coding gradient globally in the
-    <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window. 
-    Look for **Spread Color Gradient** setting.
-    
-    You can also fine tune the coloring sensitivity of the difference for each individual drawer.
-    Just open the 
-    <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a> 
-    and look for **Spread Color Bias** slider.
-</Note>
+    <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window.
+    Look for the ***Spread Color Gradient*** setting.
 
+    Additionally, you can fine-tune the coloring sensitivity for the difference in each individual drawer.
+    Simply open the
+    <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>
+    and adjust the ***Spread Color Bias*** slider.
+</Note>
 
 ### Logic of Selecting Influenced Items
 
-Whenever values are selected, the Probability List first checks if any of its items are *influenced*.
+Whenever values are selected, the Probability List first checks if any of its items are influenced.
 If so, RNGNeeds calculates the adjusted probabilities based on the provided influence.
 After this adjustment, the selection process proceeds with these new probabilities.
 
@@ -90,11 +104,50 @@ After this adjustment, the selection process proceeds with these new probabiliti
 
 ---
 
-## Influence Provider
+## Influence Providers
 
-In RNGNeeds, you can define influence by implementing `IProbabilityInfluenceProvider` interface.
-An object or class implementing this interface can be assigned to any item in list, and will serve as a provider of the value between -1 and 1, thus becoming an **Influence Provider**. In addition, values themselves
-can be influence providers. In this sample, the `SpawnLocation` MonoBehaviour is the provider and the logic and math of the value is defined by the player's distance.
+In RNGNeeds, influence is defined through the implementation of the `IProbabilityInfluenceProvider` interface. Any object or class implementing this interface can be linked to items within the list, acting as an **Influence Provider** that supplies a value between -1 and 1 to dynamically adjust probabilities.
+
+### External Providers
+
+Consider the Health Globe example mentioned earlier, where a simple Health Manager Component implements the interface to reflect the player's remaining health percentage.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceExternalProvider} alt="Probability Influence - External Provider" width="1000"/>
+
+This component then becomes an **external provider** for the Health Globe item. Coders can also communicate the underlying logic to game designers by providing **Influence Info**, which is displayed in the inspector when the provider is linked. In the following code snippet, the `ProbabilityInfluence` property of the interface remaps the health percentage to inverse influence values, where 100% health equates to -1 influence, thereby reducing the drop chance for players in good health. This logic is made transparent to game designers through the `InfluenceInfo` property.
+
+```csharp
+public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    public float maxHealth;
+    public float currentHealth;
+    public float HealthPercentage => currentHealth / maxHealth;
+    
+    public float ProbabilityInfluence => HealthPercentage.Remap(0, 1, 1, -1);
+    public string InfluenceInfo => $"Based on health percentage: {HealthPercentage:P2} = {ProbabilityInfluence} Influence";
+}
+```
+<Note>
+    **Types of External Providers:**
+
+    Any object capable of implementing the `IProbabilityInfluenceProvider` interface can serve as an external Influence Provider. **MonoBehaviours** and **ScriptableObjects** are particularly suited for this role, as they can be interacted with within the Unity Editor, allowing for easy assignment to items in the Probability List directly through the inspector.
+
+    Nonetheless, any class can become a provider and be linked to items programmatically. For example, `myProbabilityList.SetItemInfluenceProvider(1, myInfluenceProvider);` assigns a provider to the item at index 1.
+
+    Influence spread can be adjusted as follows:  
+    `myProbabilityList.GetProbabilityItem(1).InfluenceSpread = new Vector2(.1f, .4f);`  
+    where the `Vector2` values represent the minimum and maximum influence limits.
+    Specifically, in this scenario, the maximum negative influence reduces the item's probability to 10%, while the maximum positive influence increases it to 40%.
+</Note>
+
+### Value as Influence Provider
+
+Values themselves can also act as influence providers. In the
+<a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> 
+sample, the `SpawnLocation` MonoBehaviour serves as the provider, with the influence logic based on the player's distance from the spawn location.
+
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpawnLocationsProviders} alt="Probability Influence - Spawn Locations Providers" width="1000"/>
 
 ```csharp {{ title: 'Spawn Location Code'}}
 public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
@@ -104,12 +157,34 @@ public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
     public Transform playerLocation;
     public float DistanceToPlayer => Vector3.Distance(transform.position, playerLocation.position);
     
+    // Remaps the distance to player into an influence value
     public float ProbabilityInfluence => DistanceToPlayer.Remap(0f, 30f, 1f, -1f);
     public string InfluenceInfo => $"Distance to player: {DistanceToPlayer} = {ProbabilityInfluence}";
 }
 ```
 
-In this case, the distance to player is remapped - if the distance is zero, the influence provided will be 1, meaning the maximum positive influence on the probability.
-And if the distance reaches 30, influence will be -1, the maximum negative influence.
+In this implementation, the distance to the player is remapped so that a zero distance results in the maximum positive influence (1) on the probability. 
+Conversely, a distance of 30 units results in the maximum negative influence (-1).
 
-So how does this simple value actually alter the probability? Entering **Influence Spread** ...
+<Note>
+    It's important to note that if an External Provider is assigned and the Value itself is designated as an Influence Provider, the Value's influence will take precedence, effectively overriding the external one.
+</Note>
+
+---
+
+## Quick Setup Guide
+
+### Enabling Influence Options
+
+Let's take a look at how to get started using dynamic probability. First, enable **Advanced Drawer Options Level** in the 
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 
+window. This will enable the advanced features in the Probability List inspector. 
+Next, press the RNGNeeds symbol in the top left corner of your Probability List to open up 
+<a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>. 
+
+<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
+
+Finally, switch on the **Show Influence Toggle** button. A link button will show up next to the probability preview bars in the items of your list.
+
+### Assigning Influence Providers
+
