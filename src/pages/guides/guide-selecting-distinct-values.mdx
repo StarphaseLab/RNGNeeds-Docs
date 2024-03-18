@@ -1,4 +1,4 @@
-﻿import {HeroPattern} from "@/components/HeroPattern";
+import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
 import {
     SupportPage,
@@ -16,18 +16,12 @@ export const description =
 
 <HeroPattern />
 
-# Other Guides
+# Selecting Distinct Values
 
-Welcome to our collection of Other Guides. On this page, we will explore some specific use cases related to RNGNeeds' probability distribution system. {{ className: 'lead' }}
-
-Have a use case in mind that we should explore on this page? <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
+Often, it's essential to ensure that each value you select from a set is unique.
+While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieve this.  {{ className: 'lead' }}
 
 ---
-
-## Selecting Distinct Values
-
-Often, it's essential to ensure that each value you select from a set is unique. 
-While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieve this.
 
 Imagine a scenario where you'd like to offer players three unique rewards upon completing a game level.
 
@@ -96,11 +90,11 @@ public class LevelCompletionRewards : MonoBehaviour
 
 Let's break down the `PickRewards` method:
 - It initializes by ensuring every reward is accessible for selection using `.SetAllItemsEnabled(true)`.
-- The `MaintainPickCountIfDisabled` property guarantees that each pick will be successful even if disabled items are present in the list. 
+- The `MaintainPickCountIfDisabled` property guarantees that each pick will be successful even if disabled items are present in the list.
 - For each desired reward, the method picks a reward, adds it to the list, and then immediately disables it to ensure uniqueness.
 
 <Note>
-    When you combine disabled items with the 'Maintain Pick Count' setting, the resulting probabilities will shift with every newly disabled item. 
+    When you combine disabled items with the 'Maintain Pick Count' setting, the resulting probabilities will shift with every newly disabled item.
     For a deeper understanding of the logic behind this and its implications, please refer to the section on disabled items on the <a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> page.
 </Note>
 

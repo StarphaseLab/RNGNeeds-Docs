@@ -1,0 +1,119 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage, ProbabilityInfluencePage} from "@/components/PageLinks";
+import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
+import {ImageX} from "@/components/ImageX";
+export const description =
+    'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
+
+<HeroPattern />
+
+# Probability Influence Guides
+
+intro - this is a collection of guides for using the concept of dynamic probability to learn more about the concept, visit <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> page of our documentation. {{ classname: 'lead' }}
+
+---
+
+## Enabling Influence Options
+
+Probability Influence is part of the Advanced Features, which are disabled by default. Let's enable them.
+
+First, enable **Advanced Drawer Options Level** in the
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 
+window. This is a global setting that will enable your Probability List inspectors to display advanced features.
+
+Next, press the RNGNeeds symbol in the top left corner of your Probability List to open up
+<a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>. 
+
+<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
+
+Finally, switch on the **Show Influence Toggle** button. A **link** button will show up next to the probability preview bars in the items of your list.
+
+IMAGE
+
+Clicking on the link buttons will expand or collapse the Influence options of individual items with an object field where we can drag an Influence Provider object.
+
+---
+
+## Quick Setup Guide
+
+Let's take a look at how to get started using dynamic probability.
+
+---
+
+## Spawn Rate by Music Volume
+
+Through this guide we will explore how we would create a fun mechanic where the spawn rate of monsters increases with the music volume.
+
+### Creating a Simple Monster Spawner
+
+First, we will need a simple way to control the spawn rate, while making it based on probability.
+
+```csharp {{ title: 'Simple Monster Spawner'}}
+public class MonsterSpawner : MonoBehaviour
+{
+    public ProbabilityList<bool> shouldSpawnMonster;
+
+    private void Start()
+    {
+        InvokeRepeating(nameof(SpawnMonster), 1f, 1f);
+    }
+
+    public void SpawnMonster()
+    {
+        if (shouldSpawnMonster.PickValue())
+        {
+            // Spawn Monster
+        }
+    }
+}
+```
+
+This script will handle the spawning by picking value from a ProbabilityList of type `bool`.
+The list is named clearly as a question `shouldSpawnMonster` to indicate it's true/false nature.
+
+One value will be picked every second by calling the `SpawnMonster` method. If `true` is returned, a monster will be spawned.
+
+IMAGE - Monster Spawner Inspector
+
+Setting the true value of the list to 30% will spawn one monster roughly every three seconds.
+
+
+
+### Creating the Influence Provider
+
+Now we need a way of feeding the music volume data into our Probability List.
+
+```csharp {{ title: 'Simple Audio Manager'}}
+using RNGNeeds;
+using StarphaseTools.Core;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "Audio Manager", menuName = "Audio Manager")]
+public class AudioManager : ScriptableObject, IProbabilityInfluenceProvider
+{
+    [Range(0f, 1f)]
+    public float sfxVolume;
+    [Range(0f, 1f)]
+    public float musicVolume;
+
+    public float ProbabilityInfluence => musicVolume.Remap(.5f, 1f, 0f, 1f);
+    public string InfluenceInfo => $"Rises with music volume over 50%\nCurrent: {musicVolume:P0} = {ProbabilityInfluence:F2} Inf.";
+}
+```
+
+This simple AudioManager is a `ScriptableObject` that implements the two properties of the  `IProbabilityInfluenceProvider` interface.
+
+- `float ProbabilityInfluence` - The value of `musicVolume` is remapped so that as the volume rises from 50% to 100%, the Influence will grow from 0 to 1.
+This also means that there will never be negative influence.
+
+- `string InfluenceInfo` - the logic of the calculation is communicated to the game designer and will display in the inspector
+
+Once we create the AudioManager ScriptableObject in Unity Editor, we can assign this Influence Provider to the MonsterSpawner's ProbabilityList.
+Expand the Influence Options of the True value in the list and drag the AudioManager into the object field.
+
+IMAGE - GIF showing the process
+
+Once the provider is assigned to the item, a bar with handles is displayed in place of it's former probability preview bar.
+The handles control the maximum negative and positive spread, effectively limiting the influence impact on probability.
+As we discussed earlier, percentage previews are displayed to indicate resulting values for scenarios of maximum negative or positive influence.

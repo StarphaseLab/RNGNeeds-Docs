@@ -1,12 +1,16 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
-import {CustomizingListsPage, ExamplesMonsterSpawnerPage, PreferencesPage} from "@/components/PageLinks";
+import {
+    CustomizingListsPage,
+    ExamplesMonsterSpawnerPage,
+    GuideProbabilityInfluence,
+    PreferencesPage
+} from "@/components/PageLinks";
 import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
 import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
 import probabilityInfluencePercentagePreview from '@/images/screenshots/probability-influence-percentage-preview.png';
 import probabilityInfluenceExternalProvider from '@/images/screenshots/probability-influence-external-provider.png';
 import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
-import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
     'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
@@ -15,10 +19,15 @@ export const description =
 
 # Probability Influence
 
-Note: this guide is a work in progress and is based on the
-<a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> Sample. Expect an update with the full guide in the coming days.
+Probability Influence in RNGNeeds offers a dynamic way to adjust the odds of events and outcomes based on gameplay conditions, enriching the player's experience with responsive and evolving challenges. 
+Whether you're aiming to tailor item drops, NPC behavior, or any other probability-based mechanic, this feature provides the flexibility to make real-time adjustments seamlessly.  {{ className: 'lead' }}  
+
+For detailed guides and examples on implementing Probability Influence, please visit the
+<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page. {{ className: 'lead' }}
+
 
 ---
+
 ## What is Probability Influence?
 
 At its core, Probability Influence is an **adjustment to predetermined probabilities**.
@@ -170,30 +179,11 @@ Conversely, a distance of 30 units results in the maximum negative influence (-1
     It's important to note that if an External Provider is assigned and the Value itself is designated as an Influence Provider, the Value's influence will take precedence, effectively overriding the external one.
 </Note>
 
+### Conclusion
+
+With a solid understanding of Probability Influence under your belt, you're well-equipped to dive deeper into its practical applications. 
+The journey towards creating dynamic and engaging gameplay mechanics continues on the
+<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page, where you'll find detailed guides and examples to inspire and guide your implementation. 
+Embrace the power of dynamic probabilities to elevate your game to new heights.
+
 ---
-
-## Quick Setup Guide
-
-### Enabling Influence Options
-
-Let's take a look at how to get started using dynamic probability. First, enable **Advanced Drawer Options Level** in the 
-<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 
-window. This will enable the advanced features in the Probability List inspector. 
-Next, press the RNGNeeds symbol in the top left corner of your Probability List to open up 
-<a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>. 
-
-<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
-
-Finally, switch on the **Show Influence Toggle** button. A link button will show up next to the probability preview bars in the items of your list. 
-
-IMAGE 
-
-Clicking on the button will expand that item's Influence options with an object field where we can drag an influence object. If only we had one ...
-
-### Creating the Influence Provider
-
-- spawn rate by music volume
-
-
-
-
