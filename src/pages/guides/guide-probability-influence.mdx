@@ -39,6 +39,12 @@ Clicking on the link buttons will expand or collapse the Influence options of in
 
 Let's take a look at how to get started using dynamic probability.
 
+IMAGE - GIF showing the process
+
+Once the provider is assigned to the item, a bar with handles is displayed in place of it's former probability preview bar.
+The handles control the maximum negative and positive spread, effectively limiting the influence impact on probability.
+As we discussed earlier, percentage previews are displayed to indicate resulting values for scenarios of maximum negative or positive influence.
+
 ---
 
 ## Spawn Rate by Music Volume
@@ -78,8 +84,6 @@ IMAGE - Monster Spawner Inspector
 
 Setting the true value of the list to 30% will spawn one monster roughly every three seconds.
 
-
-
 ### Creating the Influence Provider
 
 Now we need a way of feeding the music volume data into our Probability List.
@@ -112,8 +116,3 @@ This also means that there will never be negative influence.
 Once we create the AudioManager ScriptableObject in Unity Editor, we can assign this Influence Provider to the MonsterSpawner's ProbabilityList.
 Expand the Influence Options of the True value in the list and drag the AudioManager into the object field.
 
-IMAGE - GIF showing the process
-
-Once the provider is assigned to the item, a bar with handles is displayed in place of it's former probability preview bar.
-The handles control the maximum negative and positive spread, effectively limiting the influence impact on probability.
-As we discussed earlier, percentage previews are displayed to indicate resulting values for scenarios of maximum negative or positive influence.
