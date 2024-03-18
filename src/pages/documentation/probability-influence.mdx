@@ -2,7 +2,7 @@ import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
 import {
     CustomizingListsPage,
-    ExamplesMonsterSpawnerPage,
+    SamplesMonsterSpawnerPage,
     GuideProbabilityInfluence,
     PreferencesPage
 } from "@/components/PageLinks";
@@ -107,7 +107,7 @@ After this adjustment, the selection process proceeds with these new probabiliti
 
 <Note>
     Calculating the influence just before selection creates a dynamic environment where probabilities are adjusted in real-time, based on logic from external factors.
-    For an example, see the <a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> sample, where monsters spawn randomly from three locations, influenced by the player's proximity to them.
+    For an example, see the <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> sample, where monsters spawn randomly from three locations, influenced by the player's proximity to them.
 </Note>
 
 
@@ -152,7 +152,7 @@ public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
 ### Value as Influence Provider
 
 Values themselves can also act as influence providers. In the
-<a href={ExamplesMonsterSpawnerPage.Link}>{ExamplesMonsterSpawnerPage.Title}</a> 
+<a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> 
 sample, the `SpawnLocation` MonoBehaviour serves as the provider, with the influence logic based on the player's distance from the spawn location.
 
 
