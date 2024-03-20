@@ -1,7 +1,7 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {Note} from "@/components/mdx";
 import {CustomizingListsPage, PreferencesPage, ProbabilityInfluencePage} from "@/components/PageLinks";
-import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
+import probabilityInfluenceEnabling from '@/images/screenshots/probability-influence-enabling.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
     'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
@@ -10,28 +10,28 @@ export const description =
 
 # Probability Influence Guides
 
-intro - this is a collection of guides for using the concept of dynamic probability to learn more about the concept, visit <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> page of our documentation. {{ classname: 'lead' }}
+This collection of guides is dedicated to utilizing the concept of dynamic probability. To learn more about the concept, visit the
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> page of our documentation. {{ classname: 'lead' }}
 
 ---
 
 ## Enabling Influence Options
 
-Probability Influence is part of the Advanced Features, which are disabled by default. Let's enable them.
+Probability Influence is nestled within the Advanced Features, which are not visible by default. To access these capabilities, follow these steps:
 
-First, enable **Advanced Drawer Options Level** in the
+1. **Activate Advanced Drawer Options Level**: Navigate to the
 <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 
-window. This is a global setting that will enable your Probability List inspectors to display advanced features.
+window. Activating this global setting will reveal advanced features across all your Probability List inspectors.
 
-Next, press the RNGNeeds symbol in the top left corner of your Probability List to open up
+2. **Access Additional Drawer Options**: Click on the RNGNeeds symbol located at the top left corner of your Probability List inspector to unveil the
 <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>. 
 
-<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
+3. **Enable Influence Display**: Toggle the **Show Influence Toggle** button to on. This action will introduce a **link** button adjacent to the probability preview bars within your list items.
 
-Finally, switch on the **Show Influence Toggle** button. A **link** button will show up next to the probability preview bars in the items of your list.
+<ImageX className="w-full h-auto" src={probabilityInfluenceEnabling} alt="Enabling Probability Influence Options" width="1000"/>
 
-IMAGE
+4. **Assign Influence Providers**: Clicking on the link buttons allows you to expand or collapse the Influence options for each item, revealing an object field. Here, you can drag and drop an Influence Provider object to begin dynamically adjusting item probabilities based on external factors.
 
-Clicking on the link buttons will expand or collapse the Influence options of individual items with an object field where we can drag an Influence Provider object.
 
 ---
 

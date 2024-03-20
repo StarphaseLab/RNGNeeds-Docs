@@ -9,6 +9,8 @@ import {
 import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
 import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
 import probabilityInfluencePercentagePreview from '@/images/screenshots/probability-influence-percentage-preview.png';
+import probabilityInfluenceHealthGlobeMaximumSpread from '@/images/screenshots/probability-influence-health-globe-maximum-spread.png';
+import probabilityInfluenceHealthGlobeInverted from '@/images/screenshots/probability-influence-health-globe-inverted.png';
 import probabilityInfluenceExternalProvider from '@/images/screenshots/probability-influence-external-provider.png';
 import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
 import {ImageX} from "@/components/ImageX";
@@ -110,7 +112,6 @@ After this adjustment, the selection process proceeds with these new probabiliti
     For an example, see the <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> sample, where monsters spawn randomly from three locations, influenced by the player's proximity to them.
 </Note>
 
-
 ---
 
 ## Influence Providers
@@ -178,6 +179,37 @@ Conversely, a distance of 30 units results in the maximum negative influence (-1
 <Note>
     It's important to note that if an External Provider is assigned and the Value itself is designated as an Influence Provider, the Value's influence will take precedence, effectively overriding the external one.
 </Note>
+
+---
+
+## Inverting Influence
+
+There are scenarios where inverting (or reversing) the incoming influence becomes beneficial. This feature can be particularly useful when you, as a game designer, wish to reverse the logic established by the coder, need to blend normal and reversed logic within a single list, or aim to amplify the effect of influence on specific items.
+
+Inverting influence is a versatile tool that significantly broadens your design possibilities for game mechanics that rely on dynamic probability adjustments.
+
+### Use Case Exploration
+
+Consider the earlier Health Globe example. Even when we set the maximum spread to 100%, with maximum positive influence, the Health Globe's drop rate caps at 56%.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeMaximumSpread} alt="Probability Influence - Maximum Spread" width="1000"/>
+
+In practice, setting the spread to maximum indeed increases the item's probability to 100%. However, if another item in the list has an 80% designed chance, this results in a total list probability of 180%. Consequently, the list undergoes normalization before any selection:
+
+- **Item 0 -** 80 / 180 = 0.44
+- **Item 1 -** 100 / 180 = 0.56
+
+These figures are accurately reflected next to the spread bars, offering a preview of normalized probabilities under maximum positive influence.
+
+To enhance the Health Globe's drop chance, we must reduce the probability of the other item. This is where inverted influence comes into play. By assigning the same Influence Provider to the first item and enabling the **Invert Influence** toggle, we achieve our goal.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeInverted} alt="Probability Influence - Inverted Influence" width="1000"/>
+
+Immediately, we observe that the Health Globe's drop chance with maximum **positive influence** jumps to 100%. This increase occurs while a maximum **negative influence**—effectively, a **reversed maximum positive** influence—simultaneously impacts the top item's probability.
+
+In essence, the likelihood **to drop** a Health Globe increases, and the chance **not to drop** one decreases, both influenced by the same factor: the player's health.
+
+---
 
 ### Conclusion
 
