@@ -116,15 +116,22 @@ After this adjustment, the selection process proceeds with these new probabiliti
 
 ## Influence Providers
 
-In RNGNeeds, influence is defined through the implementation of the `IProbabilityInfluenceProvider` interface. Any object or class implementing this interface can be linked to items within the list, acting as an **Influence Provider** that supplies a value between -1 and 1 to dynamically adjust probabilities.
+In RNGNeeds, influence mechanisms are established through the `IProbabilityInfluenceProvider` interface. This interface allows Provider objects to dynamically adjust the probabilities of items within a Probability List. There are two primary types of Providers:
+
+- **External Providers**: These are specific Unity Objects, such as `MonoBehaviour` or `ScriptableObject`, that implement the interface and can be assigned directly to items in the list to influence their probabilities.
+- **Item's Value as Provider**: This approach utilizes the inherent value of Unity Objects or custom classes within the ProbabilityList itself to influence probabilities.
 
 ### External Providers
+
+Any Unity Object, whether it's a `MonoBehaviour` or a `ScriptableObject`, that implements the `IProbabilityInfluenceProvider` interface can serve as an **External Influence Provider**. 
+These providers offer a flexible way to adjust item probabilities dynamically, supplying a value range from -1 to 1 based on external conditions or states.
 
 Consider the Health Globe example mentioned earlier, where a simple Health Manager Component implements the interface to reflect the player's remaining health percentage.
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceExternalProvider} alt="Probability Influence - External Provider" width="1000"/>
 
-This component then becomes an **external provider** for the Health Globe item. Coders can also communicate the underlying logic to game designers by providing **Influence Info**, which is displayed in the inspector when the provider is linked. In the following code snippet, the `ProbabilityInfluence` property of the interface remaps the health percentage to inverse influence values, where 100% health equates to -1 influence, thereby reducing the drop chance for players in good health. This logic is made transparent to game designers through the `InfluenceInfo` property.
+This component then becomes an **external provider** for the Health Globe item. 
+Coders can also communicate the underlying logic to game designers by providing **Influence Info**, which is displayed in the inspector when the provider is linked.
 
 ```csharp
 public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
@@ -137,18 +144,9 @@ public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
     public string InfluenceInfo => $"Based on health percentage: {HealthPercentage:P2} = {ProbabilityInfluence} Influence";
 }
 ```
-<Note>
-    **Types of External Providers:**
 
-    Any object capable of implementing the `IProbabilityInfluenceProvider` interface can serve as an external Influence Provider. **MonoBehaviours** and **ScriptableObjects** are particularly suited for this role, as they can be interacted with within the Unity Editor, allowing for easy assignment to items in the Probability List directly through the inspector.
-
-    Nonetheless, any class can become a provider and be linked to items programmatically. For example, `myProbabilityList.SetItemInfluenceProvider(1, myInfluenceProvider);` assigns a provider to the item at index 1.
-
-    Influence spread can be adjusted as follows:  
-    `myProbabilityList.GetProbabilityItem(1).InfluenceSpread = new Vector2(.1f, .4f);`  
-    where the `Vector2` values represent the minimum and maximum influence limits.
-    Specifically, in this scenario, the maximum negative influence reduces the item's probability to 10%, while the maximum positive influence increases it to 40%.
-</Note>
+In the code snippet above, the `ProbabilityInfluence` property of the interface remaps the health percentage to inverse influence values, where 100% health equates to -1 influence, thereby reducing the drop chance for players in good health. 
+This logic is made transparent to game designers through the `InfluenceInfo` property.
 
 ### Value as Influence Provider
 
@@ -201,7 +199,11 @@ In practice, setting the spread to maximum indeed increases the item's probabili
 
 These figures are accurately reflected next to the spread bars, offering a preview of normalized probabilities under maximum positive influence.
 
-To enhance the Health Globe's drop chance, we must reduce the probability of the other item. This is where inverted influence comes into play. By assigning the same Influence Provider to the first item and enabling the **Invert Influence** toggle, we achieve our goal.
+**To enhance the Health Globe's drop chance**, we must reduce the probability of the other item. This is where inverted influence comes into play. By assigning the same Influence Provider to the first item and enabling the **Invert Influence** toggle, we achieve our goal.
+
+<Note>
+    When you enable Inverted Influence for an item, its **Designed Probability Indicator** (the white line within the spread slider) becomes highlighted. This helps identifying inverted items when their Provider options are collapsed.
+</Note>
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeInverted} alt="Probability Influence - Inverted Influence" width="1000"/>
 
@@ -215,7 +217,6 @@ In essence, the likelihood **to drop** a Health Globe increases, and the chance 
 
 With a solid understanding of Probability Influence under your belt, you're well-equipped to dive deeper into its practical applications. 
 The journey towards creating dynamic and engaging gameplay mechanics continues on the
-<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page, where you'll find detailed guides and examples to inspire and guide your implementation. 
-Embrace the power of dynamic probabilities to elevate your game to new heights.
+<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page, where you'll find detailed guides and examples to inspire and guide your implementation.
 
 ---
