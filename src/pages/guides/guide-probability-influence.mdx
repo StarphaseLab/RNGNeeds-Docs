@@ -7,7 +7,7 @@ import probabilityInfluenceQuickSetupGuide from '@/images/screenshots/probabilit
 import probabilityInfluenceCodeGuideWeaponComponentSetup from '@/images/screenshots/probability-influence-code-guide-weapon-component-setup.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
-    'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
+    'Dive into RNGNeeds\' Probability Influence Guides to master dynamic adjustments in game probabilities. Discover multiple strategies for tailoring gameplay experiences in real-time.'
 
 <HeroPattern />
 
@@ -34,7 +34,7 @@ public ProbabilityList<bool> hackingSuccess;
 Then, add two items: **True** and **False** and set the probability of True value to 40%. 
 This will be the base probability of a player succeeding in a hacking attempt.
 
-Dynamic probability options are hidden by default to not overwhelm newcomers, so let's enable them.
+Dynamic probability settings are hidden by default to keep the interface clean for newcomers. Let's go ahead and enable them.
 
 ### Enabling Influence Options
 
@@ -85,8 +85,8 @@ Once you've created the Player Manager Scriptable Object, simply drag it into th
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceQuickSetupGuide} alt="Probability Influence - Quick Setup Guide" width="1000"/>
 
-After assigning the provider to the item, you'll notice a new bar with adjustable handles replaces the original probability preview bar. 
-These handles let you set the limits for how much the player's skill can affect the hacking success chance — essentially controlling the influence's impact.
+After assigning the provider to the item, you'll notice a new slider with adjustable handles replaces the original probability preview bar. 
+These handles let you set the **Spread** - limits for how much the player's skill can affect the hacking success chance — essentially controlling the influence's impact.
 
 We've configured the spread to ensure that the **maximum negative influence** reduces the success chance to 25%, while the **maximum positive influence** boosts it to 50%.
 
@@ -127,7 +127,7 @@ And that's all there is to it! As the player improves their hacking skills, you'
     }
     ```
 
-    This example illustrates how dynamic probability can be used to create engaging and responsive game mechanics that react to the game environment or player actions.
+    This example illustrates how dynamic probability can be used to create a unique and engaging game mechanics that react to the game environment, player actions or even system settings.
 </Note>
 
 ---
@@ -172,11 +172,13 @@ public class Weapon : MonoBehaviour, IProbabilityInfluenceProvider
 The **Weapon Setup** section is designed for game designers to define fundamental weapon characteristics. 
 By attaching this component to a GameObject, they can configure essential stats such as `damage`, `criticalMultiplier`, and the `baseCriticalStrikeChance`, which represents the chance of a critical hit without any influence. 
 
-The `baseInfluenceSpread` Vector2 value allows for the specification of minimum and maximum influences on the critical strike chance, tailoring the dynamic probability to the weapon's intended gameplay role.
+The `baseInfluenceSpread` Vector2 value sets the range for minimum and maximum influence on critical strike chance, customizing the dynamic probability to fit the weapon's gameplay purpose.
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceCodeGuideWeaponComponentSetup} alt="Probability Influence - Code Guide - Weapon Component Setup" width="1000"/>
 
-The **Weapon Setup** section holds attributes that will be calculated automatically during gameplay and will alter the odds of critically striking with the weapon based on its `Effectiveness` property. 
+The **Weapon Setup** section contains attributes that are dynamically calculated during gameplay to adjust the critical strike odds based on the weapon's `Effectiveness` property. 
+In this example, `Effectiveness` is determined by multiplying weapon proficiency by durability. 
+As proficiency increases with use, decreasing durability serves as a balancing factor on influence, encouraging players to maintain their weapon's condition.
 
 Finally, in the Interface Implementation part, the influence is determined by mapping the Effectiveness (0 to 1) to an Influence range of `-1 to 1`.
 
@@ -238,5 +240,7 @@ The method returns the damage dealt and a boolean indicating whether the attack 
 
 ---
 
-Have a use case in mind that we should explore on this page?
-<a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
+<Note>
+    Have a use case in mind that we should explore on this page?
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
+</Note>

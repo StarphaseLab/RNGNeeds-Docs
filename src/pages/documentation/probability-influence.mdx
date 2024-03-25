@@ -15,7 +15,7 @@ import probabilityInfluenceExternalProvider from '@/images/screenshots/probabili
 import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
 import {ImageX} from "@/components/ImageX";
 export const description =
-    'Discover how to dynamically modify probabilities based on external factors using the RNGNeeds\' Influence Provider.'
+    'Discover how to dynamically modify odds based on external factors using the RNGNeeds\' Probability Influence.'
 
 <HeroPattern />
 
@@ -208,7 +208,8 @@ These figures are accurately reflected next to the spread bars, offering a previ
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeInverted} alt="Probability Influence - Inverted Influence" width="1000"/>
 
-Immediately, we observe that the Health Globe's drop chance with maximum **positive influence** jumps to 100%. This increase occurs while a maximum **negative influence**—effectively, a **reversed maximum positive** influence—simultaneously impacts the top item's probability.
+Immediately, we observe that the Health Globe's drop chance with maximum **positive influence** jumps to 100%.
+This increase happens as the **negative influence**—essentially, the opposite of a **positive influence**—affects the top item's probability at the same time.
 
 In essence, the likelihood **to drop** a Health Globe increases, and the chance **not to drop** one decreases, both influenced by the same factor: the player's health.
 
