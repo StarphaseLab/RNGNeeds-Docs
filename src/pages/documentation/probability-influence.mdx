@@ -21,12 +21,13 @@ export const description =
 
 # Probability Influence
 
-Probability Influence in RNGNeeds offers a dynamic way to adjust the odds of events and outcomes based on gameplay conditions, enriching the player's experience with responsive and evolving challenges. 
-Whether you're aiming to tailor item drops, NPC behavior, or any other probability-based mechanic, this feature provides the flexibility to make real-time adjustments seamlessly.  {{ className: 'lead' }}  
+Dive into the world of dynamic probability where RNGNeeds becomes your toolkit for crafting engaging and reactive gameplay experiences.
+Probability Influence allows you to fine-tune the likelihood of various game events based on external factors, adapting in real-time to the unfolding game dynamics. {{ className: 'lead' }}
 
-For detailed guides and examples on implementing Probability Influence, please visit the
-<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page. {{ className: 'lead' }}
-
+<Note>
+    For detailed guides and examples on implementing Probability Influence, please visit the
+    <a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page.
+</Note>
 
 ---
 
@@ -69,7 +70,7 @@ The game designer wants this chance to be influenced by the player's health leve
 
 <ImageX className="w-full h-auto" src={probabilityInfluenceSpreadMapping} alt="Probability Influence - Spread Mapping" width="1000"/>
 
-Observe how the curved line maps the influence range onto the influence spread. The maximum negative influence (-1) reduces the probability of the item to 10%, while the maximum positive influence (1)
+Observe how the curved line maps the influence range onto the influence spread. The **maximum negative influence** (-1) reduces the probability of the item to 10%, while the **maximum positive influence** (1)
 increases the probability to 40%. Any value between -1 and 1 is proportionally mapped onto the spread range, with 0 influence mapping onto the designed probability of 20%.
 
 ### Influenced Items & Lists
