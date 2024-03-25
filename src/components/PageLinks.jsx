@@ -20,7 +20,7 @@ export const TerminologyPage = createPage("Terminology", "/terminology");
 export const DesigningAListPage = createPage("Designing a List", "/designing-a-list");
 export const SelectingValuesPage = createPage("Selecting Values", "/selecting-values");
 export const RepeatPreventionPage = createPage("Repeat Prevention", "/repeat-prevention");
-export const ProbabilityInfluencePage = createPage("Probability Influence (WIP)", "/probability-influence");
+export const ProbabilityInfluencePage = createPage("Probability Influence", "/probability-influence");
 export const TestingOutcomesPage = createPage("Testing Outcomes", "/testing-outcomes");
 export const SeedingOptionsPage = createPage("Seeding Options", "/seeding-options");
 export const PickHistoryPage = createPage("Pick History", "/pick-history");
@@ -29,12 +29,15 @@ export const CustomizingListsPage = createPage("Customizing Lists", "/customizin
 
 export const ChangelogPage = createPage("Change Log", "/change-log");
 
-export const ExamplesOverviewPage = createPage("Overview", "/examples-overview");
-export const ExamplesDicePlaygroundPage = createPage("Dice Playground", "/dice-playground");
-export const ExamplesRandomAudioPage = createPage("Random Audio", "/random-audio");
-export const ExamplesMonsterSpawnerPage = createPage("Monster Spawner", "/monster-spawner");
-export const ExamplesTreasureChestPage = createPage("Treasure Chest (WIP)", "/treasure-chest");
-export const ExamplesOtherGuidesPage = createPage("Other Guides", "/other-guides");
+export const SamplesOverviewPage = createPage("Overview", "/samples-overview");
+export const SamplesDicePlaygroundPage = createPage("Dice Playground", "/dice-playground");
+export const SamplesRandomAudioPage = createPage("Random Audio", "/random-audio");
+export const SamplesMonsterSpawnerPage = createPage("Monster Spawner", "/monster-spawner");
+export const SamplesTreasureChestPage = createPage("Treasure Chest (WIP)", "/treasure-chest");
+
+export const GuidesOverview = createPage("Overview", "/guides-overview")
+export const GuideSelectingDistinctValues = createPage("Selecting Distinct Values", "/guide-selecting-distinct-values");
+export const GuideProbabilityInfluence = createPage("Probability Influence Guides", "/guide-probability-influence");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -53,8 +56,8 @@ export function userGuideSectionLink() {
     return IntroductionPage.Link;
 }
 
-export function examplesSectionLink() {
-    return ExamplesOverviewPage.Link;
+export function samplesSectionLink() {
+    return SamplesOverviewPage.Link;
 }
 
 export function apiReferenceSectionLink() {
@@ -93,15 +96,23 @@ export const sections = [
         ],
     },
     {
-        title: 'Examples',
-        link: '/examples',
+        title: 'Samples',
+        link: '/samples',
         pages: [
-            ExamplesOverviewPage,
-            ExamplesDicePlaygroundPage,
-            ExamplesRandomAudioPage,
-            ExamplesMonsterSpawnerPage,
-            ExamplesOtherGuidesPage
-            // ExamplesTreasureChestPage,
+            SamplesOverviewPage,
+            SamplesDicePlaygroundPage,
+            SamplesRandomAudioPage,
+            SamplesMonsterSpawnerPage
+            // SamplesTreasureChestPage,
+        ],
+    },
+    {
+        title: 'Guides',
+        link: '/guides',
+        pages: [
+            GuidesOverview,
+            GuideSelectingDistinctValues,
+            GuideProbabilityInfluence
         ],
     },
     {

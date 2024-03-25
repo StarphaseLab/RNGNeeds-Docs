@@ -16,6 +16,20 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 
 ---
 
+## 0.9.5 (Beta) [Pending Asset Store Review - Submitted 25 March 2024]
+
+- **[New]** Added the ability to **Invert Influence** on individual items. This feature enhances control over incoming influence, providing game designers with more options for dynamic probability adjustments based on external factors.
+- **[New]** ProbabilityItem Property:
+    - `public bool InvertInfluence` - Determines whether the incoming probability influence should be inverted. When set to true, the influence's effect on this item's probability is reversed.
+- **[New]** ProbabilityList Convenience Methods:
+    - `.SetItemInfluenceSpread(int index, Vector2 spread)` - Specifies the influence spread for an item in the list, identified by its index. This spread defines the range within which the item's probability can be adjusted due to influence.
+    - `.SetItemInvertInfluence(int index, bool invertInfluence)` - Determines whether the influence effect on a specific item's probability should be inverted. Inversion means that positive influence decreases the item's probability, while negative influence increases it.
+
+**Bug Fixes:**
+
+- Resolved an issue causing the graphical representation of influenced probabilities to be misaligned with those of non-influenced items.
+- Addressed multiple alignment issues related to probability preview bars and spread sliders.
+
 ## 0.9.4 (Beta) Released 23 Feb 2024
 
 - **[NEW]** Seed Specification in Drawer: The Seed can now be directly specified in the drawer. Activate the Keep Seed button to enable the Seed input field.
