@@ -7,8 +7,18 @@ export const description =
 # Nesting Lists
 
 Nesting multiple Probability Lists inside other collections becomes very handy for organizational purposes. 
-While you can nest lists within another C# List or Array, the Probability List custom inspector drawer {{ className: 'lead' }}
-
-Intro
+While you can nest lists within another C# List or Array, our specialized class for grouping Probability Lists comes with couple of advantages 
+such as naming of lists within the collection or selecting values from the whole collection. {{ className: 'lead' }}
 
 ---
+
+## PLCollection Class
+
+This guide showcases the best-practice approach to organizing collections of Probability Lists and is based on  
+To start organizing your lists, declare a simple `PLCollection<T>` class, similar to how you would declare ProbabilityList of your type.
+
+```csharp {{ title: 'Simple Player Manager'}}
+using RNGNeeds;
+
+public PLCollection<string> 
+```
