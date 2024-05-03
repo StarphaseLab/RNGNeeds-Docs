@@ -16,6 +16,54 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 
 ---
 
+## 0.9.6 (Beta) Submitted 03 May 2024 [Pending Asset Store Review]
+
+### PLCollection Improvements
+
+- **[New]** Added the ability to name Probability Lists within a collection. The names are visible in the inspector and can be edited. List names can be used to retrieve lists or pick values.
+- **[New]** Added the ability to reorder Probability Lists within a collection.
+
+### PLCollection properties and methods
+
+- `int Count` - Gets the number of Probability Lists stored in the collection.
+- `bool RemoveList(string name)` - Removes the Probability List with the specified name from the collection
+- `bool GetList(int index, out ProbabilityList<T> list)` - Tries to retrieve a Probability List at the specified index from the collection.
+- `bool GetList(string name, out ProbabilityList<T> list)` - Tries to retrieve a Probability List with a specified name from the collection.
+- `bool SetListName(int index, string name)` - Sets the name of the Probability List at the specified index.
+- `bool ClearList(int index)` - Clears the Probability List at the specified index.
+- `bool ClearList(string name)` - Clears the Probability List with the specified name.
+- `void ClearAllLists()` - Clears all Probability Lists in the collection.
+- `bool MoveListUp(int index)` - Moves the list up within the collection.
+- `bool MoveListDown(int index)` - Moves the list down within the collection.
+
+**Value picks** - collection of methods and their overloads that pick values from lists within the collection:
+- `List<T> PickFromList(int index)`
+- `bool PickFromList(int index, out List<T> values)`
+- `bool PickFromList(int index, List<T> listToFill)`
+- `List<T> PickFromList(string name)`
+- `bool PickFromList(string name, out List<T> values)`
+- `bool PickFromList(string name, List<T> listToFill)`
+
+### Updated PLCollection methods
+
+Changed AddList methods to take an additional optional parameter for setting the name of the added list
+- `void AddList(string name = "")`
+- `void AddList(ProbabilityList<T> list, string name = "")`
+
+Added a boolean return to RemoveList methods to indicate whether the list was found and removed
+- `bool RemoveList(int index)`
+
+Changed the return type of GetList method to return `ProbabilityList<T>` directly, instead of the `IProbabilityList` interface
+- `ProbabilityList<T> GetList(int index)`
+
+**BREAKING CHANGES**
+
+Changed the signature of `PLCollection.IsListEmpty` method to make the call more explicit and informative. The method now returns a tuple of two booleans, indicating whether the list was found and whether it is empty.
+
+- **old** `public bool IsListEmpty(int index)`
+- **new** `public (bool ListFound, bool IsEmpty) IsListEmpty(int index)`
+
+
 ## 0.9.5 (Beta) Released 28 Mar 2024
 
 - **[New]** Added the ability to **Invert Influence** on individual items. This feature enhances control over incoming influence, providing game designers with more options for dynamic probability adjustments based on external factors.
