@@ -19,8 +19,7 @@ These include the ability to name lists within the collection and select values 
 
 ## PLCollection Class
 
-The `PLCollection<T>` is a generic class that can hold multiple Probability Lists of the same type `T`. 
-It provides a way to organize and manage multiple lists of the same type. 
+The `PLCollection<T>`, short for **Probability List Collection** is a generic class that can hold multiple Probability Lists of the same type `T`. 
 The class comes with many useful methods that not only help you manage the lists but also allow you to select values from the whole collection.
 
 PLCollection is also a great help for game designers who can take advantage of the special inspector drawer, which allows them to easily manage and visualize the lists in the Unity Editor.
@@ -131,9 +130,21 @@ The `ClearList` methods return `true` if the list was found and cleared, and `fa
 
 ---
 
+## Selecting Values from Collection
+
+The PLCollection class provides a set of methods for selecting values from individual lists or the entire collection.
+The collection does not handle the selection logic, it merely provides a convenience layer for working with multiple lists.
+
+
+
+
+
+
+---
+
 ## Simple Collection Example
 
-Now that have a basic understanding of the PLCollection class, let's see how we can use it in practice.
+Now that we have a basic understanding of the PLCollection class, let's see how we can use it in practice.
 Let's create a simple example where we have a collection of responses for a NPC character, organizing them into different categories.
 
 First, create a MonoBehaviour class called `CharacterResponses` that will hold our collection of responses. 
