@@ -90,7 +90,7 @@ export const sections = [
             TestingOutcomesPage,
             SeedingOptionsPage,
             PickHistoryPage,
-            // NestingListsPage,
+            NestingListsPage,
             CustomizingListsPage,
             ChangelogPage
         ],

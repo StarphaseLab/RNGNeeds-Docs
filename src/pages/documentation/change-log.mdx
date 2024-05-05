@@ -30,19 +30,25 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 - `bool GetList(int index, out ProbabilityList<T> list)` - Tries to retrieve a Probability List at the specified index from the collection.
 - `bool GetList(string name, out ProbabilityList<T> list)` - Tries to retrieve a Probability List with a specified name from the collection.
 - `bool SetListName(int index, string name)` - Sets the name of the Probability List at the specified index.
+- `bool SetListName(string oldName, string newName)` - Sets a new name of the Probability List with the specified name.
 - `bool ClearList(int index)` - Clears the Probability List at the specified index.
 - `bool ClearList(string name)` - Clears the Probability List with the specified name.
 - `void ClearAllLists()` - Clears all Probability Lists in the collection.
 - `bool MoveListUp(int index)` - Moves the list up within the collection.
 - `bool MoveListDown(int index)` - Moves the list down within the collection.
 
-**Value picks** - collection of methods and their overloads that pick values from lists within the collection:
-- `List<T> PickFromList(int index)`
-- `bool PickFromList(int index, out List<T> values)`
-- `bool PickFromList(int index, List<T> listToFill)`
-- `List<T> PickFromList(string name)`
-- `bool PickFromList(string name, out List<T> values)`
-- `bool PickFromList(string name, List<T> listToFill)`
+**Pick Values From** - collection of methods and their overloads that pick multiple values from a list within the collection:
+- `List<T> PickValuesFrom(int index)`
+- `bool PickValuesFrom(int index, out List<T> values)`
+- `bool PickValuesFrom(int index, List<T> listToFill)`
+- `List<T> PickValuesFrom(string name)`
+- `bool PickValuesFrom(string name, out List<T> values)`
+- `bool PickValuesFrom(string name, List<T> listToFill)`
+
+**Pick Value From** - collection of methods and their overloads that pick single value from a list within the collection:
+- `List<T> PickValueFromAll()`
+- `bool PickValueFrom(int index, out T value)`
+- `bool PickValueFrom(string name, out T value)`
 
 ### Updated PLCollection methods
 
@@ -58,11 +64,14 @@ Changed the return type of GetList method to return `ProbabilityList<T>` directl
 
 **BREAKING CHANGES**
 
-Changed the signature of `PLCollection.IsListEmpty` method to make the call more explicit and informative. The method now returns a tuple of two booleans, indicating whether the list was found and whether it is empty.
+- Changed the signature of `PLCollection.IsListEmpty` method to make the call more explicit and informative. The method now returns a tuple of two booleans, indicating whether the list was found and whether it is empty.
 
-- **old** `public bool IsListEmpty(int index)`
-- **new** `public (bool ListFound, bool IsEmpty) IsListEmpty(int index)`
+    - **old** `public bool IsListEmpty(int index)`
+    - **new** `public (bool ListFound, bool IsEmpty) IsListEmpty(int index)`
 
+- Marked `PLCollection.PickFromAll()` as obsolete. This method will be removed in v1.0 release. Please use the new `PickValuesFromAll()` instead.
+
+---
 
 ## 0.9.5 (Beta) Released 28 Mar 2024
 
@@ -78,6 +87,8 @@ Changed the signature of `PLCollection.IsListEmpty` method to make the call more
 - Resolved an issue causing the graphical representation of influenced probabilities to be misaligned with those of non-influenced items.
 - Addressed multiple alignment issues related to probability preview bars and spread sliders.
 
+---
+
 ## 0.9.4 (Beta) Released 23 Feb 2024
 
 - **[NEW]** Seed Specification in Drawer: The Seed can now be directly specified in the drawer. Activate the Keep Seed button to enable the Seed input field.
@@ -92,6 +103,8 @@ Changed the signature of `PLCollection.IsListEmpty` method to make the call more
 - Fixed an issue where selections would never pick items with very low probabilities.
 - Fixed an issue where Struct types were not identified as Influence Providers by the drawer.
 
+---
+
 ## 0.9.3 (Beta) Released 12 Sept 2023
 
 - **[NEW]** Informative Section Buttons: Introducing a new mode for drawer section buttons that displays selected themes, stripe options, and pick count information directly inside the button. This enhancement improves the readability of Probability List settings without the need to expand the sections.
@@ -99,6 +112,8 @@ Changed the signature of `PLCollection.IsListEmpty` method to make the call more
 - **[New]** ProbabilityList Convenience Methods:
     - `.SetAllItemsEnabled(bool enabled)` - This method allows you to set the enabled state for all items within the ProbabilityList at once.
     - `.SetAllItemsLocked(bool locked)` - Use this method to set the locked state for all items in the ProbabilityList simultaneously.
+
+---
 
 ## 0.9.2 (Beta) Released 23 Aug 2023
 
@@ -109,6 +124,8 @@ Changed the signature of `PLCollection.IsListEmpty` method to make the call more
 
 - Addressed an issue where the "Keep Seed" feature wasn't working correctly with variable pick counts.
 - Fixed a problem where adding items to large lists would result in items having a 0% probability.
+
+---
 
 ## 0.9.1 (Beta) Released 07 Aug 2023
 
@@ -121,6 +138,8 @@ Changed the signature of `PLCollection.IsListEmpty` method to make the call more
 
 - Updated **ProbabilityItem** Constructor - We've made some improvements to the ProbabilityItem constructor to enhance clarity and make the process of creating items more intentional. The parameters **T value** and **float baseProbability** are no longer optional, ensuring that each item is explicitly initialized with a value and a base probability. By removing the option to create empty items or items with 0% probability, we aim to increase transparency within ProbabilityList and reduce any ambiguity associated with its behavior. This change enables developers to have a clearer understanding of their probability distributions, promoting a more predictable and organized approach when using ProbabilityList.
 - The methods **SetItemProbability** and **AdjustItemProbability** have been renamed to **SetItemBaseProbability** and **AdjustItemBaseProbability**, respectively. This change clarifies the distinction between the unaltered "base" probability and the adjusted probability, ensuring a more intuitive and accurate representation for users when designing lists.
+
+---
 
 ## 0.9.0 (Beta)
 
