@@ -1,10 +1,12 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
+import {Col, Note, Row} from "@/components/mdx";
+import {GuidePLCollectionExample} from "@/components/PageLinks";
 import plCollectionBasicFunctions from '@/images/screenshots/plcollection-basic-functions.png';
 import plCollectionNamingLists from '@/images/screenshots/plcollection-naming-lists.png';
 import plCollectionReorderingLists from '@/images/screenshots/plcollection-reordering-lists.png';
 import plCollectionRemovingLists from '@/images/screenshots/plcollection-removing-lists.png';
-import {Note} from "@/components/mdx";
+import {md} from "@mdx-js/mdx/lib/util/extnames";
 export const description = 'Learn how to nest Probability Lists inside a custom PLCollection class.'
 
 <HeroPattern />
@@ -14,6 +16,11 @@ export const description = 'Learn how to nest Probability Lists inside a custom 
 Nesting multiple Probability Lists within other collections is a powerful tool for organization. 
 While it's possible to nest lists within a standard C# List or Array, our specialized class for grouping Probability Lists offers additional benefits. 
 These include the ability to name lists within the collection and select values from the entire collection, enhancing both usability and functionality. {{ className: 'lead' }}
+
+<Note>
+    This page introduces the features and usage of PLCollection class. Visit the 
+    <a href={GuidePLCollectionExample.Link}>{GuidePLCollectionExample.Title}</a> page to see a simple example of how to use PLCollection in practice.
+</Note>
 
 ---
 
@@ -132,58 +139,31 @@ The `ClearList` methods return `true` if the list was found and cleared, and `fa
 
 ## Selecting Values from Collection
 
+To select values from a list in the collection, you can either retrieve the list directly or use the collection's methods.
+
+### Selecting directly from Probability List
+
+You can access a list from the collection by its index or name and then select a value from it as you would with a standard Probability List.
+
+```csharp {{ title: 'Selecting values directly from list' }}
+// Retrieving list from collection
+var list = myCollection.GetList(0);             // Get list at index 0
+var list = myCollection.GetList("My List");     // Get list with name "My List"
+
+// Selecting value from list
+var value = list.PickValue();                   // Select a value from the list
+```
+
+### Selecting via PLCollection
+
 The PLCollection class provides a set of methods for selecting values from individual lists or the entire collection.
 The collection does not handle the selection logic, it merely provides a convenience layer for working with multiple lists.
 
+The methods are named after the corresponding methods in the ProbabilityList class. 
+However, since some of the Probability List methods perform a check whether a value was successfully picked, the PLCollection methods return  boolean value indicating whether the value was picked.
 
-
-
-
-
----
-
-## Simple Collection Example
-
-Now that we have a basic understanding of the PLCollection class, let's see how we can use it in practice.
-Let's create a simple example where we have a collection of responses for a NPC character, organizing them into different categories.
-
-First, create a MonoBehaviour class called `CharacterResponses` that will hold our collection of responses. 
-We will include method `SelectResponse` that will select a response from a specific category.
-
-```csharp {{ title: 'CharacterResponses.cs' }}
-using UnityEngine;
-using RNGNeeds;
-
-public class CharacterResponses : MonoBehaviour
-{
-    public PLCollection<string> characterResponses;
-    
-    public string SelectResponse(string category)
-    {
-        var result = characterResponses.PickValueFrom(category, out var response);
-        if (result.ValueSelected)
-        {
-            return response;
-        }
-
-        if (result.ListFound)
-        {
-            Debug.Log($"No responses found for category {category}");
-        }
-        else
-        {
-            Debug.Log($"Category {category} not found in collection");
-        }
-
-        return string.Empty;
-    }
-}
+```csharp {{ title: 'Selecting values via PLCollection' }}
+var result = myCollection.PickValueFrom(0, out var value);
 ```
 
-The `PickValueFrom` method returns a tuple with two properties: `ListFound` and `ValueSelected`, as well as the selected value in the `out` parameter. 
-This is because 
-
-[Selecting Values](/documentation/selecting-values#disabled-items)
-
-
-Next, create a new GameObject in the Unity Editor and attach the `CharacterResponses` script to it.
+---

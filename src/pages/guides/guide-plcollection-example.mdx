@@ -1,0 +1,70 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {NestingListsPage} from "@/components/PageLinks";
+import probabilityInfluenceCodeGuideWeaponComponentSetup from '@/images/screenshots/probability-influence-code-guide-weapon-component-setup.png';
+
+export const description =
+    'Dive into RNGNeeds\' Probability Influence Guides to master dynamic adjustments in game probabilities. Discover multiple strategies for tailoring gameplay experiences in real-time.'
+
+<HeroPattern />
+
+# Simple PLCollection Guide
+
+This guide will ... 
+To learn more about PLCollection class, visit the 
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> page of our documentation. {{ className: 'lead' }}
+
+<Note>
+    Have a use case in mind that we should explore on this page?
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
+</Note>
+
+---
+
+## Create a Collection of Responses
+
+Now that we have a basic understanding of the PLCollection class, let's see how we can use it in practice.
+Let's create a simple example where we have a collection of responses for a NPC character, organizing them into different categories.
+
+First, create a MonoBehaviour class called `CharacterResponses` that will hold our collection of responses.
+We will include method `SelectResponse` that will select a response from a specific category.
+
+```csharp {{ title: 'CharacterResponses.cs' }}
+using UnityEngine;
+using RNGNeeds;
+
+public class CharacterResponses : MonoBehaviour
+{
+    public PLCollection<string> characterResponses;
+    
+    public string SelectResponse(string category)
+    {
+        var result = characterResponses.PickValueFrom(category, out var response);
+        if (result.ValueSelected)
+        {
+            return response;
+        }
+
+        if (result.ListFound)
+        {
+            Debug.Log($"No responses found for category {category}");
+        }
+        else
+        {
+            Debug.Log($"Category {category} not found in collection");
+        }
+
+        return string.Empty;
+    }
+}
+```
+
+The `PickValueFrom` method returns a tuple with two properties: `ListFound` and `ValueSelected`, as well as the selected value in the `out` parameter.
+This is because
+
+[Selecting Values](/documentation/selecting-values#disabled-items)
+
+
+Next, create a new GameObject in the Unity Editor and attach the `CharacterResponses` script to it.

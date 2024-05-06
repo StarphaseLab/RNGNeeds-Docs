@@ -38,6 +38,7 @@ export const SamplesTreasureChestPage = createPage("Treasure Chest (WIP)", "/tre
 export const GuidesOverview = createPage("Overview", "/guides-overview")
 export const GuideSelectingDistinctValues = createPage("Selecting Distinct Values", "/guide-selecting-distinct-values");
 export const GuideProbabilityInfluence = createPage("Probability Influence Guides", "/guide-probability-influence");
+export const GuidePLCollectionExample = createPage("PLCollection Example", "/guide-plcollection-example");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -112,7 +113,8 @@ export const sections = [
         pages: [
             GuidesOverview,
             GuideSelectingDistinctValues,
-            GuideProbabilityInfluence
+            GuideProbabilityInfluence,
+            GuidePLCollectionExample
         ],
     },
     {

@@ -38,9 +38,9 @@ export function Note({ children }) {
   )
 }
 
-export function Row({ children }) {
+export function Row({ children, maxWidth = 'none', columns = '2' }) {
   return (
-    <div className="grid grid-cols-1 items-start gap-x-16 gap-y-10 xl:max-w-none xl:grid-cols-2">
+    <div className={`grid grid-cols-1 items-start gap-x-16 gap-y-10 xl:max-w-${maxWidth} xl:grid-cols-${columns}`}>
       {children}
     </div>
   )
