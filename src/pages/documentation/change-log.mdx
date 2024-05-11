@@ -16,39 +16,13 @@ RNGNeeds will remain in a Beta version for a short period following its release.
 
 ---
 
-## 0.9.6 (Beta) Submitted 03 May 2024 [Pending Asset Store Review]
+## 0.9.6 (Beta) Submitted 10 May 2024 [Pending Asset Store Review]
 
 ### PLCollection Improvements
 
 - **[New]** Added the ability to name Probability Lists within a collection. The names are visible in the inspector and can be edited. List names can be used to retrieve lists or pick values.
 - **[New]** Added the ability to reorder Probability Lists within a collection.
-
-### PLCollection properties and methods
-
-- `int Count` - Gets the number of Probability Lists stored in the collection.
-- `bool RemoveList(string name)` - Removes the Probability List with the specified name from the collection
-- `bool GetList(int index, out ProbabilityList<T> list)` - Tries to retrieve a Probability List at the specified index from the collection.
-- `bool GetList(string name, out ProbabilityList<T> list)` - Tries to retrieve a Probability List with a specified name from the collection.
-- `bool SetListName(int index, string name)` - Sets the name of the Probability List at the specified index.
-- `bool SetListName(string oldName, string newName)` - Sets a new name of the Probability List with the specified name.
-- `bool ClearList(int index)` - Clears the Probability List at the specified index.
-- `bool ClearList(string name)` - Clears the Probability List with the specified name.
-- `void ClearAllLists()` - Clears all Probability Lists in the collection.
-- `bool MoveListUp(int index)` - Moves the list up within the collection.
-- `bool MoveListDown(int index)` - Moves the list down within the collection.
-
-**Pick Values From** - collection of methods and their overloads that pick multiple values from a list within the collection:
-- `List<T> PickValuesFrom(int index)`
-- `bool PickValuesFrom(int index, out List<T> values)`
-- `bool PickValuesFrom(int index, List<T> listToFill)`
-- `List<T> PickValuesFrom(string name)`
-- `bool PickValuesFrom(string name, out List<T> values)`
-- `bool PickValuesFrom(string name, List<T> listToFill)`
-
-**Pick Value From** - collection of methods and their overloads that pick single value from a list within the collection:
-- `List<T> PickValueFromAll()`
-- `bool PickValueFrom(int index, out T value)`
-- `bool PickValueFrom(string name, out T value)`
+- **[New]** Added multiple convenience methods for selecting values from individual lists or the entire collection.
 
 ### Updated PLCollection methods
 

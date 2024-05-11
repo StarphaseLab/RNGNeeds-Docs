@@ -24,7 +24,7 @@ export const ProbabilityInfluencePage = createPage("Probability Influence", "/pr
 export const TestingOutcomesPage = createPage("Testing Outcomes", "/testing-outcomes");
 export const SeedingOptionsPage = createPage("Seeding Options", "/seeding-options");
 export const PickHistoryPage = createPage("Pick History", "/pick-history");
-export const NestingListsPage = createPage("Nesting Lists (WIP)", "/nesting-lists");
+export const NestingListsPage = createPage("Nesting Lists", "/nesting-lists");
 export const CustomizingListsPage = createPage("Customizing Lists", "/customizing-lists");
 
 export const ChangelogPage = createPage("Change Log", "/change-log");
@@ -38,7 +38,7 @@ export const SamplesTreasureChestPage = createPage("Treasure Chest (WIP)", "/tre
 export const GuidesOverview = createPage("Overview", "/guides-overview")
 export const GuideSelectingDistinctValues = createPage("Selecting Distinct Values", "/guide-selecting-distinct-values");
 export const GuideProbabilityInfluence = createPage("Probability Influence Guides", "/guide-probability-influence");
-export const GuidePLCollectionExample = createPage("PLCollection Example", "/guide-plcollection-example");
+export const GuidePLCollection = createPage("PLCollection Guides", "/guide-plcollection");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -114,7 +114,7 @@ export const sections = [
             GuidesOverview,
             GuideSelectingDistinctValues,
             GuideProbabilityInfluence,
-            GuidePLCollectionExample
+            GuidePLCollection
         ],
     },
     {

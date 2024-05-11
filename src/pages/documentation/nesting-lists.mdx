@@ -1,68 +1,74 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
-import {Col, Note, Row} from "@/components/mdx";
-import {GuidePLCollectionExample} from "@/components/PageLinks";
+import {Note} from "@/components/mdx";
+import {GuidePLCollection, SamplesOverviewPage, PickHistoryPage, SelectingValuesPage} from "@/components/PageLinks";
 import plCollectionBasicFunctions from '@/images/screenshots/plcollection-basic-functions.png';
 import plCollectionNamingLists from '@/images/screenshots/plcollection-naming-lists.png';
 import plCollectionReorderingLists from '@/images/screenshots/plcollection-reordering-lists.png';
 import plCollectionRemovingLists from '@/images/screenshots/plcollection-removing-lists.png';
-import {md} from "@mdx-js/mdx/lib/util/extnames";
+import plCollectionMethodSummary from '@/images/screenshots/plcollection-method-summary.png';
 export const description = 'Learn how to nest Probability Lists inside a custom PLCollection class.'
 
 <HeroPattern />
 
 # Nesting Lists
 
-Nesting multiple Probability Lists within other collections is a powerful tool for organization. 
-While it's possible to nest lists within a standard C# List or Array, our specialized class for grouping Probability Lists offers additional benefits. 
+Nesting multiple Probability Lists within other collections significantly enhances organizational flexibility and functionality. 
+Using our specialized class, `PLCollection`, over standard C# List or Array, brings additional benefits. 
 These include the ability to name lists within the collection and select values from the entire collection, enhancing both usability and functionality. {{ className: 'lead' }}
 
 <Note>
-    This page introduces the features and usage of PLCollection class. Visit the 
-    <a href={GuidePLCollectionExample.Link}>{GuidePLCollectionExample.Title}</a> page to see a simple example of how to use PLCollection in practice.
+    This page introduces the features and usage of PLCollection class. For practical implementation guides, visit the 
+    <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a> page.
 </Note>
 
 ---
 
 ## PLCollection Class
 
-The `PLCollection<T>`, short for **Probability List Collection** is a generic class that can hold multiple Probability Lists of the same type `T`. 
-The class comes with many useful methods that not only help you manage the lists but also allow you to select values from the whole collection.
+The `PLCollection<T>`, short for **Probability List Collection**, is a generic class designed to hold multiple Probability Lists of the same type `T`. 
+This class offers useful methods that help manage these lists and also enables the selection of values from the entire collection.
 
-PLCollection is also a great help for game designers who can take advantage of the special inspector drawer, which allows them to easily manage and visualize the lists in the Unity Editor.
+For game designers, `PLCollection` provides a significant advantage with its special inspector drawer in the Unity Editor. This feature makes it easier to manage and visualize the lists, enhancing the design process.
 
 ### Setting up PLCollection
 
-To start organizing your lists, declare a simple `PLCollection<T>` class in one of your **MonoBehaviour** or **ScriptableObject** scripts, 
-similar to how you would declare ProbabilityList of your type.
+To begin organizing your lists, simply declare a `PLCollection<T>` within your **MonoBehaviour** or **ScriptableObject** scripts. This is done in a manner similar to declaring a `ProbabilityList` of your chosen type.
 
 ```csharp {{ title: 'Adding PLCollection' }}
+using UnityEngine;
 using RNGNeeds;
 
-public PLCollection<string> myCollection;
+public class MyScript : MonoBehaviour 
+{    
+    public PLCollection<string> myCollection;
+}
 ```
 
 <ImageX className="w-full h-auto" src={plCollectionBasicFunctions} alt="PLCollection - Basic Functions" width="1000"/>
 
-In the Unity Editor Inspector, you will see a new section for the `PLCollection`. 
-In the top left, the name of your property is displayed along with the number of lists in the collection.
-You can start adding lists by clicking the **Add List to Collection** button.
+In the Unity Editor Inspector, you will notice a new section for `PLCollection`.
+At the top left, the name of your property is displayed, alongside the number of lists currently in the collection.
+Lists can be added by clicking the **Add List to Collection** button.
+
+---
 
 ### Naming Lists
 
-Newly created lists will be named automatically by assigning them a number corresponding to their position in the collection.
-The format of the name is `#index`, for example, `#0`, `#1`, `#2`, etc. You can rename the lists by clicking on the name field and typing a new one.
+Newly created lists within the `PLCollection` are automatically assigned a name that corresponds to their position in the collection. 
+The default format for these names is `#index`, such as `#0`, `#1`, `#2`, and so forth. 
+You can easily rename any list by clicking on the name field and entering a new name.
 
 <ImageX className="w-full h-auto" src={plCollectionNamingLists} alt="PLCollection - Naming Lists" width="1000"/>
 
-The name itself is stored within the ProbabilityList object and is not a part of the PLCollection class. 
-You can set a name for any list, whether it's part of the collection or not, using the `ListName` property.
+The name is stored within the `ProbabilityList` object itself, rather than in the `PLCollection` class. 
+This allows flexibility in naming as you can set the `ListName` property for any list, regardless of whether it is part of a collection.
 
 ```csharp
 myProbabilityList.ListName = "My List";
 ```
 
-If you add a list without a name, the PLCollection will set its name automatically.
+If a list is added without a specified name, `PLCollection` will automatically assign a default name based on its position.
 
 ```csharp {{ title: 'Adding and naming lists via code' }}
 // Adding an unnamed list
@@ -78,92 +84,164 @@ myCollection.SetListName(0, "My List");
 myCollection.SetListName("My List", "New Name");
 ```
 
-The `SetListName` methods return `true` if the list was found and renamed, and `false` otherwise.
+The `SetListName` method returns `true` if the list was found and renamed successfully, and `false` otherwise.
 
 ### Reordering Lists
 
-To enable reordering of lists in the inspector, click the **Reorder Lists** button in the top right corner of the collection.
-Arrows will appear next to each list, allowing you to move them up or down.
+To enable reordering of lists within the inspector, click the **Reorder Lists** button located in the top right corner of the collection.
+Arrows will then appear next to each list, allowing you to adjust their order by moving them up or down.
 
 <ImageX className="w-full h-auto" src={plCollectionReorderingLists} alt="PLCollection - Reordering Lists" width="1000"/>
 
-You can also reorder lists programmatically using the `MoveListUp` and `MoveListDown` methods.
+Lists can also be reordered programmatically using the `MoveListUp` and `MoveListDown` methods.
 
 ```csharp {{ title: 'Reordering lists via code' }}
 myCollection.MoveListUp(1);     // Move list at index 1 up
 myCollection.MoveListDown(1);   // Move list at index 1 down
 ```
 
-A list can be moved up or down only if it's not the first or last list in the collection, respectively.
-These methods return `true` if the list was moved, and `false` otherwise. 
+A list can only be moved if it is not already the first or last in the collection.
+The methods `MoveListUp` and `MoveListDown` will return `true` if the list was successfully moved, and `false` otherwise.
 
 ### Removing Lists
 
-The collection is **Locked** by default, preventing accidental removal of lists. 
-You can enable removing of lists by clicking on the **Lock** button in the top right corner of the collection.
+The collection is **Locked** by default to prevent accidental removal of lists.
+To enable list removal, click the **Lock** button located in the top right corner of the collection.
 
 <ImageX className="w-full h-auto" src={plCollectionRemovingLists} alt="PLCollection - Removing Lists" width="1000"/>
 
-Once unlocked, red **Remove List from Collection** buttons will appear next to each list, allowing you to delete them.
-In addition, you can clear the entire collection by clicking the **Clear Collection** button in the header.
+Once unlocked, red **Remove List from Collection** buttons will appear next to each list, allowing you to easily delete them.
+Additionally, the entire collection can be cleared by clicking the **Clear Collection** button found in the header.
 
 <Note>
-    Removing a list or clearing the collection are critical actions, indicated by the red color of the buttons. 
-    While these actions do not come with a popup confirmation, they can be undone by using the Unity Editor's Undo feature.
+    Removing a list or clearing the collection are significant actions, underscored by the red color of the buttons.
+    Although these actions do not trigger a confirmation popup, they can be reversed using the Unity Editor's Undo feature.
 </Note>
 
 ```csharp {{ title: 'Removing lists via code' }}
 myCollection.RemoveList(1);             // Remove list at index 1
-myCollection.RemoveList("My List");     // Remove list with name "My List"
-```
-
-The `RemoveList` methods return `true` if the list was found and removed, and `false` otherwise.
-
-### Clearing Lists
-
-PLCollection also provides handy methods for clearing the individual lists (ie. removing all items from the list). 
-This can be beneficial when you want to keep the structure of the collection but remove the contents of the lists.
-Please note that clearing a list also removes its History. To learn more about History, check the [Pick History](/documentation/pick-history#history-structure) section.
-
-```csharp {{ title: 'Clearing lists via code' }}
-myCollection.ClearList(1);              // Clear list at index 1
-myCollection.ClearList("My List");      // Clear list with name "My List"
-myCollection.ClearAllLists();           // Clear all lists in the collection
+myCollection.RemoveList("My List");     // Remove list by name "My List"
 
 myCollection.ClearCollection();         // Removes all lists from the collection
 ```
 
-The `ClearList` methods return `true` if the list was found and cleared, and `false` otherwise.
+The `RemoveList` methods return `true` if the list was successfully found and removed, and `false` otherwise.
+
+### Clearing Lists
+
+PLCollection also provides handy methods for clearing the individual lists, i.e., removing all items from a list.
+This feature is useful when you want to maintain the structural framework of the collection but eliminate the contents of the lists.
+Note that clearing a list will also remove its History. For more details on History, refer to the 
+<a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a> section.
+
+```csharp {{ title: 'Clearing lists via code' }}
+myCollection.ClearList(1);              // Clear list at index 1
+myCollection.ClearList("My List");      // Clear list by name "My List"
+myCollection.ClearAllLists();           // Clear all lists in the collection
+```
+
+The `ClearList` methods return `true` if the list was successfully found and cleared, and `false` otherwise.
 
 ---
 
 ## Selecting Values from Collection
 
-To select values from a list in the collection, you can either retrieve the list directly or use the collection's methods.
+The PLCollection class provides a set of methods for selecting values from individual lists or the entire collection.
+While the collection itself does not handle the selection logic, it offers a convenient layer for managing and accessing multiple lists.
 
-### Selecting directly from Probability List
+To select values from a specific list in the collection, you can retrieve the list directly or utilize the methods provided by PLCollection.
 
-You can access a list from the collection by its index or name and then select a value from it as you would with a standard Probability List.
+### Selecting Directly from Probability List
+
+Access a list from the collection either by its index or name, and then select a value from it as you would with any standard Probability List.
+For more information on how to select values from a list, visit the 
+<a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a> page.
 
 ```csharp {{ title: 'Selecting values directly from list' }}
 // Retrieving list from collection
-var list = myCollection.GetList(0);             // Get list at index 0
-var list = myCollection.GetList("My List");     // Get list with name "My List"
+var list = myCollection.GetList(0);                     // Get list at index 0
 
-// Selecting value from list
-var value = list.PickValue();                   // Select a value from the list
+if (myCollection.GetList("MyList", out var list))       // Get list by name "MyList"
+{
+    var value = list.PickValue();
+}
 ```
 
 ### Selecting via PLCollection
 
-The PLCollection class provides a set of methods for selecting values from individual lists or the entire collection.
-The collection does not handle the selection logic, it merely provides a convenience layer for working with multiple lists.
+The PLCollection class provides a set of methods for selecting values from the lists within. 
+These methods are named after the corresponding methods in the ProbabilityList class and their summary clearly indicates which method is used and how are the results returned.
 
-The methods are named after the corresponding methods in the ProbabilityList class. 
-However, since some of the Probability List methods perform a check whether a value was successfully picked, the PLCollection methods return  boolean value indicating whether the value was picked.
+<ImageX className="w-full h-auto" src={plCollectionMethodSummary} alt="PLCollection - Method Summary" width="1000"/>
+
+It's important to understand the returns when using these methods, as some operations in `ProbabilityList` check if a value was successfully picked.
+On top of this, `PLCollection` adds a layer that checks whether the list itself was found.
+Since picking a value from a list is not guaranteed—the list may be empty or contain disabled items—it's crucial to know both if the list was found and if a value was successfully picked.
+
+Determining the success of a pick is especially important with value types, where the default value might be returned in case of an unsuccessful pick.
+
+<Note>
+    Excerpt from [Selecting Values](/documentation/selecting-values#disabled-items) page:
+    
+    *"However, if you are working with `value types`, the result of an unsuccessful pick would be the `default` value of your Type. 
+    In some cases, the value returned from an unsuccessful pick might be indistinguishable from a real one. 
+    For example, with value types such as `string`, `boolean`, or `int`, an empty string, a `false`, or a `0` would be returned, respectively."*
+</Note>
+
+Here are the various families of methods available for picking values from the collection:
+
+- **Pick Value From** - Methods that pick a single value from a list:
+  - `bool PickValueFrom(int index, out T value)`
+  - `bool PickValueFrom(string name, out T value)`
+- **Try Pick Value From** - Methods that pick a single value from a list and return a tuple indicating whether the list was found and whether the value was picked:
+  - `(bool ListFound, bool ValuePicked) TryPickValueFrom(int index, out T value)`
+  - `(bool ListFound, bool ValuePicked) TryPickValueFrom(string name, out T value)`
+- **Pick Values From** (simplified variants) - Methods that pick multiple values from a list. These methods return a list of values, and they do not indicate whether a value was picked. If the list was not found, the result is null, and if no values were selected, the list is empty:
+  - `List<T> PickValuesFrom(int index)`
+  - `List<T> PickValuesFrom(string name)`
+- **Pick Values From** (full variants) - Methods that pick multiple values from a list and return a boolean indicating whether the list was found:
+  - `bool PickValuesFrom(int index, out List<T> values)`
+  - `bool PickValuesFrom(string name, out List<T> values)`
+- **Pick Values From** (fill variants) - Methods that pick multiple values from a list and fill an existing list with the results. These methods also return a boolean indicating whether the list was found:
+  - `bool PickValuesFrom(int index, List<T> listToFill)`
+  - `bool PickValuesFrom(string name, List<T> listToFill)`
+- **Pick Value From All** - Method that picks a single value from each list in the collection:
+  - `List<T> PickValueFromAll()`
+- **Pick Values From All** - Method that picks multiple values from each list in the collection:
+  - `List<T> PickValuesFromAll()`
+
+### Example: Selecting Values via PLCollection
+
+Here is an example demonstrating how to select values from a list within the collection using the `TryPickValueFrom` method.
 
 ```csharp {{ title: 'Selecting values via PLCollection' }}
-var result = myCollection.PickValueFrom(0, out var value);
+var result = myCollection.TryPickValueFrom(0, out var value);
+result.ListFound        // Indicates whether the list was found
+result.ValuePicked      // Indicates whether the value was picked
+
+if (myCollection.TryPickValueFrom("My List", out var value).ValuePicked)
+{
+    // Value was picked, therefore list was found and not empty
+}
+else
+{
+    // Value was not picked - the selection was unsuccessful
+    // could also mean the list was not found or was empty
+}    
 ```
+
+---
+
+### Summary
+
+The PLCollection class streamlines the management of Probability Lists in Unity, enabling easy organization, modification, and value selection from multiple lists. 
+It offers practical features like list naming, reordering, and removal, coupled with a variety of methods for accessing values efficiently. 
+
+For a practical use cases, explore the 
+<a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>, which provides a detailed guide for implementing `PLCollection` in your projects. 
+For more complex use cases utilizing a modular loot table approach, check out the **Treasure Chest** and **Deck Builder** samples included with the plugin.
+
+Learn more about these and other examples on the 
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a>.
 
 ---
