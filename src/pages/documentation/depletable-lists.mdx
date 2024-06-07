@@ -1,0 +1,56 @@
+﻿import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import drawerButtonsInfo from '@/images/screenshots/drawer-buttons-info.png';
+import {PreferencesPage} from "@/components/PageLinks";
+import {ImageX} from "@/components/ImageX";
+export const description =
+    'TODO meta description';
+
+<HeroPattern />
+
+# Depletable Lists
+
+Depletable Lists is a very powerful feature that allows items to have limited availability. Setting the maximum and available units for each item offers a wide range of possibilities for your game mechanics. 
+Depleting items can be utilized in many different ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, for instance in card decks or loot tables. {{ className: 'lead' }}
+
+---
+
+## Getting Started
+
+By default, Probability Lists are created as **not depletable**, you can think of them as having *infinite units*. 
+While this is a default behavior providing the standard usage of RNGNeeds, switching a list between depletable and infinite is very easy. 
+
+Picking values from Depletable Lists consume the units of items which are also marked as depletable. Items with zero available units are considered as depleted and will no longer be selectable until their units are **Refilled**. 
+However, items that are **not depletable** will not have their units consumed and will be infinite.
+
+### Depletable Items
+
+On the other hand, by default, Probability Items are created as depletable with `1` available and `1` maximum unit. However, this does not come into play until the list itself is marked as depletable as well.
+This allows game designers to switch the depletable states of their lists without losing the depletable settings of each item. Individual items' settings also allow for mixing depletable and infinite items within the lists.
+
+<Note>
+    Note that any `ProbabilityItem` created before introduction of Depletable Lists feature (in version 0.9.7) will not be depletable by default and will have its units and maximum units set to `0`. 
+    These items will have to be manually setup, however, both the Probability List drawer and API offer convenient ways to set these properties for all items in the list.
+</Note>
+
+### Units and Max Units
+
+Each item in the list can be assigned its available and maximum units:
+- `Units` - the current available units - number of times the item can be picked. Each pick will consume one unit.
+- `MaxUnits` - the maximum units the item can have - this value is utilized when refilling the item or list - available units will be set to the maximum.
+total units, total max units
+
+### Depleted Items
+
+they behave similar to disabled items - they are not picked in selections
+
+maintain pick count - will ensure the pick count as long as there are enough total units available
+if not, the pick count will be lower
+unless any of the items are infinite, in which case the remaining count will be picked from them - once all the units are consumed, the list will behave as if only enabled infinite items are present
+
+---
+
+
+
+
+---

@@ -1,4 +1,4 @@
-import {Properties, Property} from "@/components/mdx";
+import {Col, Properties, Property, Row} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
 export const description =
   'Get acquainted with the terms and concepts used in RNGNeeds. A solid understanding of these will make it easier to navigate the rest of the Documentation and the plugin itself.'
@@ -9,23 +9,30 @@ To make the most out of RNGNeeds, it's essential to understand the key terms and
 This page provides definitions for the primary terms you'll encounter. {{ className: 'lead' }}
 
 ---
+<Row>
+    <Col>
+        <Properties>
+            <Property name="Probability List">A Probability List is a collection of `Probability Items`, each representing a potential value that can be selected. This list defines a set of possible outcomes, each associated with its own probability.</Property>
+            <Property name="Probability Item">A Probability Item is an individual entry within a `Probability List`. It encapsulates a user-defined value (either a value type or a reference type) and associates it with a particular Base Probability. The item also stores additional information, such as enabled or locked states.</Property>
+            <Property name="Base Probability">Base Probability refers to the initial probability assigned to a `Probability Item`. This value can be manually adjusted but does not directly influence the selection process. It serves as a reference point for further adjustments and calculations.</Property>
+            <Property name="Probability">Probability refers to the adjusted likelihood of a `Probability Item` being selected. It's a calculated value derived from the Base Probability and any influences or adjustments. This probability is used during the selection process.</Property>
+            <Property name="Enabled Probability">Enabled Probability refers to the accumulated probability of all enabled `Probability Items` in a list. Disabled items are not considered in this calculation. The Enabled Probability value is used during the selection process.</Property>
+            <Property name="Unlocked Probability">Unlocked Probability refers to the total probability of all unlocked `Probability Items` in a list. Unlocked probabilities can change as other items' probabilities are adjusted. This value is considered during probability normalization or recalculation when designing the list.</Property>
 
-<Properties>
-    <Property name="Probability List">A Probability List is a collection of `Probability Items`, each representing a potential value that can be selected. This list defines a set of possible outcomes, each associated with its own probability.</Property>
-    <Property name="Probability Item">A Probability Item is an individual entry within a `Probability List`. It encapsulates a user-defined value (either a value type or a reference type) and associates it with a particular Base Probability. The item also stores additional information, such as enabled or locked states.</Property>
-    <Property name="Base Probability">Base Probability refers to the initial probability assigned to a `Probability Item`. This value can be manually adjusted but does not directly influence the selection process. It serves as a reference point for further adjustments and calculations.</Property>
-    <Property name="Probability">Probability refers to the adjusted likelihood of a `Probability Item` being selected. It's a calculated value derived from the Base Probability and any influences or adjustments. This probability is used during the selection process.</Property>
-    
-    <Property name="Enabled Probability">Enabled Probability refers to the accumulated probability of all enabled `Probability Items` in a list. Disabled items are not considered in this calculation. The Enabled Probability value is used during the selection process.</Property>
-    <Property name="Unlocked Probability">Unlocked Probability refers to the total probability of all unlocked `Probability Items` in a list. Unlocked probabilities can change as other items' probabilities are adjusted. This value is considered during probability normalization or recalculation when designing the list.</Property>
-    <Property name="Selection Method">Selection Method refers to the algorithm or process used to pick an item from the `Probability List`. Different selection methods may yield almost identical results but can differ in performance depending on the size of the list and the `Pick Count`.</Property>
-    <Property name="Pick Count">Pick Count is the number of items to be selected from the `Probability List` in a single operation. The `Pick Count` can be a fixed value or a range, offering flexibility for different scenarios.</Property>
-    <Property name="Repeat Prevention">Repeat Prevention is a feature that avoids consecutive selection of the same `Probability Item`. This feature enhances variety in selections, particularly useful in scenarios where repeated outcomes are undesirable.</Property>
-
-    <Property name="Influence Provider">A script inheriting from `IProbabilityInfluenceProvider` interface, defining an influence applied to probability of an item.</Property>
-    <Property name="Influenced List">The list is considered as `influenced` if any of its items has an `Influence Provider` assigned, or if any item itself is a provider.</Property>
-    <Property name="Influenced Probability">Influenced Probability refers to the Base Probability of a `Probability Item` after the application of an external influence, if one is configured via a `Probability Influence Provider`.</Property>
-    
-</Properties>
-
+            <Property name="Depletable List">A Probability List that allows Depletable Items to consume units upon selection. Depleted items will no longer be selectable and will behave similarly to disabled items until their units are refilled.</Property>
+            <Property name="Depletable Item">A Probability Item which, when contained in a Depletable List, will have its units consumed with each pick. Once the units are depleted, the item will not be selectable until its units are refilled.</Property>
+            <Property name="Refill">A term used to describe the process of setting the units of a Depletable Item back to its defined maximum.</Property>
+        </Properties>
+    </Col>
+    <Col>
+        <Properties>
+            <Property name="Selection Method">Selection Method refers to the algorithm or process used to pick an item from the `Probability List`. Different selection methods may yield almost identical results but can differ in performance depending on the size of the list and the `Pick Count`.</Property>
+            <Property name="Pick Count">Pick Count is the number of items to be selected from the `Probability List` in a single operation. The `Pick Count` can be a fixed value or a range, offering flexibility for different scenarios.</Property>
+            <Property name="Repeat Prevention">Repeat Prevention is a feature that avoids consecutive selection of the same `Probability Item`. This feature enhances variety in selections, particularly useful in scenarios where repeated outcomes are undesirable.</Property>
+            <Property name="Influence Provider">A script inheriting from `IProbabilityInfluenceProvider` interface, defining an influence applied to probability of an item.</Property>
+            <Property name="Influenced List">The list is considered as `influenced` if any of its items has an `Influence Provider` assigned, or if any item itself is a provider.</Property>
+            <Property name="Influenced Probability">Influenced Probability refers to the Base Probability of a `Probability Item` after the application of an external influence, if one is configured via a `Probability Influence Provider`.</Property>
+        </Properties>
+    </Col>
+</Row>
 ---

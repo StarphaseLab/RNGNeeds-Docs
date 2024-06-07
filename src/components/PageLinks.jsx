@@ -26,7 +26,7 @@ export const SeedingOptionsPage = createPage("Seeding Options", "/seeding-option
 export const PickHistoryPage = createPage("Pick History", "/pick-history");
 export const NestingListsPage = createPage("Nesting Lists", "/nesting-lists");
 export const CustomizingListsPage = createPage("Customizing Lists", "/customizing-lists");
-
+export const DepletableListsPage = createPage("Depletable Lists", "/depletable-lists");
 export const ChangelogPage = createPage("Change Log", "/change-log");
 
 export const SamplesOverviewPage = createPage("Overview", "/samples-overview");
@@ -86,6 +86,7 @@ export const sections = [
             TerminologyPage,
             DesigningAListPage,
             SelectingValuesPage,
+            DepletableListsPage,
             RepeatPreventionPage,
             ProbabilityInfluencePage,
             TestingOutcomesPage,
