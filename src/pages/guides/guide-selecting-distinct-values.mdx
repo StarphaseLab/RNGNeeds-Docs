@@ -15,7 +15,8 @@ export const description =
 # Selecting Distinct Values
 
 Often, it's essential to ensure that each value you select from a set is unique.
-While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieving this.  {{ className: 'lead' }}
+While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieving this using the Depletable Lists feature of RNGNeeds.  {{ className: 'lead' }}
+
 
 ---
 
@@ -66,21 +67,25 @@ After attaching the component to a GameObject, you can begin shaping your array 
 With the reward pool in place, it's time to set the list as Depletable. First, ensure the Advanced options are enabled in the
 <a href={PreferencesPage.Link + "#preferences-window"}>Preferences Window</a>.
 
-1. Open the **PICK** section of the drawer and click the **Depletable** button. By default, each Probability Item will be marked as **Depletable** with `1 / 1` available / maximum units.
+1. Open the **PICK** section of the drawer and click the **Depletable** button. By default, each Probability Item is marked as **Depletable** with `1 / 1` available / maximum units.
 2. Turn on the **Maintain Pick Count** option and set the Pick Count of this list to `3`.
 3. Enable the **Visualize Units in the Stripe** option to better display the remaining units for each item.
 
 <ImageX className="w-full h-auto" src={guideDepDistinctSelectionListOptions} alt="Distinct Selection - Depletable List Options" width="1000"/>
 
-Clicking the **TEST** button will pick three distinct items from the list, respecting the probability distributions and available units. Because the items have only one available unit, they are picked only once. The remaining units are clearly visualized in the stripe and by lowering the unit counts next to each item. Testing repeatedly depletes the list until no values are picked.
+When you click the **TEST** button, it selects three distinct items from the list, taking into account the probability distributions and the units available. 
+Since each item has only one unit available, each is selected just once. 
+The remaining units are clearly displayed on the stripe, and the unit counts beside each item decrease accordingly. 
+With repeated testing, the list is depleted until no items remain selectable.
 
 <Note>
-    Hint: Holding **Control** (or **Command** on Mac) while pressing the TEST button will refill the units of items before running the test. Alternatively, you can refill items using the **Action Menu** - just click the **Arrow Button** next to the selected action, which by default should be **Refill Items**.
+    Hint: Hold **Control** (or **Command** on Mac) while clicking the **TEST** button to automatically refill the units of items before initiating the test. Alternatively, you can manually refill items through the **Action Menu** by clicking the **Arrow Button** adjacent to the selected action, typically set to **Refill Items** by default.
 </Note>
 
 <ImageX className="w-full h-auto" src={guideDepDistinctSelectionListResult} alt="Distinct Selection - Depletable List Result" width="1000"/>
 
-Now that we've set up our list of unique rewards and tested the outcomes, the final step is to pick the rewards in code. Incorporate the following method into the `LevelCompletionRewards` component.
+Now that we've established our list of unique rewards and tested the outcomes, the final step involves implementing the code to select the rewards. 
+Incorporate the following method into the `LevelCompletionRewards` component:
 
 ```csharp {{ title: 'Add the PickRewards method'}}
 public List<Reward> PickRewards(int count)
@@ -91,8 +96,8 @@ public List<Reward> PickRewards(int count)
 }
 ```
 
-Before selecting values, the `PickRewards` method:
-- Refills the units of all items to their maximum to ensure every reward is accessible in case they were depleted in the last pick.
+Before selecting values, the `PickRewards` method performs the following operations:
+- Refills the units of all items to their maximum, ensuring every reward is accessible in case they were depleted in the last pick.
 - Sets the `MaintainPickCountIfDisabled` property to `true`, assuming the list was not already configured this way in the inspector.
 
 To see this in action, invoke the `PickRewards` method:
