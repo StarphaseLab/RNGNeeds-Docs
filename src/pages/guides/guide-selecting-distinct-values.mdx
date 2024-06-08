@@ -1,6 +1,9 @@
 import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
-import {SelectingValuesPage} from "@/components/PageLinks";
+import {DepletableListsPage, PreferencesPage, SelectingValuesPage} from "@/components/PageLinks";
+import guideDepDistinctSelectionList from '@/images/screenshots/guide-dep-distinct-selection-list.png';
+import guideDepDistinctSelectionListOptions from '@/images/screenshots/guide-dep-distinct-selection-list-options.png';
+import guideDepDistinctSelectionListResult from '@/images/screenshots/guide-dep-distinct-selection-list-result.png';
 import guideDistinctSelectionList from '@/images/screenshots/guide-distinct-selection-list.png';
 import guideDistinctSelectionPick from '@/images/screenshots/guide-distinct-selection-pick.png';
 import {Note} from "@/components/mdx";
@@ -12,17 +15,23 @@ export const description =
 # Selecting Distinct Values
 
 Often, it's essential to ensure that each value you select from a set is unique.
-While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieve this.  {{ className: 'lead' }}
+While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieving this.  {{ className: 'lead' }}
 
 ---
 
-### Selecting Unique Rewards
+## Selecting Unique Rewards
 
 Imagine a scenario where you'd like to offer players three unique rewards upon completing a game level.
+Using the **Depletable Lists** feature is the ideal option here, as each picked reward will be automatically depleted, thus appearing in the result only once.
+
+<Note>
+    To learn more about the concept of *Depletable Items*, visit
+    <a href={DepletableListsPage.Link}>this page</a> in our documentation.
+</Note>
 
 Firstly, let's establish a basic `Reward` class. This class will:
-- Contain details about the in-game currency
-- Provide relevant information to the drawer through the info provider interface
+- Contain details about the in-game currency.
+- Provide relevant information to the drawer through the info provider interface.
 
 ```csharp {{ title: 'Basic Reward Class'}}
 using System;
@@ -50,6 +59,71 @@ public class LevelCompletionRewards : MonoBehaviour
 ```
 
 After attaching the component to a GameObject, you can begin shaping your array of rewards.
+
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionList} alt="Distinct Selection - Depletable List" width="1000"/>
+
+With the reward pool in place, it's time to set the list as Depletable. First, ensure the Advanced options are enabled in the
+<a href={PreferencesPage.Link + "#preferences-window"}>Preferences Window</a>.
+
+1. Open the **PICK** section of the drawer and click the **Depletable** button. By default, each Probability Item will be marked as **Depletable** with `1 / 1` available / maximum units.
+2. Turn on the **Maintain Pick Count** option and set the Pick Count of this list to `3`.
+3. Enable the **Visualize Units in the Stripe** option to better display the remaining units for each item.
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionListOptions} alt="Distinct Selection - Depletable List Options" width="1000"/>
+
+Clicking the **TEST** button will pick three distinct items from the list, respecting the probability distributions and available units. Because the items have only one available unit, they are picked only once. The remaining units are clearly visualized in the stripe and by lowering the unit counts next to each item. Testing repeatedly depletes the list until no values are picked.
+
+<Note>
+    Hint: Holding **Control** (or **Command** on Mac) while pressing the TEST button will refill the units of items before running the test. Alternatively, you can refill items using the **Action Menu** - just click the **Arrow Button** next to the selected action, which by default should be **Refill Items**.
+</Note>
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionListResult} alt="Distinct Selection - Depletable List Result" width="1000"/>
+
+Now that we've set up our list of unique rewards and tested the outcomes, the final step is to pick the rewards in code. Incorporate the following method into the `LevelCompletionRewards` component.
+
+```csharp {{ title: 'Add the PickRewards method'}}
+public List<Reward> PickRewards(int count)
+{
+    rewards.RefillItems();
+    rewards.MaintainPickCountIfDisabled = true;
+    return rewards.PickValues(count);
+}
+```
+
+Before selecting values, the `PickRewards` method:
+- Refills the units of all items to their maximum to ensure every reward is accessible in case they were depleted in the last pick.
+- Sets the `MaintainPickCountIfDisabled` property to `true`, assuming the list was not already configured this way in the inspector.
+
+To see this in action, invoke the `PickRewards` method:
+
+```csharp {{ title: 'Test the distinct selection'}}
+var pickedRewards = PickRewards(rewardsToPick);
+
+foreach (var reward in pickedRewards)
+{
+    Debug.Log(reward.ItemInfo);
+}
+
+// An example console output with three unique rewards could be:
+// Gold (250)
+// Diamonds (7)
+// StarDust (50)
+```
+
+
+---
+
+## Alternative Approach
+
+<Note>
+    Before the introduction of the **Depletable Lists** feature in v0.9.7, selecting distinct values was commonly achieved by disabling the item just picked, preventing its selection in subsequent picks. 
+    While this method is less efficient in terms of code and performance—each picked item required a unique selection call within a loop—we're retaining this guide should you choose not to use depletable items.
+</Note>
+
+First, create the `Reward` and `LevelCompletionRewards` classes following the guide above.
+
+After attaching the component to a GameObject, you can start shaping your array of rewards.
 
 <ImageX className="w-full h-auto" src={guideDistinctSelectionList} alt="Distinct Selection - List" width="1000"/>
 
@@ -115,6 +189,11 @@ Post-testing, examining the list will reveal that chosen items have been disable
 <ImageX className="w-full h-auto" src={guideDistinctSelectionPick} alt="Distinct Selection - Pick" width="1000"/>
 
 In conclusion, by momentarily disabling each item post-selection, this method efficiently curates a set of entirely unique items from the list.
+
+<Note>
+    **Recommended Approach:** Using **Depletable Lists** is generally more effective and streamlined. This feature not only simplifies the process of managing unique selections but also improves overall performance by handling item availability directly within the list structure.
+</Note>
+
 
 
 ---
