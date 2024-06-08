@@ -1,7 +1,7 @@
 ﻿import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
 import drawerButtonsInfo from '@/images/screenshots/drawer-buttons-info.png';
-import {PreferencesPage} from "@/components/PageLinks";
+import {GuideSelectingDistinctValues, PreferencesPage} from "@/components/PageLinks";
 import {ImageX} from "@/components/ImageX";
 export const description =
     'TODO meta description';
@@ -10,12 +10,32 @@ export const description =
 
 # Depletable Lists
 
-Depletable Lists is a very powerful feature that allows items to have limited availability. Setting the maximum and available units for each item offers a wide range of possibilities for your game mechanics. 
-Depleting items can be utilized in many different ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, for instance in card decks or loot tables. {{ className: 'lead' }}
+Depletable Lists are a powerful feature that allows items to have limited availability. By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics. Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables. {{ className: 'lead' }}
 
 ---
 
-## Getting Started
+## What is a Depletable List?
+
+Simply put, a Depletable List enables the **management of items with limited availability**.
+
+Imagine a scenario where you have a card deck that may contain multiple copies of the same card. In standard RNGNeeds usage, identical cards would be represented by multiple identical entries of the same item. With Depletable Lists, however, the card is represented by a single item with **multiple units**.
+
+When values are picked (cards are drawn) from such a list, the units are **consumed** one by one with each pick, until they reach zero and the item is considered **depleted**, i.e., no longer selectable. Essentially, the card appears to no longer exist in the deck.
+
+Another common scenario is the selection of distinct values only, such as choosing unique game rewards from a pool. With Depletable Lists, this is incredibly easy to achieve by simply setting the list to Depletable and assigning each item a single unit (`1`).
+
+<Note>
+    This page provides the essential fundamentals for understanding limited item availability and guides on working with units in the inspector or via code. 
+    For a practical use case of selecting unique rewards using a Depletable List, please check out the <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a> guide.
+</Note>
+
+
+---
+
+Setting a `ProbabilityList` as **depletable** allows selections to consume units of individual items, assuming they are also set as **depletable**. 
+In other words, the list can mix depletable and non-depletable items, and will only consume units of depletable items if the list itself is depletable.
+
+### Setting Probability List as Depletable
 
 By default, Probability Lists are created as **not depletable**, you can think of them as having *infinite units*. 
 While this is a default behavior providing the standard usage of RNGNeeds, switching a list between depletable and infinite is very easy.
@@ -53,6 +73,13 @@ they behave similar to disabled items - they are not picked in selections
 maintain pick count - will ensure the pick count as long as there are enough total units available
 if not, the pick count will be lower
 unless any of the items are infinite, in which case the remaining count will be picked from them - once all the units are consumed, the list will behave as if only enabled infinite items are present
+
+---
+
+## Selection Logic
+Whenever a depletable item is picked during selection, its units are lowered by `1` until they reach zero and the item is considered as depleted.
+
+If some of the items in the list are non-depletable (ie. infinite), the selection continues as if only these items were present, ignoring any **disabled** or **depleted** items.
 
 ---
 
