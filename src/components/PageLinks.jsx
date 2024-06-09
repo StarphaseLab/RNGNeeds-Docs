@@ -39,6 +39,7 @@ export const GuidesOverview = createPage("Overview", "/guides-overview")
 export const GuideSelectingDistinctValues = createPage("Selecting Distinct Values", "/guide-selecting-distinct-values");
 export const GuideProbabilityInfluence = createPage("Probability Influence Guides", "/guide-probability-influence");
 export const GuidePLCollection = createPage("PLCollection Guides", "/guide-plcollection");
+export const GuideDepletableList = createPage("Depletable List Examples", "/guide-depletable-list-examples");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -115,7 +116,8 @@ export const sections = [
             GuidesOverview,
             GuideSelectingDistinctValues,
             GuideProbabilityInfluence,
-            GuidePLCollection
+            GuidePLCollection,
+            GuideDepletableList
         ],
     },
     {
