@@ -1,7 +1,16 @@
 ﻿import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
-import drawerButtonsInfo from '@/images/screenshots/drawer-buttons-info.png';
-import {GuideSelectingDistinctValues, PreferencesPage} from "@/components/PageLinks";
+import depListsEnable from '@/images/screenshots/dep-lists-enable.png';
+import depListsMixingItems from '@/images/screenshots/dep-lists-mixing-items.png';
+import depListsOldListReset from '@/images/screenshots/dep-lists-old-list-reset.png';
+import depListsPreferences from '@/images/screenshots/dep-lists-preferences.png';
+import {
+    GuideDepletableList,
+    GuideSelectingDistinctValues,
+    PreferencesPage,
+    SelectingValuesPage,
+    UserInterfacePage
+} from "@/components/PageLinks";
 import {ImageX} from "@/components/ImageX";
 export const description =
     'TODO meta description';
@@ -10,7 +19,9 @@ export const description =
 
 # Depletable Lists
 
-Depletable Lists are a powerful feature that allows items to have limited availability. By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics. Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables. {{ className: 'lead' }}
+Depletable Lists are a powerful feature that allows items to have limited availability. 
+By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics. 
+Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables. {{ className: 'lead' }}
 
 ---
 
@@ -18,76 +29,159 @@ Depletable Lists are a powerful feature that allows items to have limited availa
 
 Simply put, a Depletable List enables the **management of items with limited availability**.
 
-Imagine a scenario where you have a card deck that may contain multiple copies of the same card. In standard RNGNeeds usage, identical cards would be represented by multiple identical entries of the same item. With Depletable Lists, however, the card is represented by a single item with **multiple units**.
+Imagine a scenario where you have a card deck that may contain multiple copies of the same card. 
+In standard RNGNeeds usage, identical cards would be represented by multiple identical entries of the same item. 
+With Depletable Lists, however, the card is represented by a single item with **multiple units**.
 
-When values are picked (cards are drawn) from such a list, the units are **consumed** one by one with each pick, until they reach zero and the item is considered **depleted**, i.e., no longer selectable. Essentially, the card appears to no longer exist in the deck.
+When values are picked (cards are drawn) from this list, the units are **consumed** one by one with each pick. Once all units are used, the item becomes **depleted**, i.e., no longer selectable.
+Essentially, the card appears to no longer exist in the deck.
 
-Another common scenario is the selection of distinct values only, such as choosing unique game rewards from a pool. With Depletable Lists, this is incredibly easy to achieve by simply setting the list to Depletable and assigning each item a single unit (`1`).
-
-Usages:
-- resource collection - ore mining - iron deposit always drops iron ore or stone, has limited precious gems with low probability
-- random dungeon generation - random rooms, but only limited amount of treasure rooms (or other type?)
-- bag of goods - pick one by one at random
-- random quiz questions - ensure they dont repeat
+Another common scenario involves selecting distinct values, such as picking unique game rewards from a pool. 
+With Depletable Lists, achieving this is straightforward: simply set the list to Depletable and assign each item a single unit (`1`).
 
 <Note>
-    This page provides the essential fundamentals for understanding limited item availability and guides on working with units in the inspector or via code. 
-    For a practical use case of selecting unique rewards using a Depletable List, please check out the <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a> guide.
+    This page lays down the fundamental concepts of limited item availability and provides guidance on managing units both in the inspector and via code. For practical applications, explore the following pages:
+    - <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a> - Learn about selecting unique rewards using Depletable Lists.
+    - <a href={GuideDepletableList.Link}>{GuideDepletableList.Title}</a> - Discover practical examples of how to utilize Depletable Lists.
 </Note>
 
 ---
 
-Setting a `ProbabilityList` as **depletable** allows selections to consume units of individual items, assuming they are also set as **depletable**. 
-In other words, the list can mix depletable and non-depletable items, and will only consume units of depletable items if the list itself is depletable.
+## Getting Started
 
-### Setting Probability List as Depletable
-
-By default, Probability Lists are created as **not depletable**, you can think of them as having *infinite units*. 
-While this is a default behavior providing the standard usage of RNGNeeds, switching a list between depletable and infinite is very easy.
+By default, Probability Lists are created as **not depletable**, meaning you can think of them as having *infinite units*. 
+While this is the standard behavior for RNGNeeds, toggling a list between depletable and infinite is straightforward.
 
 1. **Activate Advanced Drawer Options Level**: Navigate to the
 <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 
 window and switch Drawer Options Level to **Advanced**. Activating this global setting will reveal advanced features across all your Probability List inspectors.
 
-2. Open the **PICK** section of the drawer and click the **Depletable** button.
+2. Open the **PICK** section of the drawer and click the **Depletable** button to toggle its state.
 
-Picking values from Depletable Lists consume the units of items which are also marked as depletable. Items with zero available units are considered as depleted and will no longer be selectable until their units are **Refilled**. 
-However, items that are **not depletable** will not have their units consumed and will be infinite.
+Alternatively, Depletable Lists can be enabled in code:
+
+```csharp {{ title: 'Enabling Depletable Lists in code'}}
+myDepletableList.IsDepletable = true;
+```
+
+<ImageX className="w-full h-auto" src={depListsEnable} alt="Depletable Lists - Enable" width="1000"/>
+
+Setting a `ProbabilityList` as **depletable** enables it to consume units of individual items, provided those items are also set as **depletable**. 
+Essentially, the list can contain a mix of depletable and non-depletable items, but only the units of depletable items will be consumed.
 
 ### Depletable Items
 
-On the other hand, by default, Probability Items are created as depletable with `1` available and `1` maximum unit. However, this does not come into play until the list itself is marked as depletable as well.
-This allows game designers to switch the depletable states of their lists without losing the depletable settings of each item. Individual items' settings also allow for mixing depletable and infinite items within the lists.
+While Lists are created as infinite by default, **Probability Items are initialized as depletable**, each with `1` available and `1` maximum unit.
+Since these settings only come into effect if the list itself is marked as depletable, this allows game designers to effortlessly toggle the depletable state of their lists without needing to adjust the settings.
+Likewise, toggling the list to a non-depletable state will not affect the depletable settings of individual items.
+
+Additionally, since each item's depletable status can be individually set, it's possible to mix depletable and infinite items within the same list, offering flexibility in how resources are managed.
 
 <Note>
-    Note that any `ProbabilityItem` created before introduction of Depletable Lists feature (in version 0.9.7) will not be depletable by default and will have its units and maximum units set to `0`. 
-    These items will have to be manually setup, however, both the Probability List drawer and API offer convenient ways to set these properties for all items in the list.
+    Note that any `ProbabilityItem` created before the introduction of the Depletable Lists feature (in version 0.9.7) will be infinite by default and will have its units and maximum units set to `0`. 
+    These items will have to be manually set up, but both the Probability List drawer and API provide convenient methods for adjusting these properties for all items in the list.
+    
+    **In Inspector** - click on the **Action Menu** and chose **Reset**, then click the **Execute Action Button** (orange arrow).
+
+    <ImageX className="w-full h-auto" src={depListsOldListReset} alt="Depletable Lists - Reset Units in Old list" width="1000"/>
+    
+    **In Code** - use `myOldProbabilityList.SetAllItemsDepletable(true, 1, 1);` to set all items to depletable with 1 available and 1 maximum unit.
 </Note>
 
-### Units and Max Units
+---
+
+## Designing Depletable Lists
+
+A Depletable List functions similarly to a standard Probability List but includes a depletable flag. The **key difference** lies in managing the limited availability of items and understanding its impact on the selection process.
+
+When a depletable item is selected, its units decrement by `1` until they reach zero. Once an item's available units hit zero, it is considered **depleted** and becomes unselectable until the units are **Refilled**.
+
+This characteristic implies that **the state of a depletable list can change during the selection process.**
+
+In contrast, with standard (infinite) lists, the selection process operates under the assumption that all items are always available, meaning the list’s state remains consistent before and after selections.
+
+In depletable lists, however, **items can become unavailable after certain selections**, altering the likelihood of picking depleted items and affecting the dynamics of the selection process.
+
+### Depleted Items
+
+Depleted items act similarly to disabled items—if they are selected, they are not included in the final result. However, selecting disabled (or depleted) items can reduce the total number of picks. This approach ensures that the probability distribution remains consistent with the intended design.
+
+<Note>
+    To learn more about the logic behind disabled items and how they impact the selection process, visit the
+    <a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a> page.
+</Note>
+
+The **Maintain Pick Count** feature is particularly useful when dealing with depletable lists. When enabled, the selection process tries to maintain the specified pick count as long as there are enough total units available.
+
+Here are some key points to consider when **Maintain Pick Count** is enabled:
+
+- **Standard List**: Always maintains the pick count since all items are infinite.
+- **Depletable List with all items depletable**: Maintains the pick count as long as there are enough total units. For instance, if the list has 10 available units in total, a pick count of 15 will result in only 10 items being picked. Once all units are used up, the list behaves as if all items are disabled.
+- **Depletable List with mixed items**: If at least one item is infinite, the remaining count will be picked from those infinite items. Once all depletable units are consumed, the list functions as if only the infinite items are available.
+
+### Mixing Depletable and Infinite Items
+
+Consider the following example of a Depletable List with mixed items:
+
+- two **enabled and infinite** items
+- two **enabled and depletable** items
+- one **disabled** item
+
+The pick count is set to `10`. 
+Total available units in the list is `2`, one for each depletable item. 
+Testing these settings will result in the selection process consuming the available units until they are depleted, at which point the list will behave as if the depletable items are disabled.
+
+<ImageX className="w-full h-auto" src={depListsMixingItems} alt="Depletable Lists - Mixing Items" width="1000"/>
+
+However, items that are **not depletable** will not have their units consumed and will provide unlimited availability.
+If some of the items in the list are non-depletable (ie. infinite), the selection continues as if only these items were present, ignoring any **disabled** or **depleted** items.
+
+
+---
+
+## Working with Units
 
 Each item in the list can be assigned its available and maximum units:
 - `Units` - the current available units - number of times the item can be picked. Each pick will consume one unit.
 - `MaxUnits` - the maximum units the item can have - this value is utilized when refilling the item or list - available units will be set to the maximum.
-total units, total max units
 
-### Depleted Items
+In addition, `ProbabilityList` offers information about the total units and total max units of the list, which can be useful for tracking the overall availability of items.
+- `myDepletableList.GetTotalUnits()` - the sum of all available units in the list (counting only enabled depletable items). This is the current total number of units available in the list.
+- `myDepletableList.GetTotalMaxUnits()` - the sum of all maximum units in the list (counting only enabled depletable items). This is a theoretical maximum all depletable items in the list can have.
 
-they behave similar to disabled items - they are not picked in selections
+Total Units and Total Max Units are also displayed in the *Informative version* of the **PICK** section button, assuming the list is depletable. Learn more about Informative Section Buttons in the 
+<a href={UserInterfacePage.Link + "#header-bar"}>{UserInterfacePage.Title}</a> page.
 
-maintain pick count - will ensure the pick count as long as there are enough total units available
-if not, the pick count will be lower
-unless any of the items are infinite, in which case the remaining count will be picked from them - once all the units are consumed, the list will behave as if only enabled infinite items are present
+### Adjusting Units
+
+We've designed the Probability List inspector to allow for easy adjustment of units for individual items or the entire list.
+To adjust units for a single item, **hover over the unit value with mouse pointer** and use the following shortcuts:
+
+- **Mouse Wheel** - increment or decrement the units
+- **WASD** or **Arrow Keys** - increment, decrement, refill or deplete the units
+
+Additionally, you can use modifier keys while adjusting units to achieve the following:
+- **Shift** - multiply the change by `10` (this default value can be adjusted in RNGNeeds Preferences)
+- **Control** (or **Command** on macOS) - bypass the clamping of values to maximum
+
+These shortcuts can be customized in the RNGNeeds
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title} Window</a>.
+
+<ImageX className="w-full h-auto" src={depListsPreferences} alt="Depletable Lists - Preferences" width="1000" />
+
+Adjusting units of individual items is also possible in code. For example, to set the units of the first item in the list to `15` and the maximum units to `20`, you can use the following code:
+
+```csharp {{ title: 'Adjusting Units in code'}}
+var item = myDepletableList.GetProbabilityItem(1);
+item.Units = 15;
+item.MaxUnits = 20;
+```
+
+### Refilling Units
+
+Refilling units (items, or lists) means setting the available units back to the maximum units. You can refill individual items or the entire list.
 
 ---
-
-## Selection Logic
-Whenever a depletable item is picked during selection, its units are lowered by `1` until they reach zero and the item is considered as depleted.
-
-If some of the items in the list are non-depletable (ie. infinite), the selection continues as if only these items were present, ignoring any **disabled** or **depleted** items.
-
----
-
 
 
 

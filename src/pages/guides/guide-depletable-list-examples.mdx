@@ -1,11 +1,8 @@
 ﻿import {HeroPattern} from "@/components/HeroPattern";
 import {ImageX} from "@/components/ImageX";
 import {DepletableListsPage} from "@/components/PageLinks";
-import guideDepDistinctSelectionList from '@/images/screenshots/guide-dep-distinct-selection-list.png';
-import guideDepDistinctSelectionListOptions from '@/images/screenshots/guide-dep-distinct-selection-list-options.png';
-import guideDepDistinctSelectionListResult from '@/images/screenshots/guide-dep-distinct-selection-list-result.png';
-import guideDistinctSelectionList from '@/images/screenshots/guide-distinct-selection-list.png';
-import guideDistinctSelectionPick from '@/images/screenshots/guide-distinct-selection-pick.png';
+import depListExamplesIronVeinA from '@/images/screenshots/dep-list-examples-iron-vein-a.png';
+import depListExamplesIronVeinB from '@/images/screenshots/dep-list-examples-iron-vein-b.png';
 import {Note} from "@/components/mdx";
 import {DISCORD_LINK} from "@/components/RLinks";
 export const description =
@@ -15,8 +12,7 @@ export const description =
 
 # Depletable List Examples
 
-On this page, we'll explore practical examples of using Depletable Lists to achieve unique outcomes in common game mechanics. 
-Limited item availability can be a powerful tool in game design, allowing you to create diverse and engaging gameplay experiences.
+On this page, we'll explore practical examples of using Depletable Lists to achieve unique outcomes in common game mechanics. Limited item availability can be a powerful tool in game design, enabling you to create diverse and engaging gameplay experiences. {{ className: 'lead' }}
 
 <Note>
     Looking to learn more about Depletable Lists and how they work? Check out the <a href={DepletableListsPage.Link}>{DepletableListsPage.Title}</a> page for an in-depth guide.
@@ -26,9 +22,82 @@ Limited item availability can be a powerful tool in game design, allowing you to
 
 ## Resource Collection
 
-The well-known iron vein in any game world is a valuable resource for players. Often, iron veins are set up to provide iron ore or stone when mined, with a chance for precious gems.
-This scenario can be easily replicated using Depletable Lists, with perfect control over the availability of each resource type.
+In many games, resource deposits are set up to yield a handful of common resources, along with a chance for a limited number of rare ones. This scenario can be effectively simulated using Depletable Lists, offering perfect control over the availability of each resource type.
 
+Consider the well-known iron vein commonly found in game worlds, a staple resource for players that occasionally rewards them with precious gems.
+
+<ImageX className="w-full h-auto" src={depListExamplesIronVeinA} alt="Depletable List Examples - Iron Vein A" width="1000"/>
+
+This particular Iron Vein is designed to frequently provide unlimited **Iron Ore** and **Heavy Stone**, while also offering a rare chance of yielding a maximum of three **Gold Nuggets** and one **Opal**. The two main resources are set as non-depletable, meaning they remain consistently available for collection. In contrast, the rare gems are depletable; their availability is capped at 3 and 1 units, respectively.
+
+Each mining attempt allows the player to extract 1 to 3 items, determined by the **Pick Count** setting. Picking the depletable items consumes their units until they are depleted, whereas the non-depletable items continuously remain accessible.
+
+
+### Depleting Deposit by Mining Attempts
+
+Often, it's beneficial to limit a resource deposit and introduce a logic of depletion. One effective approach is to assign a fixed number of mining attempts before the deposit is considered depleted.
+
+```csharp {{ title: 'Depleted by Mining Attempts'}}
+using System.Collections.Generic;
+using RNGNeeds;
+using UnityEngine;
+
+public class ResourceDeposit : MonoBehaviour
+{
+    public ProbabilityList<Resource> resourceDeposit;
+    
+    public int miningAttempts = 0;
+    public int maxMiningAttempts = 5;
+    
+    public List<Resource> MineDeposit()
+    {
+        miningAttempts++;
+    
+        if (miningAttempts >= maxMiningAttempts)
+        {
+            // Here, we would typically disable the depleted resource deposit
+            // For example, disable this GameObject or make it non-interactable
+        }
+    
+        return resourceDeposit.PickValues();
+    }
+}
+```
+
+In this code, we increment the `miningAttempts` counter each time the deposit is mined. 
+Once the `miningAttempts` reaches or exceeds the `maxMiningAttempts`, the deposit is considered depleted and is thus made unavailable for further mining.
+
+### Depleting Deposit by Resource Availability
+
+An alternative approach involves monitoring if a particular resource in the deposit is depleted. Consider the following resource deposit setup:
+
+<ImageX className="w-full h-auto" src={depListExamplesIronVeinB} alt="Depletable List Examples - Iron Vein B" width="1000"/>
+
+We have introduced a **Check For Depleted Resource** variable and changed the **Iron Ore** item to be depletable with 5 available units. The logic below checks if the specified resource is depleted and disables the deposit accordingly.
+
+```csharp {{ title: 'Depleted by Resource Check'}}
+public Resource checkForDepletedResource;
+public ProbabilityList<Resource> resourceDeposit;
+
+public List<Resource> MineDeposit()
+{
+    var minedResources = resourceDeposit.PickValues();
+    if (resourceDeposit.TryGetProbabilityItem(checkForDepletedResource, out var depositResource))
+    {
+        if(depositResource.IsDepleted)
+        {
+            // disable the depleted resource deposit
+        }
+    }
+
+    return minedResources;
+}
+```
+
+This particular deposit will allow mining until the **Iron Ore** is depleted, at which point the deposit will be disabled.
+
+The great thing about this approach is that the game designer has full control over which resource will trigger the depletion of the deposit. 
+By setting the individual items as depletable and assigning their units, each resource deposit can be customized to fit the game's unique mechanics or needs.
 
 ---
 
