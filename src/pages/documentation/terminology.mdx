@@ -21,7 +21,10 @@ This page provides definitions for the primary terms you'll encounter. {{ classN
 
             <Property name="Depletable List">A Probability List that allows Depletable Items to consume units upon selection. Depleted items will no longer be selectable and will behave similarly to disabled items until their units are refilled.</Property>
             <Property name="Depletable Item">A Probability Item which, when contained in a Depletable List, will have its units consumed with each pick. Once the units are depleted, the item will not be selectable until its units are refilled.</Property>
-            <Property name="Refill">A term used to describe the process of setting the units of a Depletable Item back to its defined maximum.</Property>
+            <Property name="Units">In depletable items, units refer to the number of times an item can be selected. Each selection will consume one unit.</Property>
+            <Property name="Max Units">In depletable items, maximum units refer to the upper limit of units an item can have. Units are reset to this maximum when the item is refilled.</Property>
+            <Property name="Refill">A term used to describe the process of resetting the units of a Depletable Item to its defined maximum.</Property>
+            <Property name="Selectable Item">A Probability Item is considered selectable if it is enabled and either non-depletable (infinite) or, for depletable items, if it has at least one available unit.</Property>
         </Properties>
     </Col>
     <Col>
