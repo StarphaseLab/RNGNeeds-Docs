@@ -26,7 +26,7 @@ export const SeedingOptionsPage = createPage("Seeding Options", "/seeding-option
 export const PickHistoryPage = createPage("Pick History", "/pick-history");
 export const NestingListsPage = createPage("Nesting Lists", "/nesting-lists");
 export const CustomizingListsPage = createPage("Customizing Lists", "/customizing-lists");
-
+export const DepletableListsPage = createPage("Depletable Lists", "/depletable-lists");
 export const ChangelogPage = createPage("Change Log", "/change-log");
 
 export const SamplesOverviewPage = createPage("Overview", "/samples-overview");
@@ -39,6 +39,7 @@ export const GuidesOverview = createPage("Overview", "/guides-overview")
 export const GuideSelectingDistinctValues = createPage("Selecting Distinct Values", "/guide-selecting-distinct-values");
 export const GuideProbabilityInfluence = createPage("Probability Influence Guides", "/guide-probability-influence");
 export const GuidePLCollection = createPage("PLCollection Guides", "/guide-plcollection");
+export const GuideDepletableList = createPage("Depletable List Examples", "/guide-depletable-list-examples");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
 export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
@@ -86,6 +87,7 @@ export const sections = [
             TerminologyPage,
             DesigningAListPage,
             SelectingValuesPage,
+            DepletableListsPage,
             RepeatPreventionPage,
             ProbabilityInfluencePage,
             TestingOutcomesPage,
@@ -114,7 +116,8 @@ export const sections = [
             GuidesOverview,
             GuideSelectingDistinctValues,
             GuideProbabilityInfluence,
-            GuidePLCollection
+            GuidePLCollection,
+            GuideDepletableList
         ],
     },
     {

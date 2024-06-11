@@ -4,6 +4,7 @@ import uiBasic from '@/images/screenshots/ui-basic.png';
 import headerBarFull from '@/images/screenshots/header-bar-options-full.png';
 import headerBarCompact from '@/images/screenshots/header-bar-options-compact.png';
 import headerBarInformative from '@/images/screenshots/header-bar-options-informative.png';
+import headerBarInformativePick from '@/images/screenshots/header-bar-options-informative-pick.png';
 import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
 import {Note} from "@/components/mdx";
 import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
@@ -62,7 +63,17 @@ There are three settings for the appearance of these Option Buttons that you can
 
 <ImageX className="w-full h-auto" src={headerBarInformative} alt="Header Bar - Informative Option Buttons" width="1000"/>
 
-With Informative Option Buttons, the color palette, stripe height, and the pick settings are shown within the button. The Pick button will display the number of picks as well as the letter **M** if the Maintain Pick Count feature is turned on.
+With Informative Option Buttons, the color palette, stripe height, and the pick settings are shown within the button. 
+
+<ImageX className="w-full h-auto" src={headerBarInformativePick} alt="Header Bar - Informative Pick Section Button" width="1000"/>
+
+The **Pick** button provides a concise overview of the list's selection logic, clearly displaying the current settings without the need to open the **Pick** section:
+
+- The letter **M** signifies that the **Maintain Pick Count** option for this list is active.
+- The numbers **2 - 5** indicate the minimum and maximum values for the **Pick Count**.
+- The numbers in brackets **[8 - 13]** show the available and maximum **Units** for a Depletable List.
+- Lastly, the **Repeat Prevention** method in use is displayed, in this case, **Spread**.
+
 
 
 ---
