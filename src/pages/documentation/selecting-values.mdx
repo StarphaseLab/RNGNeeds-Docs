@@ -1,6 +1,6 @@
 import {Note} from "@/components/mdx";
 import {HeroPattern} from "@/components/HeroPattern";
-import {PreferencesPage, SamplesTreasureChestPage, PickHistoryPage} from "@/components/PageLinks";
+import {PreferencesPage, SamplesTreasureChestPage, PickHistoryPage, DepletableListsPage} from "@/components/PageLinks";
 import diceRoll2d6 from '@/images/screenshots/dice-roll-2d6.png';
 import disabledItemEffect from '@/images/screenshots/disabled-item-effect.png';
 import {ImageX} from "@/components/ImageX";
@@ -184,6 +184,17 @@ Disabling items in the list is a convenient method for preventing certain values
     *Note that the option is set for each Probability List individually.*
 </Note>
 
+### Pick Counts in Depletable Lists
+
+Maintaining pick counts is straightforward in standard Probability Lists, where items are always available. However, in **Depletable Lists**, items can become unavailable due to depletion. Under these circumstances, maintaining the intended pick counts is feasible only if at least one item in the list is non-depletable (infinite).
+
+For a deeper understanding of how Depletable Lists function and their impact on game dynamics, visit 
+<a href={DepletableListsPage.Link}>this page</a>.
+
+### Determining the Success of a Pick
+
+Selecting multiple values from a list with disabled items is quite easy to maintain, because the resulting `List<T>` will only contain successfully selected values.
+
 ```csharp {{ title: 'Selecting multiple values from a list with disabled items'}}
 public ProbabilityList<string> myProbabilityList;
 
@@ -200,11 +211,9 @@ myProbabilityList.MaintainPickCountIfDisabled = true;
 var results = myProbabilityList.PickValues(100);
 ```
 
-Selecting multiple values from a list with disabled items is quite easy to maintain, because the resulting `List<T>` will only contain successfully selected values.
-
 However, when using methods that return a single value, such as `.PickValue()`, the outcome might depend on the `Type` your ProbabilityList holds. This is because `.PickValue()` has to return some value. If a disabled item would be picked from a ProbabilityList of `reference types`, the result would be a `null` and you could determine if the pick was successful with a null-check.
 
-However, if you are working with `value types`, the result of an unsuccessful pick would be the `default` value of your Type. In some cases, the value returned from an unsuccessful pick might be indistinguishable from a real one. For example, with value types such as `string`, `boolean`, or `int`, an empty string, a `false`, or a `0` would be returned, respectively.
+On the other hand, if you are working with `value types`, the result of an unsuccessful pick would be the `default` value of your Type. In some cases, the value returned from an unsuccessful pick might be indistinguishable from a real one. For example, with value types such as `string`, `boolean`, or `int`, an empty string, a `false`, or a `0` would be returned, respectively.
 
 If you need to determine the success of a single value pick, you can use `.TryPickValue(out T value)`
 
@@ -221,7 +230,6 @@ var result = myProbabilityList.PickValue();
 
 Disabling items can also be a powerful design choice that brings flexibility to modular selections. Please explore our 
 <a href={SamplesTreasureChestPage.Link}>{SamplesTreasureChestPage.Title}</a> sample for ideas on how to create a modular and easy-to-maintain selection systems.
-
 
 ### Edge Cases with Disabled Items and Maintaining Pick Counts
 
