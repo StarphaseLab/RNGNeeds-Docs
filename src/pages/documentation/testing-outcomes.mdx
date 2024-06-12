@@ -68,6 +68,18 @@ For a comprehensive breakdown, results are also logged in the console, detailing
 
 <ImageX className="w-full h-auto" src={testingOutcomesConsole} alt="Testing Outcomes Console" width="1000"/>
 
+### Testing Depletable Lists
+
+It's crucial to remember that **testing depletable lists consumes units of items** just as it would during actual gameplay. 
+As items are selected during tests, their units will decrease, setting a new state of the list each time. 
+While you may intentionally design your lists to be partially depleted as part of the gameplay experience, if your aim is simply to test the outcomes without permanent changes, consider refilling the items after testing.
+
+<Note>
+    Tip: Frequent testing is recommended to gain more accurate insights. 
+    To avoid the need to manually refill items after each test, you can **Control + Click** (or **Command + Click** on macOS) the **TEST** button. 
+    This shortcut refills the items automatically before each test.
+</Note>
+
 ---
 
 ## Interpreting Test Results
