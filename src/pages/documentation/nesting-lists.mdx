@@ -210,6 +210,14 @@ Here are the various families of methods available for picking values from the c
 - **Pick Values From All** - Method that picks multiple values from each list in the collection:
   - `List<T> PickValuesFromAll()`
 
+With the addition of <a href={DepletableListsPage.Link}>{DepletableListsPage.Title}</a> in RNGNeeds v0.9.7, the `PLCollection` class also includes methods for refilling units of all lists in the collection:
+
+- **Refill List** - Methods that refill the units of a list in the collection:
+- `bool RefillList(int index)`
+- `bool RefillList(string name)`
+- **Refill All Lists** - Method that refills the units of all lists in the collection:
+- `void RefillAllLists()`
+
 ### Example: Selecting Values via PLCollection
 
 Here is an example demonstrating how to select values from a list within the collection using the `TryPickValueFrom` method.
