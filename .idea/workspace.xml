@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a8ba0929-0c2c-4c38-8219-aa14bf4ca1ce" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/pages/guides/guide-plcollection.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/guides/guide-plcollection.mdx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/documentation/nesting-lists.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/documentation/nesting-lists.mdx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -12,22 +12,22 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2mEShZJ87ROLIBR5CczOTBU2Gi9" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "dev",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -37,6 +37,7 @@
       <option name="presentableId" value="Default" />
       <updated>1726640362884</updated>
       <workItem from="1726640364549" duration="95000" />
+      <workItem from="1727463840052" duration="81000" />
     </task>
     <servers />
   </component>
