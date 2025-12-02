@@ -10,9 +10,38 @@ Welcome to the RNGNeeds Changelog page. Here, you'll find a detailed history of 
 Our documentation currently matches the latest version available on the Asset Store. 
 Once a new version is approved by the Asset Store, we'll promptly update the documentation to reflect those changes. {{ className: 'lead' }}
 
-### What does Beta mean for RNGNeeds?
+---
 
-RNGNeeds will remain in a Beta version for a short period following its release. All features planned for the v1 release have already been implemented and tested. However, as the plugin undergoes further real-world testing, certain aspects of feature usage or the API may undergo changes or optimizations.
+## v1.0.0 (Sumbittted for Asset Store Review on 02 October 2024)
+
+### New Features
+
+- **[NEW] IEnumerable Implementation** - this allows you to use `foreach` loops directly on ProbabilityList instances, making it easier to iterate through items in the list.
+- **[NEW] Methods for adding multiple items** - use these new methods to create and add multiple items to ProbabilityList from provided values:
+
+    - `void AddItems(IEnumerable<T> values, bool enabled = true, bool locked = false)` - adds multiple items from an enumerable collection of values
+    - `void AddItems(bool enabled, bool locked, params T[] values)` - adds multiple items from provided values
+
+- **New Color Palettes - Fireworks & Champagne** - let’s celebrate this release with two new thematic color palettes. Fireworks theme brings vibrant and dynamic colors, while the Champagne gradient offers a more elegant and refined palette.
+
+### Inspector Improvements
+
+- **[NEW]** Added the option to group the Display Option Buttons into a compact dropdown, greatly optimizing horizontal space of the drawer’s header. For all your narrow-inspector needs! This is a global setting found in RNGNeeds Preferences.
+- **[NEW]** Added the ability to adjust numerical values by dragging. Look for a small visual hint left of the value field, indicating that the value is numerical.
+- **Visual Polish** - optimized font sizes and inspector elements for a much more compact look & feel. This change improves the overall readability of the ProbabilityList inspector.
+- **Stripe Improvements** - the order of percentage and weight values is now reversed in the Weights Priority mode to make the important value stand out. In addition, added a weight icon to the value if percentages are hidden. These changes greatly improve the readability of the stripe when working with weights.
+- Improved the Color Palettes Import logic. Now, when importing custom palettes, you can choose to either append the new palettes to the existing ones or replace them entirely.
+
+### Other Changes & Fixes
+
+- Fixed an issue where a ProbabilityList of custom objects had the class foldout misaligned in some versions of Unity editor.
+- Warnings have been removed from default log level. By default, the logging is now set to Info & Hints.
+
+### BREAKING CHANGES
+
+- Removed the `PLCollection.PickFromAll` method. This method was marked obsolete and superseded with `PLCollection.PickValuesFromAll` in v0.9.6
+
+*Thanks to our Discord users **Jake Pine** & **Krptck** for feature suggestions implemented in this release!*
 
 ---
 
