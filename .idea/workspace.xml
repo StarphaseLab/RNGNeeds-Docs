@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a8ba0929-0c2c-4c38-8219-aa14bf4ca1ce" name="Changes" comment="" />
+    <list default="true" id="a8ba0929-0c2c-4c38-8219-aa14bf4ca1ce" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/images/screenshots/preferences-window.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/images/screenshots/preferences-window.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/images/screenshots/welcome-window.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/images/screenshots/welcome-window.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/user-guide/preferences.mdx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/user-guide/preferences.mdx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,7 +29,9 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
     &quot;js.debugger.nextJs.config.created.client&quot;: &quot;true&quot;,
     &quot;js.debugger.nextJs.config.created.server&quot;: &quot;true&quot;,
@@ -64,6 +71,8 @@
       <workItem from="1727702520104" duration="109000" />
       <workItem from="1731972139811" duration="346000" />
       <workItem from="1753477479807" duration="1322000" />
+      <workItem from="1764662581044" duration="284000" />
+      <workItem from="1765060477820" duration="2365000" />
     </task>
     <servers />
   </component>
