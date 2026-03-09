@@ -1,9 +1,187 @@
-import {HeroPattern} from "@/components/HeroPattern";
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_RNGNeeds, SupportPage } from '@/components/PageLinks'
+
 export const description =
-    'Discover the different methods you can use to select items from your Probability Lists.'
+  'Built-in selection methods, extension paths, and guidance for custom selection logic in RNGNeeds.'
 
 <HeroPattern />
 
 # Selection Methods
 
----
+Selection methods decide **how RNGNeeds chooses item indices from a probability list**.
+
+They are not the same thing as probabilities themselves. Your list still defines probabilities, enabled state, locked items, depletion, and repeat prevention. The selection method controls the algorithm used to turn that data into a result.
+
+## Which path should you use?
+
+### Use a built-in method
+
+Best when you want default behavior, performance is already fine, and you only need to switch algorithms — not invent a new one.
+
+### Extend the system
+
+Best when you need custom selection logic, want a special rule the built-ins do not cover, or are comfortable working at API level.
+
+## Built-in selection methods
+
+<MemberGroup title="Built-in methods" tone="sky">
+  <Member kind="METHOD" color="emerald" name="Linear Search" signature="Identifier: LSMRegular">
+    Simple linear search. A strong default for smaller lists and common gameplay scenarios.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Linear Search [BURST]" signature="Identifier: LSMBurst">
+    Burst-compiled version of Linear Search. Better suited to larger workloads and large numbers of picks in one operation.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Cumulative Probability" signature="Identifier: CPMRegular">
+    Uses cumulative probabilities and binary search. A good general-purpose option across different list sizes.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Cumulative Probability [BURST]" signature="Identifier: CPMBurst">
+    Burst-compiled cumulative-probability method. Great when you care about throughput for larger selection jobs.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Random Selection" signature="Identifier: RSMRegular">
+    Ignores item probabilities entirely and selects from items uniformly at random.
+  </Member>
+</MemberGroup>
+
+## Quick guidance
+
+<MemberGroup title="When each built-in method makes sense" tone="neutral">
+  <Member kind="USE" color="zinc" name="Linear Search / Linear Search [BURST]">
+    Good fit for many gameplay lists, especially smaller lists or situations where the number of picks per call is low.
+  </Member>
+  <Member kind="USE" color="zinc" name="Cumulative Probability / Cumulative Probability [BURST]">
+    Good fit when lists get larger or you want a more scalable general-purpose selection algorithm.
+  </Member>
+  <Member kind="USE" color="zinc" name="Random Selection">
+    Use only when you intentionally want a uniform distribution and do not want probabilities to matter.
+  </Member>
+</MemberGroup>
+
+## Full custom path: `ISelectionMethod`
+
+`ISelectionMethod` is the lowest-level extension path.
+
+Use it when you want complete ownership of the selection process.
+
+That also means you are responsible for the technical details yourself.
+
+<MemberGroup title="ISelectionMethod contract" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="Identifier" signature="string">
+    The unique key used to register and look up the method. This is the value stored in <code>ProbabilityList&lt;T&gt;.SelectionMethodID</code>.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Name" signature="string">
+    Human-readable display name for the method.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EditorTooltip" signature="string (Editor only)">
+    Tooltip shown in the Unity editor when applicable.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SelectItems" signature="NativeList<int> SelectItems(IProbabilityList probabilityList, int pickCount)">
+    Performs the actual selection and returns the picked indices.
+  </Member>
+</MemberGroup>
+
+## Recommended custom path: `SelectionMethodBase`
+
+<Note>
+  <p><strong><code>SelectionMethodBase</code> is the partial implementation for custom selection logic.</strong></p>
+  <p>If you want to focus on your own algorithm instead of rebuilding the whole selection pipeline, start here.</p>
+</Note>
+
+This base class handles a lot of the heavy lifting around the selection process so you can focus on the part that makes your method unique.
+
+### What `SelectionMethodBase` helps with
+
+<MemberGroup title="Why inherit from SelectionMethodBase" tone="amber">
+  <Member kind="HELPER" color="amber" name="Prep and item data setup">
+    The base class prepares the probability list, item data, enabled-item tracking, positive-probability tracking, and seeded random state.
+  </Member>
+  <Member kind="HELPER" color="amber" name="Repeat-prevention integration">
+    It already knows how to integrate with RNGNeeds repeat-prevention options such as Spread, Repick, and Shuffle.
+  </Member>
+  <Member kind="HELPER" color="amber" name="Depletable-list support">
+    It handles depletion-aware selection flow and applies item unit changes back to the list when required.
+  </Member>
+  <Member kind="HELPER" color="amber" name="Selection loop lifecycle">
+    The base class owns the common loop and cleanup lifecycle, which means less boilerplate and fewer opportunities to subtly break expected behavior.
+  </Member>
+</MemberGroup>
+
+### The main members you usually care about
+
+<MemberGroup title="SelectionMethodBase members" tone="violet">
+  <Member kind="PROPERTY" color="sky" name="ProbabilityList" signature="IProbabilityList">
+    The active probability list being processed.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemData" signature="NativeArray<ItemData>">
+    Runtime item data used during selection.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EnabledIndicesWithPositiveProbability" signature="NativeList<int>">
+    Indices of items that are currently eligible and have positive probability.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="AllIndicesWithPositiveProbability" signature="NativeList<int>">
+    Indices of all items with positive probability, whether currently selectable or not.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickedIndex" signature="int">
+    The most recently picked item index from the list's history.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
+    Number of items in the list.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="TotalProbability" signature="float">
+    Total probability accumulated during prep.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SelectItem" signature="protected abstract bool SelectItem(out int selectedIndex)">
+    The key method you implement. This is where your custom selection logic usually lives.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Prep" signature="protected virtual void Prep(IProbabilityList probabilityList)">
+    Override only if you need additional preparation before selection starts.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PrepItem" signature="protected virtual void PrepItem(IProbabilityItem probabilityItem, int index, bool isEnabled, bool hasPositiveProbability)">
+    Override when you want to collect per-item data while the list is being prepared.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SpreadResult" signature="protected virtual int SpreadResult(int index)">
+    Hook for repeat-prevention spread behavior.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ShuffleResult" signature="protected virtual void ShuffleResult(NativeList<int> indices, int iterations)">
+    Hook for repeat-prevention shuffle behavior.
+  </Member>
+</MemberGroup>
+
+### Minimal custom method example
+
+```csharp
+public class MySelectionMethod : SelectionMethodBase
+{
+    public override string Identifier => "MySelectionMethod";
+    public override string Name => "My Selection Method";
+
+    protected override bool SelectItem(out int selectedIndex)
+    {
+        selectedIndex = EnabledIndicesWithPositiveProbability[
+            m_Random.NextInt(0, EnabledIndicesWithPositiveProbability.Length)
+        ];
+
+        return true;
+    }
+}
+```
+
+Then register it through <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a>:
+
+```csharp
+RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
+```
+
+## Which custom path is better?
+
+<MemberGroup title="Choose your difficulty level" tone="neutral">
+  <Member kind="RECOMMENDED" color="amber" name="Inherit from SelectionMethodBase">
+    Best for most custom extensions. You keep the familiar RNGNeeds pipeline and concentrate on the part that makes your selection logic special.
+  </Member>
+  <Member kind="ADVANCED" color="violet" name="Implement ISelectionMethod directly">
+    Best when you deliberately want total control and are comfortable recreating all required behavior yourself.
+  </Member>
+</MemberGroup>
+
+## Need help with a custom method?
+
+If you are writing a custom selection method and want feedback on the architecture or the behavior of your algorithm, the Discord link is on the <a href={SupportPage.Link}>{SupportPage.Title}</a> page.

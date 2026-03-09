@@ -1,9 +1,138 @@
-import {HeroPattern} from "@/components/HeroPattern";
+import { HeroPattern } from '@/components/HeroPattern'
+import { ProbabilityInfluencePage } from '@/components/PageLinks'
+
 export const description =
-    'Learn about the individual items in a Probability List, along with their properties and behaviors.'
+  'Reference for ProbabilityItem<T>, including base probability, evaluated probability, item state, influence, weights, and depletion.'
 
 <HeroPattern />
 
-# ProbabilityItem
+# ProbabilityItem&lt;T&gt;
 
----
+`ProbabilityItem<T>` represents one entry inside a `ProbabilityList<T>`.
+
+It stores the item's value plus the state and metadata that control how the item behaves during selection.
+
+## What this type is responsible for
+
+A `ProbabilityItem<T>` can hold:
+
+- the value itself
+- base probability
+- enabled / locked state
+- weight
+- influence provider settings
+- depletion state and unit counts
+- provider-interface capabilities discovered from the value type
+
+## Core item data
+
+<MemberGroup title="Core properties" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="Value" signature="T">
+    The value stored by this item.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="BaseProbability" signature="float">
+    The stored baseline probability, clamped between 0 and 1.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Probability" signature="float">
+    The effective probability currently used during selection. If the item is influenced, this value is derived from <code>BaseProbability</code>, spread settings, and current influence.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Enabled" signature="bool">
+    Determines whether the item is eligible for selection.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Locked" signature="bool">
+    Prevents certain list-level probability operations from changing this item's base probability.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Weight" signature="int">
+    Weight representation used by weight-based list helpers.
+  </Member>
+</MemberGroup>
+
+<Note>
+  <p><strong><code>BaseProbability</code> is not the final answer.</strong></p>
+  <p>If the item is influenced, <code>Probability</code> is the value that actually matters during selection.</p>
+</Note>
+
+## Influence support
+
+<MemberGroup title="Influence properties" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="InfluenceSpread" signature="Vector2">
+    The allowed low/high probability range when influence is applied.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="InvertInfluence" signature="bool">
+    Reverses the effect of the incoming influence value.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="InfluenceProvider" signature="IProbabilityInfluenceProvider">
+    External provider used to influence this item, unless the value itself already implements the influence-provider interface.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ValueIsInfluenceProvider" signature="bool">
+    Returns true when the stored value itself implements <code>IProbabilityInfluenceProvider</code>.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsInfluencedItem" signature="bool">
+    Returns true when the item is currently influenced by either an external provider or the value itself.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetInfluencedProbability" signature="float GetInfluencedProbability(float influence)">
+    Calculates the resulting probability for a specific influence value.
+  </Member>
+</MemberGroup>
+
+### Important behavior
+
+If the stored value implements `IProbabilityInfluenceProvider`, RNGNeeds prefers that provider over an externally assigned one. That makes it possible for a value object to supply its own influence directly.
+
+For the conceptual guide and examples, see <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>.
+
+## Depletion and selectability
+
+<MemberGroup title="Depletable item properties" tone="emerald">
+  <Member kind="PROPERTY" color="sky" name="IsDepletable" signature="bool">
+    When true, picks consume units from this item while the parent list is depletable.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Units" signature="int">
+    Current number of units remaining.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="MaxUnits" signature="int">
+    Maximum units available after refill.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsDepleted" signature="bool">
+    Returns true when the item is depletable and has no units left.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsSelectable" signature="bool">
+    Returns true when the item is currently eligible for selection, taking enabled state and depletion into account.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Refill" signature="void Refill()">
+    Sets <code>Units</code> back to <code>MaxUnits</code>.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetDepletable" signature="void SetDepletable(bool depletable = true, int units = 1, int maxUnits = 1)">
+    Configures depletion state and unit counts together.
+  </Member>
+</MemberGroup>
+
+## Provider capability discovery
+
+<MemberGroup title="Provider-interface helpers" tone="violet">
+  <Member kind="METHOD" color="emerald" name="GetProviderTypes" signature="ItemProviderType GetProviderTypes()">
+    Inspects the value and reports which provider interfaces it implements.
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityInfluenceProvider">
+    Lets a value or external object supply a live influence value that changes the item's effective probability.
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityItemInfoProvider">
+    Lets a value provide extra item info for the editor UI.
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityItemColorProvider">
+    Lets a value provide custom coloring for the editor UI.
+  </Member>
+</MemberGroup>
+
+## Typical setup
+
+```csharp
+var item = new ProbabilityItem<string>("Rare Gem", 0.2f);
+item.Enabled = true;
+item.Locked = false;
+item.SetDepletable(true, units: 3, maxUnits: 3);
+```
+
+## Related page
+
+- <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a>

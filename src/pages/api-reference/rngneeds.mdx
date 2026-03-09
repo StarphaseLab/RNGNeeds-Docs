@@ -1,9 +1,126 @@
-import {HeroPattern} from "@/components/HeroPattern";
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_SeedProvider, API_SelectionMethods, SupportPage } from '@/components/PageLinks'
+
 export const description =
-  'Understand the top-level class that provides access to the core functionality of the plugin.'
+  'Reference for RNGNeedsCore — the static integration hub for registering selection methods, controlling seed providers, and inspecting global RNGNeeds behavior.'
 
 <HeroPattern />
 
-# RNGNeeds
+# RNGNeedsCore
 
----
+<Note>
+  <p><code>RNGNeedsCore</code> is not the page most users should start with.</p>
+  <p>If your goal is simply to create lists and pick values, go to <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a> first. Come back here when you want to extend RNGNeeds itself.</p>
+</Note>
+
+`RNGNeedsCore` is the static integration and extension entry point for RNGNeeds.
+
+This is where the package:
+
+- initializes and registers built-in selection methods
+- stores the active seed provider
+- exposes the default selection method identifier
+- lets you register your own selection methods
+- provides logging controls and a small number of global helpers
+
+## When to use this type
+
+Use `RNGNeedsCore` when you want to:
+
+- register a custom `ISelectionMethod`
+- inspect the list of available selection methods
+- replace the global seed provider
+- reset the seed provider back to default behavior
+- pre-warm history entry pooling for allocation-sensitive scenarios
+- control RNGNeeds log verbosity while debugging
+
+## Selection method registry
+
+<MemberGroup title="Selection method members" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="RegisteredSelectionMethods" signature="List<(string Identifier, string Name)>">
+    Returns the currently registered selection methods as identifier/name pairs. This is useful when you want to inspect what methods are available at runtime or build your own method picker UI.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="DefaultSelectionMethodID" signature="string">
+    Returns the identifier of the fallback selection method used when no valid method is found.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RegisterSelectionMethod" signature="void RegisterSelectionMethod(ISelectionMethod selectionMethod)">
+    Registers a custom selection method. The method must expose a non-empty unique <code>Identifier</code>.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetSelectionMethod" signature="ISelectionMethod GetSelectionMethod(string identifier)">
+    Retrieves a registered selection method by identifier. If the identifier is unknown, RNGNeeds falls back to the default selection method.
+  </Member>
+</MemberGroup>
+
+### Why the `Identifier` matters
+
+The selection method identifier is the stable string key used by RNGNeeds to look up a method.
+
+That means it matters in several places:
+
+- when you register a custom method
+- when `ProbabilityList<T>.SelectionMethodID` stores a selected method
+- when serialized data needs to find the correct method later
+- when RNGNeeds falls back because an identifier is invalid or no longer registered
+
+```csharp
+public class MySelectionMethod : SelectionMethodBase
+{
+    public override string Identifier => "MyCustomMethod";
+    public override string Name => "My Custom Method";
+
+    protected override bool SelectItem(out int selectedIndex)
+    {
+        // Your custom selection logic here.
+    }
+}
+
+RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
+```
+
+## Seed provider control
+
+<MemberGroup title="Seed provider members" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="NewSeed" signature="uint">
+    Generates a fresh seed using the currently active global seed provider.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetSeedProvider" signature="void SetSeedProvider(ISeedProvider seedProvider)">
+    Replaces the global seed provider used by RNGNeeds.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetSeedProvider" signature="void ResetSeedProvider()">
+    Restores the default seed provider.
+  </Member>
+</MemberGroup>
+
+If you need deterministic runs, repeatable tests, or a custom game-wide seeding strategy, see <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>.
+
+## Logging and diagnostics
+
+<MemberGroup title="Diagnostics helpers" tone="violet">
+  <Member kind="METHOD" color="emerald" name="SetLogLevel" signature="void SetLogLevel(LogMessageType logMessageLevel)">
+    Changes the verbosity of RNGNeeds logging.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetLogAllowColors" signature="void SetLogAllowColors(bool allowColors)">
+    Enables or disables colored log output.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="WarmupHistoryEntries" signature="void WarmupHistoryEntries(int count)">
+    Pre-allocates pooled <code>HistoryEntry</code> instances to reduce runtime allocations during picking.
+  </Member>
+</MemberGroup>
+
+## Behavior notes
+
+<Note>
+  <p><strong>Fallback behavior is intentional.</strong></p>
+  <p>If a requested selection method identifier cannot be resolved, <code>GetSelectionMethod(...)</code> returns the fallback method instead of throwing. That keeps serialized assets usable even when a custom method is missing or renamed.</p>
+</Note>
+
+<Note>
+  <p><strong>Custom methods must use unique identifiers.</strong></p>
+  <p>If you try to register a second method with the same identifier, RNGNeeds logs a warning and keeps the existing one.</p>
+</Note>
+
+## Related pages
+
+- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
+- <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>
+- <a href={SupportPage.Link}>{SupportPage.Title}</a> if you want help reviewing a custom extension on Discord

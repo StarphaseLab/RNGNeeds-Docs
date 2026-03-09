@@ -1,36 +1,139 @@
-﻿import {HeroPattern} from "@/components/HeroPattern";
+import { HeroPattern } from '@/components/HeroPattern'
 import {
-    API_PickHistory, API_PLCollection,
-    API_ProbabilityItem,
-    API_ProbabilityList,
-    API_RNGNeeds, API_SeedProvider,
-    API_SelectionMethods, SupportPage
-} from "@/components/PageLinks";
+  API_PickHistory,
+  API_PLCollection,
+  API_ProbabilityItem,
+  API_ProbabilityList,
+  API_RNGNeeds,
+  API_SeedProvider,
+  API_SelectionMethods,
+  DocsOverviewPage,
+  NestingListsPage,
+  ProbabilityInfluencePage,
+  SeedingOptionsPage,
+  SupportPage,
+} from '@/components/PageLinks'
+
 export const description =
-    'Unlock the potential of RNGNeeds\' API with our Overview, providing a high-level view of the plugin\'s methods.'
+  'A practical map of the RNGNeeds API: core types first, extension points second, and links to curated guides where they make more sense than raw reference.'
 
 <HeroPattern />
 
 # API Overview
 
-Welcome to the API Reference section of RNGNeeds! This is your go-to resource for understanding the inner workings of the plugin's classes, methods, properties, and more.
+The API Reference is the code-facing companion to the rest of the docs.
 
-Each class in the RNGNeeds API has been meticulously documented to help you understand its purpose, behavior, and how it interacts with other components of the plugin. Whether you're looking to extend the functionality of RNGNeeds, or simply want a deeper understanding of its inner workings, you're in the right place.
+- **Documentation / Guides / Samples** teach workflows, use cases, and practical setups.
+- **API Reference** explains what the runtime types actually do, what their members mean, and where the extension points live.
 
-In this section, you'll find detailed information on the following classes:
+So yes: this section is intentionally more technical. The goal is to help you answer questions like **“Which type should I use?”**, **“What does this property actually control?”**, and **“Where do I register my custom selection method?”** without forcing you to reverse-engineer the package source first.
 
-- <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> - Understand the top-level class that provides access to the core functionality of the plugin.
-- <a href={API_ProbabilityList.Link}>{API_ProbabilityList.Title}</a> - Get to know this generic class that holds and manages probability items.
-- <a href={API_ProbabilityItem.Link}>{API_ProbabilityItem.Title}</a> - Learn about the individual items in a Probability List, along with their properties and behaviors.
-- <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a> - Dive into this class that tracks the selection history of probability items.
-- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a> - Discover the different methods you can use to select items from your Probability Lists.
-- <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a> - Learn about this class that provides seeding options for your random selections.
-- <a href={API_PLCollection.Link}>{API_PLCollection.Title}</a> - Explore the options for nesting multiple Probability Lists inside a custom collection class.
+## Start here, depending on what you need
 
-Each class reference includes a description, a list of properties and methods, and examples of usage where applicable. This should provide you with a comprehensive understanding of how each class works and how to use them in your projects.
+<LinkGrid>
+  <LinkCard href={API_ProbabilityList.Link} title={API_ProbabilityList.Title}>
+    The center of the public API. Use this page first if you want to create lists, add items, pick values, manage probabilities, weights, repeat prevention, seeding, depletion, or history.
+  </LinkCard>
+  <LinkCard href={API_ProbabilityItem.Link} title={API_ProbabilityItem.Title}>
+    The per-item layer. Use this when you need to understand enabled vs locked items, influence, weights, units, depletion, and how an item's effective probability is evaluated.
+  </LinkCard>
+  <LinkCard href={API_PLCollection.Link} title={API_PLCollection.Title}>
+    For organizing multiple probability lists into named or indexed collections. Great for grouped loot tables, dialogue pools, encounter sets, or other multi-list systems.
+  </LinkCard>
+  <LinkCard href={API_SelectionMethods.Link} title={API_SelectionMethods.Title}>
+    For choosing or extending the selection algorithm itself. This page covers built-in selection methods, custom selection logic, and the difference between implementing the interface directly and inheriting from <code>SelectionMethodBase</code>.
+  </LinkCard>
+  <LinkCard href={API_RNGNeeds.Link} title={API_RNGNeeds.Title}>
+    The static integration hub for advanced users. Go here to register selection methods, work with seed providers, inspect registered methods, or understand fallback behavior.
+  </LinkCard>
+  <LinkCard href={API_SeedProvider.Link} title={API_SeedProvider.Title}>
+    For deterministic workflows, debugging, reproducible tests, or custom seeding strategies.
+  </LinkCard>
+</LinkGrid>
 
-Remember, if you have any questions or encounter any issues, you can always reach out to us through the 
-<a href={SupportPage.Link}>{SupportPage.Title}</a>
-section. We're here to help. Happy coding!
+## API shape at a glance
 
----
+### Core runtime types
+
+These are the pages most users should start with:
+
+<ul>
+  <li><a href={API_ProbabilityList.Link}>{API_ProbabilityList.Title}</a></li>
+  <li><a href={API_ProbabilityItem.Link}>{API_ProbabilityItem.Title}</a></li>
+  <li><a href={API_PLCollection.Link}>{API_PLCollection.Title}</a></li>
+  <li><a href={API_PickHistory.Link}>{API_PickHistory.Title}</a></li>
+</ul>
+
+They cover the runtime behavior you are most likely to use directly in gameplay code.
+
+### Extension points
+
+These are the pages for custom integrations and advanced behavior:
+
+<ul>
+  <li><a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a></li>
+  <li><a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a></li>
+  <li><a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a></li>
+</ul>
+
+Use these when the built-in behavior is not enough and you want to extend RNGNeeds itself.
+
+## A few important concepts before you dive in
+
+<Note>
+  <p><strong>Base probability</strong> is not always the same as the final probability used during selection.</p>
+  <p><code>ProbabilityItem&lt;T&gt;</code> stores a <code>BaseProbability</code>, but the evaluated <code>Probability</code> can change because of influence providers, spread settings, and other runtime state.</p>
+</Note>
+
+<Note>
+  <p><strong>Enabled</strong> and <strong>Locked</strong> mean different things.</p>
+  <p>Disabled items are ignored during selection. Locked items can still be selected, but their probability is protected from certain list operations such as normalization and redistribution.</p>
+</Note>
+
+<Note>
+  <p><strong>Curated docs and API docs do different jobs.</strong></p>
+  <p>If you want tutorials, examples, and design advice, the curated sections are still the right destination — especially <a href={DocsOverviewPage.Link}>{DocsOverviewPage.Title}</a>, <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>, <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>, and <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>.</p>
+</Note>
+
+## Reference pages in this section
+
+<MemberGroup title="Core types" tone="sky">
+  <Member kind="CLASS" color="sky" name="ProbabilityList<T>">
+    The main list API for managing probability items and selecting values.
+  </Member>
+  <Member kind="CLASS" color="sky" name="ProbabilityItem<T>">
+    A single item in a probability list, including probability, state, influence, weight, and depletion data.
+  </Member>
+  <Member kind="CLASS" color="sky" name="PLCollection<T>">
+    A collection of multiple probability lists with helpers for lookup, picking, refilling, and clearing.
+  </Member>
+  <Member kind="CLASS" color="sky" name="PickHistory">
+    Stores recent picks and exposes helper methods for retrieving history entries or the latest picked indices.
+  </Member>
+</MemberGroup>
+
+<MemberGroup title="Advanced and extensibility" tone="amber">
+  <Member kind="STATIC" color="violet" name="RNGNeedsCore">
+    Static registry and integration entry point for selection methods, seed providers, logging, and global helpers.
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="ISelectionMethod">
+    The full custom path for implementing an entirely custom selection algorithm.
+  </Member>
+  <Member kind="BASE CLASS" color="amber" name="SelectionMethodBase">
+    Partial implementation for custom selection logic when you want help with prep, seeded randomness, depletion, and repeat-prevention plumbing.
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="ISeedProvider">
+    The contract for generating seeds used by RNGNeeds.
+  </Member>
+</MemberGroup>
+
+## Need examples, not just member descriptions?
+
+Go to the curated sections when you want intent, workflow, and examples:
+
+- <a href={DocsOverviewPage.Link}>{DocsOverviewPage.Title}</a>
+- <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+- <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+
+And if you are extending RNGNeeds in a more advanced way and want a second pair of eyes, the <a href={SupportPage.Link}>{SupportPage.Title}</a> page includes the Discord link.

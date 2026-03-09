@@ -42,13 +42,13 @@ export const GuidePLCollection = createPage("PLCollection Guides", "/guide-plcol
 export const GuideDepletableList = createPage("Depletable List Examples", "/guide-depletable-list-examples");
 
 export const API_Overview = createPage("API Overview", "/api-overview");
-export const API_RNGNeeds = createPage("RNGNeeds (WIP)", "/rngneeds");
-export const API_ProbabilityList = createPage("Probability List (WIP)", "/probability-list");
-export const API_ProbabilityItem = createPage("Probability Item (WIP)", "/probability-item");
-export const API_PickHistory = createPage("Pick History (WIP)", "/pick-history");
-export const API_SelectionMethods = createPage("Selection Methods (WIP)", "/selection-methods");
-export const API_SeedProvider = createPage("Seed Provider (WIP)", "/seed-provider");
-export const API_PLCollection = createPage("PL Collection (WIP)", "/pl-collection");
+export const API_RNGNeeds = createPage("RNGNeeds Core", "/rngneeds");
+export const API_ProbabilityList = createPage("ProbabilityList<T>", "/probability-list");
+export const API_ProbabilityItem = createPage("ProbabilityItem<T>", "/probability-item");
+export const API_PickHistory = createPage("PickHistory", "/pick-history");
+export const API_SelectionMethods = createPage("Selection Methods", "/selection-methods");
+export const API_SeedProvider = createPage("Seed Providers", "/seed-provider");
+export const API_PLCollection = createPage("PLCollection<T>", "/pl-collection");
 
 export function docsSectionLink() {
     return DocsOverviewPage.Link;

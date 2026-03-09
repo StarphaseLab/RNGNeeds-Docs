@@ -30,6 +30,11 @@ const colorStyles = {
     medium:
       'ring-zinc-200 bg-zinc-50 text-zinc-500 dark:ring-zinc-500/20 dark:bg-zinc-400/10 dark:text-zinc-400',
   },
+  violet: {
+    small: 'text-violet-500 dark:text-violet-400',
+    medium:
+      'ring-violet-300 bg-violet-400/10 text-violet-500 dark:ring-violet-400/30 dark:bg-violet-400/10 dark:text-violet-400',
+  },
 }
 
 const valueColorMap = {
