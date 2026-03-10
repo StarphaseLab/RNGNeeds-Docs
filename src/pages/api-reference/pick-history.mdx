@@ -7,14 +7,14 @@ export const description =
 
 # PickHistory
 
-`PickHistory` stores recent picks made by a `ProbabilityList<T>`.
+`PickHistory` stores the recent picks made by a `ProbabilityList<T>`. It is the small helper type behind convenience properties such as `LastPickedIndex`, `LastPickedValues`, and other history-related APIs on the list itself. {{ className: 'lead' }}
 
 Each history entry records:
 
 - the picked item index
 - the time of the pick
 
-The history is used by convenience properties such as `LastPickedIndex`, `LastPickedValues`, and similar helpers on `ProbabilityList<T>`.
+---
 
 ## Core members
 
@@ -33,6 +33,8 @@ The history is used by convenience properties such as `LastPickedIndex`, `LastPi
   </Member>
 </MemberGroup>
 
+---
+
 ## Retrieval helpers
 
 <MemberGroup title="Retrieval methods" tone="emerald">
@@ -50,6 +52,8 @@ The history is used by convenience properties such as `LastPickedIndex`, `LastPi
   </Member>
 </MemberGroup>
 
+---
+
 ## Mutation helpers
 
 <MemberGroup title="Mutation methods" tone="amber">
@@ -63,6 +67,8 @@ The history is used by convenience properties such as `LastPickedIndex`, `LastPi
     Adds multiple picks to history in one operation.
   </Member>
 </MemberGroup>
+
+---
 
 <Note>
   <p><strong>Some retrieval helpers return shared lists.</strong></p>

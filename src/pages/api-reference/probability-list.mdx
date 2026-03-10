@@ -4,6 +4,7 @@ import {
   API_ProbabilityItem,
   API_RNGNeeds,
   API_SelectionMethods,
+  GuidePLCollection,
   ProbabilityInfluencePage,
 } from '@/components/PageLinks'
 
@@ -13,6 +14,8 @@ export const description =
 <HeroPattern />
 
 # ProbabilityList&lt;T&gt;
+
+If you are learning RNGNeeds from the top down, start with the <a href={GuidePLCollection.Link}>guides</a> and conceptual docs first, then come back here when you want the exact runtime shape of the main list type. {{ className: 'lead' }}
 
 `ProbabilityList<T>` is the core runtime type in RNGNeeds.
 
@@ -26,18 +29,7 @@ It stores a list of `ProbabilityItem<T>` entries and provides the APIs for:
 - supporting depletable lists
 - connecting influence providers
 
-## When to use it
-
-Use `ProbabilityList<T>` whenever you want a reusable probability-driven list of values in code.
-
-Typical use cases include:
-
-- loot tables
-- dialogue choices
-- encounter pools
-- spawn lists
-- weighted item selection
-- multi-pick randomization with history or repeat prevention
+---
 
 ## Important concepts first
 
@@ -56,6 +48,8 @@ Typical use cases include:
   <p>Properties like <code>LastPickedValues</code> and methods returning shared lists are optimized to avoid extra allocations. If you need stable ownership, copy the data into your own list.</p>
 </Note>
 
+---
+
 ## Common workflow
 
 ```csharp
@@ -68,11 +62,13 @@ lootTable.AddItem("Rare Gem", 0.2f);
 string reward = lootTable.PickValue();
 ```
 
+---
+
 ## Core properties
 
 <MemberGroup title="Core properties" tone="sky">
   <Member kind="PROPERTY" color="sky" name="ListName" signature="string">
-    Optional display name for the list.
+    Optional display name for the list. This becomes especially useful when the list is used inside a <code>PLCollection&lt;T&gt;</code>, where the collection can look up and manage lists by name.
   </Member>
   <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
     Number of items in the list.
@@ -87,6 +83,8 @@ string reward = lootTable.PickValue();
     Returns <code>true</code> when at least one item is affected by an influence provider.
   </Member>
 </MemberGroup>
+
+---
 
 ## Selection behavior
 
@@ -117,6 +115,8 @@ string reward = lootTable.PickValue();
   </Member>
 </MemberGroup>
 
+---
+
 ## Picking values
 
 <MemberGroup title="Pick methods" tone="emerald">
@@ -139,6 +139,8 @@ string reward = lootTable.PickValue();
     Runs a selection test using the current configuration and returns diagnostic results.
   </Member>
 </MemberGroup>
+
+---
 
 ## Working with items
 
@@ -166,6 +168,8 @@ string reward = lootTable.PickValue();
   </Member>
 </MemberGroup>
 
+---
+
 ## Probability operations
 
 <MemberGroup title="Probability operations" tone="violet">
@@ -188,6 +192,8 @@ string reward = lootTable.PickValue();
     Normalizes unlocked items so the list sums to 1.
   </Member>
 </MemberGroup>
+
+---
 
 ## Weights
 
@@ -218,6 +224,8 @@ string reward = lootTable.PickValue();
   </Member>
 </MemberGroup>
 
+---
+
 ## Item state and influence
 
 <MemberGroup title="Item state and influence helpers" tone="amber">
@@ -242,6 +250,8 @@ string reward = lootTable.PickValue();
 </MemberGroup>
 
 For the conceptual walkthrough of influence, see <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>.
+
+---
 
 ## Seeding and history
 
@@ -277,6 +287,8 @@ For the conceptual walkthrough of influence, see <a href={ProbabilityInfluencePa
 
 See also <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>.
 
+---
+
 ## Depletable lists
 
 <MemberGroup title="Depletable list helpers" tone="amber">
@@ -302,6 +314,8 @@ See also <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>.
     Returns aggregate depletion information for enabled depletable items.
   </Member>
 </MemberGroup>
+
+---
 
 ## Related pages
 

@@ -8,20 +8,7 @@ export const description =
 
 # RNGNeedsCore
 
-<Note>
-  <p><code>RNGNeedsCore</code> is not the page most users should start with.</p>
-  <p>If your goal is simply to create lists and pick values, go to <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a> first. Come back here when you want to extend RNGNeeds itself.</p>
-</Note>
-
-`RNGNeedsCore` is the static integration and extension entry point for RNGNeeds.
-
-This is where the package:
-
-- initializes and registers built-in selection methods
-- stores the active seed provider
-- exposes the default selection method identifier
-- lets you register your own selection methods
-- provides logging controls and a small number of global helpers
+`RNGNeedsCore` is the static integration and extension entry point for RNGNeeds. Use it when you want to customize package-wide behavior such as selection method registration, seed provider setup, logging, or other global integration points. For day-to-day list creation and picking values, start with <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a>. {{ className: 'lead' }}
 
 ## When to use this type
 
@@ -34,7 +21,11 @@ Use `RNGNeedsCore` when you want to:
 - pre-warm history entry pooling for allocation-sensitive scenarios
 - control RNGNeeds log verbosity while debugging
 
-## Selection method registry
+---
+
+## Selection methods
+
+This part of `RNGNeedsCore` is about discovering, registering, and resolving selection methods.
 
 <MemberGroup title="Selection method members" tone="amber">
   <Member kind="PROPERTY" color="sky" name="RegisteredSelectionMethods" signature="List<(string Identifier, string Name)>">
@@ -53,13 +44,13 @@ Use `RNGNeedsCore` when you want to:
 
 ### Why the `Identifier` matters
 
-The selection method identifier is the stable string key used by RNGNeeds to look up a method.
+The selection method identifier is the stable string key RNGNeeds uses to find a method.
 
 That means it matters in several places:
 
 - when you register a custom method
-- when `ProbabilityList<T>.SelectionMethodID` stores a selected method
-- when serialized data needs to find the correct method later
+- when `ProbabilityList<T>.SelectionMethodID` stores the chosen method
+- when serialized data needs to resolve the correct method later
 - when RNGNeeds falls back because an identifier is invalid or no longer registered
 
 ```csharp
@@ -77,7 +68,11 @@ public class MySelectionMethod : SelectionMethodBase
 RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
 ```
 
-## Seed provider control
+---
+
+## Seed providers
+
+This part controls how RNGNeeds generates fresh seeds at the global level.
 
 <MemberGroup title="Seed provider members" tone="sky">
   <Member kind="PROPERTY" color="sky" name="NewSeed" signature="uint">
@@ -93,7 +88,11 @@ RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
 
 If you need deterministic runs, repeatable tests, or a custom game-wide seeding strategy, see <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>.
 
+---
+
 ## Logging and diagnostics
+
+This section covers the global helpers used for debugging and allocation-sensitive scenarios.
 
 <MemberGroup title="Diagnostics helpers" tone="violet">
   <Member kind="METHOD" color="emerald" name="SetLogLevel" signature="void SetLogLevel(LogMessageType logMessageLevel)">
@@ -107,11 +106,13 @@ If you need deterministic runs, repeatable tests, or a custom game-wide seeding 
   </Member>
 </MemberGroup>
 
+---
+
 ## Behavior notes
 
 <Note>
   <p><strong>Fallback behavior is intentional.</strong></p>
-  <p>If a requested selection method identifier cannot be resolved, <code>GetSelectionMethod(...)</code> returns the fallback method instead of throwing. That keeps serialized assets usable even when a custom method is missing or renamed.</p>
+  <p>If a requested selection method identifier cannot be resolved, <code>GetSelectionMethod(...)</code> returns the fallback method instead of throwing. That helps keep serialized assets usable even when a custom method is missing or has been renamed.</p>
 </Note>
 
 <Note>
@@ -119,8 +120,14 @@ If you need deterministic runs, repeatable tests, or a custom game-wide seeding 
   <p>If you try to register a second method with the same identifier, RNGNeeds logs a warning and keeps the existing one.</p>
 </Note>
 
+---
+
 ## Related pages
 
 - <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
 - <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>
-- <a href={SupportPage.Link}>{SupportPage.Title}</a> if you want help reviewing a custom extension on Discord
+
+<Note>
+  <p><strong>Need help or guidance?</strong></p>
+  <p>If you want help shaping a custom extension, choosing an approach, or troubleshooting a setup, feel free to drop by our <a href={SupportPage.Link}>{SupportPage.Title}</a> page and join the Discord from there.</p>
+</Note>

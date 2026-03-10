@@ -8,9 +8,7 @@ export const description =
 
 # ProbabilityItem&lt;T&gt;
 
-`ProbabilityItem<T>` represents one entry inside a `ProbabilityList<T>`.
-
-It stores the item's value plus the state and metadata that control how the item behaves during selection.
+`ProbabilityItem<T>` represents a single entry inside a `ProbabilityList<T>`. It stores the value itself plus the state and metadata that control how that item behaves during selection. {{ className: 'lead' }}
 
 ## What this type is responsible for
 
@@ -23,6 +21,8 @@ A `ProbabilityItem<T>` can hold:
 - influence provider settings
 - depletion state and unit counts
 - provider-interface capabilities discovered from the value type
+
+---
 
 ## Core item data
 
@@ -51,6 +51,8 @@ A `ProbabilityItem<T>` can hold:
   <p><strong><code>BaseProbability</code> is not the final answer.</strong></p>
   <p>If the item is influenced, <code>Probability</code> is the value that actually matters during selection.</p>
 </Note>
+
+---
 
 ## Influence support
 
@@ -81,6 +83,8 @@ If the stored value implements `IProbabilityInfluenceProvider`, RNGNeeds prefers
 
 For the conceptual guide and examples, see <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>.
 
+---
+
 ## Depletion and selectability
 
 <MemberGroup title="Depletable item properties" tone="emerald">
@@ -107,6 +111,8 @@ For the conceptual guide and examples, see <a href={ProbabilityInfluencePage.Lin
   </Member>
 </MemberGroup>
 
+---
+
 ## Provider capability discovery
 
 <MemberGroup title="Provider-interface helpers" tone="violet">
@@ -124,6 +130,8 @@ For the conceptual guide and examples, see <a href={ProbabilityInfluencePage.Lin
   </Member>
 </MemberGroup>
 
+---
+
 ## Typical setup
 
 ```csharp
@@ -132,6 +140,8 @@ item.Enabled = true;
 item.Locked = false;
 item.SetDepletable(true, units: 3, maxUnits: 3);
 ```
+
+---
 
 ## Related page
 

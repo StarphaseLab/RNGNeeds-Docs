@@ -21,6 +21,8 @@ export const description =
 
 # API Overview
 
+New to this section? Start with the <a href={DocsOverviewPage.Link}>Documentation Overview</a> if you want the bigger picture first, then use this page as your quick map of the runtime types and extension points in the API. {{ className: 'lead' }}
+
 The API Reference is the code-facing companion to the rest of the docs.
 
 - **Documentation / Guides / Samples** teach workflows, use cases, and practical setups.
@@ -28,55 +30,48 @@ The API Reference is the code-facing companion to the rest of the docs.
 
 So yes: this section is intentionally more technical. The goal is to help you answer questions like **“Which type should I use?”**, **“What does this property actually control?”**, and **“Where do I register my custom selection method?”** without forcing you to reverse-engineer the package source first.
 
-## Start here, depending on what you need
+---
+
+## API shape at a glance
+
+Here is the API map in its simplest form: first the core runtime types you will most likely use directly, then the extension points you will reach for when you want to customize or extend RNGNeeds.
+
+### Core runtime types
+
+These are the main building blocks of day-to-day runtime usage — the types you will usually touch first when creating lists, working with items, organizing groups of lists, or inspecting recent picks.
 
 <LinkGrid>
   <LinkCard href={API_ProbabilityList.Link} title={API_ProbabilityList.Title}>
-    The center of the public API. Use this page first if you want to create lists, add items, pick values, manage probabilities, weights, repeat prevention, seeding, depletion, or history.
+    The main runtime type. Start here for creating lists, adding items, picking values, managing probabilities and weights, seeding, depletion, history, and repeat prevention.
   </LinkCard>
   <LinkCard href={API_ProbabilityItem.Link} title={API_ProbabilityItem.Title}>
     The per-item layer. Use this when you need to understand enabled vs locked items, influence, weights, units, depletion, and how an item's effective probability is evaluated.
   </LinkCard>
   <LinkCard href={API_PLCollection.Link} title={API_PLCollection.Title}>
-    For organizing multiple probability lists into named or indexed collections. Great for grouped loot tables, dialogue pools, encounter sets, or other multi-list systems.
+    The collection layer for working with multiple named or indexed probability lists together. Great for grouped loot tables, dialogue pools, encounter sets, and similar systems.
   </LinkCard>
-  <LinkCard href={API_SelectionMethods.Link} title={API_SelectionMethods.Title}>
-    For choosing or extending the selection algorithm itself. This page covers built-in selection methods, custom selection logic, and the difference between implementing the interface directly and inheriting from <code>SelectionMethodBase</code>.
-  </LinkCard>
-  <LinkCard href={API_RNGNeeds.Link} title={API_RNGNeeds.Title}>
-    The static integration hub for advanced users. Go here to register selection methods, work with seed providers, inspect registered methods, or understand fallback behavior.
-  </LinkCard>
-  <LinkCard href={API_SeedProvider.Link} title={API_SeedProvider.Title}>
-    For deterministic workflows, debugging, reproducible tests, or custom seeding strategies.
+  <LinkCard href={API_PickHistory.Link} title={API_PickHistory.Title}>
+    The history helper for recent picks. Useful when you want to inspect what was selected, support repeat-prevention logic, or work with recent pick results.
   </LinkCard>
 </LinkGrid>
 
-## API shape at a glance
-
-### Core runtime types
-
-These are the pages most users should start with:
-
-<ul>
-  <li><a href={API_ProbabilityList.Link}>{API_ProbabilityList.Title}</a></li>
-  <li><a href={API_ProbabilityItem.Link}>{API_ProbabilityItem.Title}</a></li>
-  <li><a href={API_PLCollection.Link}>{API_PLCollection.Title}</a></li>
-  <li><a href={API_PickHistory.Link}>{API_PickHistory.Title}</a></li>
-</ul>
-
-They cover the runtime behavior you are most likely to use directly in gameplay code.
-
 ### Extension points
 
-These are the pages for custom integrations and advanced behavior:
+These pages are for advanced integration work — custom selection behavior, deterministic workflows, seed control, and the static registry that ties those systems together.
 
-<ul>
-  <li><a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a></li>
-  <li><a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a></li>
-  <li><a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a></li>
-</ul>
+<LinkGrid>
+  <LinkCard href={API_SelectionMethods.Link} title={API_SelectionMethods.Title}>
+    The entry point for selection algorithms. Go here when you want to understand the built-in methods or create a custom one.
+  </LinkCard>
+  <LinkCard href={API_RNGNeeds.Link} title={API_RNGNeeds.Title}>
+    The static integration hub for advanced users. Use it to register selection methods, inspect registered methods, work with seed providers, and understand fallback behavior.
+  </LinkCard>
+  <LinkCard href={API_SeedProvider.Link} title={API_SeedProvider.Title}>
+    The extension point for deterministic workflows, reproducible tests, debugging, or custom seeding strategies.
+  </LinkCard>
+</LinkGrid>
 
-Use these when the built-in behavior is not enough and you want to extend RNGNeeds itself.
+---
 
 ## A few important concepts before you dive in
 
@@ -92,12 +87,14 @@ Use these when the built-in behavior is not enough and you want to extend RNGNee
 
 <Note>
   <p><strong>Curated docs and API docs do different jobs.</strong></p>
-  <p>If you want tutorials, examples, and design advice, the curated sections are still the right destination — especially <a href={DocsOverviewPage.Link}>{DocsOverviewPage.Title}</a>, <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>, <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>, and <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>.</p>
+  <p>If you want tutorials, examples, and design advice, the curated sections are still the right destination — especially <a href={DocsOverviewPage.Link}>Documentation Overview</a>, <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>, <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>, and <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>.</p>
 </Note>
+
+---
 
 ## Reference pages in this section
 
-<MemberGroup title="Core types" tone="sky">
+<MemberGroup title="Core runtime types" tone="sky">
   <Member kind="CLASS" color="sky" name="ProbabilityList<T>">
     The main list API for managing probability items and selecting values.
   </Member>
@@ -112,7 +109,7 @@ Use these when the built-in behavior is not enough and you want to extend RNGNee
   </Member>
 </MemberGroup>
 
-<MemberGroup title="Advanced and extensibility" tone="amber">
+<MemberGroup title="Extension points" tone="amber">
   <Member kind="STATIC" color="violet" name="RNGNeedsCore">
     Static registry and integration entry point for selection methods, seed providers, logging, and global helpers.
   </Member>
@@ -127,13 +124,18 @@ Use these when the built-in behavior is not enough and you want to extend RNGNee
   </Member>
 </MemberGroup>
 
+---
+
 ## Need examples, not just member descriptions?
 
 Go to the curated sections when you want intent, workflow, and examples:
 
-- <a href={DocsOverviewPage.Link}>{DocsOverviewPage.Title}</a>
+- <a href={DocsOverviewPage.Link}>Documentation Overview</a>
 - <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
 - <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>
 - <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
 
-And if you are extending RNGNeeds in a more advanced way and want a second pair of eyes, the <a href={SupportPage.Link}>{SupportPage.Title}</a> page includes the Discord link.
+<Note>
+  <p><strong>Want to bounce an idea off us?</strong></p>
+  <p>If you are extending RNGNeeds and want feedback on the shape of your API, your custom selection method, or your overall setup, feel free to drop by our <a href={SupportPage.Link}>{SupportPage.Title}</a> page and join the Discord from there.</p>
+</Note>

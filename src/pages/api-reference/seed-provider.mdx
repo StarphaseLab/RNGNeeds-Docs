@@ -8,14 +8,7 @@ export const description =
 
 # Seed Providers
 
-Seed providers control how RNGNeeds generates new seeds.
-
-This matters when you care about:
-
-- deterministic behavior
-- reproducible debugging
-- automated tests
-- custom game-wide randomness policies
+Seed providers control how RNGNeeds generates new seeds. This page is most useful when you care about deterministic behavior, reproducible debugging, automated tests, or a custom game-wide randomness policy. {{ className: 'lead' }}
 
 ## The two layers to understand
 
@@ -26,6 +19,8 @@ Configured through <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a>. This co
 ### Per-list seed behavior
 
 Controlled on each `ProbabilityList<T>` through `Seed`, `CurrentSeed`, and `KeepSeed`. This controls whether a list keeps or regenerates its seed between picks.
+
+---
 
 ## `ISeedProvider`
 
@@ -40,9 +35,13 @@ Controlled on each `ProbabilityList<T>` through `Seed`, `CurrentSeed`, and `Keep
 
 A custom seed provider only needs to supply new seed values, but that simplicity is exactly what makes it useful: you can plug in your own deterministic or centralized seed strategy without changing selection code elsewhere.
 
+---
+
 ## Default behavior
 
 RNGNeeds ships with a default seed provider used by `RNGNeedsCore` unless you replace it.
+
+---
 
 ## Typical workflows
 
@@ -58,6 +57,8 @@ RNGNeeds ships with a default seed provider used by `RNGNeedsCore` unless you re
   </Member>
 </MemberGroup>
 
+---
+
 ## Example custom provider
 
 ```csharp
@@ -70,6 +71,8 @@ public class FixedSeedProvider : ISeedProvider
 
 RNGNeedsCore.SetSeedProvider(new FixedSeedProvider());
 ```
+
+---
 
 ## Related APIs
 

@@ -8,9 +8,7 @@ export const description =
 
 # Selection Methods
 
-Selection methods decide **how RNGNeeds chooses item indices from a probability list**.
-
-They are not the same thing as probabilities themselves. Your list still defines probabilities, enabled state, locked items, depletion, and repeat prevention. The selection method controls the algorithm used to turn that data into a result.
+Selection methods decide **how RNGNeeds chooses item indices from a probability list**. Your list still defines probabilities, enabled state, locked items, depletion, and repeat prevention — the selection method is the algorithm that turns that data into a result. {{ className: 'lead' }}
 
 ## Which path should you use?
 
@@ -21,6 +19,8 @@ Best when you want default behavior, performance is already fine, and you only n
 ### Extend the system
 
 Best when you need custom selection logic, want a special rule the built-ins do not cover, or are comfortable working at API level.
+
+---
 
 ## Built-in selection methods
 
@@ -42,6 +42,8 @@ Best when you need custom selection logic, want a special rule the built-ins do 
   </Member>
 </MemberGroup>
 
+---
+
 ## Quick guidance
 
 <MemberGroup title="When each built-in method makes sense" tone="neutral">
@@ -55,6 +57,8 @@ Best when you need custom selection logic, want a special rule the built-ins do 
     Use only when you intentionally want a uniform distribution and do not want probabilities to matter.
   </Member>
 </MemberGroup>
+
+---
 
 ## Full custom path: `ISelectionMethod`
 
@@ -78,6 +82,8 @@ That also means you are responsible for the technical details yourself.
     Performs the actual selection and returns the picked indices.
   </Member>
 </MemberGroup>
+
+---
 
 ## Recommended custom path: `SelectionMethodBase`
 
@@ -171,6 +177,8 @@ Then register it through <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a>:
 RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
 ```
 
+---
+
 ## Which custom path is better?
 
 <MemberGroup title="Choose your difficulty level" tone="neutral">
@@ -182,6 +190,8 @@ RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
   </Member>
 </MemberGroup>
 
+---
+
 ## Need help with a custom method?
 
-If you are writing a custom selection method and want feedback on the architecture or the behavior of your algorithm, the Discord link is on the <a href={SupportPage.Link}>{SupportPage.Title}</a> page.
+If you want help choosing an approach, shaping a custom method, or sanity-checking the behavior of your algorithm, feel free to drop by our <a href={SupportPage.Link}>{SupportPage.Title}</a> page and join the Discord from there.
