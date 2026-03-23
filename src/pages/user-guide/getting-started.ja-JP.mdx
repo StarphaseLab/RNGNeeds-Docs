@@ -1,0 +1,153 @@
+import {Button, CodeGroup, Col, Note, Properties, Property, Row} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import welcomeWindow from '@/images/screenshots/welcome-window.png';
+import exampleEmptyList from '@/images/screenshots/example-die-emptylist.png';
+import exampleAddedSides from '@/images/screenshots/example-die-addedsides.png';
+import exampleDirectInput from '@/images/screenshots/example-die-directinput.png';
+import {HeroPattern} from "@/components/HeroPattern";
+import {SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+import {AssetStoreLink} from "@/components/AssetStoreLink";
+import { SamplesOverviewPage, PreferencesPage, TerminologyPage, UserInterfacePage} from "@/components/PageLinks";
+export const description =
+  'このガイドでは、RNGNeeds のセットアップをすべて完了し、すぐに使用できる状態にします。プラグインのインストール方法と、最初の確率分布リストの作成方法を説明します。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# はじめ方
+
+このセクションでは、Unity Asset Store から RNGNeeds をインストールし、最初の確率リストを素早くセットアップするプロセスをご案内します。{{ className: 'lead' }}
+
+<Note>
+    RNGNeeds は、<AssetStoreLink>Asset Store のプラグインページ</AssetStoreLink>にアクセスするか、Unity Editor 内でストアを開く（ツールバーメニュー &raquo; Window &raquo; Asset Store）ことでインストールできます。
+</Note>
+
+---
+
+## インストール
+
+**1. Unity Editor を開く**<br/>
+まず Unity Editor を開きます。プロジェクトが開いていることを確認するか、必要に応じて新しいプロジェクトを作成してください。<br/><br/>
+**2. Unity Asset Store にアクセスする**<br/>
+Unity Editor 内から Unity Asset Store に移動します。メニューバーの **Window** をクリックし、ドロップダウンメニューから **Asset Store** を選択することでアクセスできます。<br/><br/>
+**3. RNGNeeds を検索する**<br/>
+Asset Store の検索バーに「RNGNeeds」と入力し、Enter キーを押します。検索結果に RNGNeeds プラグインが表示されます。<br/><br/>
+**4. プラグインをダウンロードしてインポートする**<br/>
+検索結果から RNGNeeds プラグインをクリックして、そのページを開きます。
+**Download** または **Import** ボタンをクリックします（ボタンのラベルは、以前にプラグインをダウンロードしたかどうかによって異なります）。
+アップグレードを求めるウィンドウが表示された場合は、Continue をクリックするだけで続行できます。<br/><br/>
+ダウンロードが完了すると、Unity は自動的にプラグインをプロジェクトにインポートするように促します。
+Import Unity Package ウィンドウですべてのファイルにチェックが入っていることを確認し、Import をクリックします。<br/><br/>
+
+<Row>
+    <Col>
+        **5. インストールを確認する**<br/>
+        インポートが完了すると、Welcome Window がポップアップ表示されます。
+        このウィンドウには、ドキュメント、はじめ方ガイド、サンプルのインポート手順、RNGNeeds の Preferences ウィンドウへの直接ショートカットへの便利なリンクが記載されています。
+
+        インストールを確認するには、ショートカットボタンをクリックするか、Unity メニューを通じて RNGNeeds Preferences ウィンドウを開きます:
+
+        - **Windows の場合** - **Editor Menu Bar &raquo; Edit &raquo; Preferences** をクリックします。
+        - **Mac の場合** - トップバーで **Unity &raquo; Settings** をクリックします。
+
+        表示されたウィンドウの左側にある **RNGNeeds** をクリックします。
+
+        RNGNeeds Preferences ウィンドウを開くと、デフォルトの Preferences とカラーパレットの読み込みに関するメッセージがコンソールに表示されます。
+    </Col>
+    <Col sticky>
+        <ImageX className="w-80 h-auto" src={welcomeWindow} alt="RNGNeeds Inspectors" width={425} />
+    </Col>
+</Row>
+
+<Note>
+    RNGNeeds プラグインは **Package** としてインストールされます。つまり、その内容は通常の Assets フォルダではなく、**Packages/** フォルダに表示されます。
+    このアプローチにより、Assets フォルダの散乱を減らし、RNGNeeds が Package Manager を通じて動作できるようになります。<br/><br/>
+    **Package Manager &raquo; In Project &raquo; Packages - Starphase Lab** を開いてください。このセクションに 2 つのパッケージが表示されます:<br/>
+    - **RNGNeeds** - *このプラグインのメインパッケージです。*
+    - **Starphase Core** - *RNGNeeds の依存関係であり、共通ユーティリティの小さなコレクションです。*
+</Note>
+
+---
+
+## クイックスタート
+
+プロジェクトで確率分布の使用を開始するには、ジェネリッククラス `ProbabilityList<T>` をいずれかのクラスに追加するか、Project パネルで右クリックして **Create &raquo; C# Script** を選択して新しいスクリプトを作成します。
+
+<Note>
+    `MonoBehaviour` または `ScriptableObject` クラスで複数の **ProbabilityList** を使用し、Inspector を使用して確率を設計できます。
+    また、他のクラスで使用して、API を使ってリストとその確率分布を制御することもできます。
+</Note>
+
+この例では、6 が少し多く出るバイアスのかかったダイスを作成します。スクリプトの名前を `Die` にして開いてください。<br/>
+`ScriptableObject` を継承し、`int` 型の Probability List を追加します。
+
+```csharp {{ title: 'Adding the ProbabilityList'}}
+using UnityEngine;
+using RNGNeeds;
+
+[CreateAssetMenu(fileName = "dXX", menuName = "My Die")]
+public class Die : ScriptableObject
+{
+    public ProbabilityList<int> die;
+}
+```
+
+Unity Editor で **Assets** フォルダを右クリックし、**Create &raquo; My Die** を選択します。
+これにより、提案された名前 `dXX` の新しい Scriptable Object が作成されます。6 面のダイスを作成するので、オブジェクトに `D6 Die` という名前を付けます。
+オブジェクトをクリックすると、Inspector にそのプロパティが表示され、Probability List Drawer が確認できます。
+
+<ImageX className="w-full h-auto" src={exampleEmptyList} alt="Empty ProbabilityList" width={1000} />
+
+リストにアイテムを追加するには、右側の `Add` ボタンをクリックします。これらのアイテムはダイスの面を表します。6 つの面を追加し、それぞれの値を指定します。
+
+<ImageX className="w-full h-auto" src={exampleAddedSides} alt="ProbabilityList with items" width={1000} />
+
+現在、アイテムの確率は均等です。6 が多く出るようにしたいですが、他の面の均等な確率は維持したいと思います。
+
+<Note>
+    アイテムの確率は、ストライプ上の矩形や端をドラッグするか、値を直接入力することで調整できます。直接入力すると、他のアイテムの確率がその分布比率に応じて再計算されます。
+</Note>
+
+「side 6」の確率 `16.67%` をクリックして `0.2`（20% を意味します）と入力し、`Enter` を押します。他のアイテムの確率は 16% に下がります。
+
+<ImageX className="w-full h-auto" src={exampleDirectInput} alt="Direct Input" width={1000} />
+
+いよいよダイスを振る時です。RNGNeeds では、`.PickValue()` を呼び出すことで ProbabilityList から簡単に値を選択できます。ロール結果を返す関数を追加して、ダイスオブジェクトを実用的なものにしましょう。
+
+```csharp {{ title: 'Selecting values from list' }}
+using UnityEngine;
+using RNGNeeds;
+
+[CreateAssetMenu(fileName = "DXX", menuName = "My Die")]
+public class Die : ScriptableObject
+{
+    public ProbabilityList<int> die;
+    
+    public int Roll()
+    {
+        return die.PickValue();
+    }
+}
+```
+
+これで、ダイスの Roll() を呼び出すたびに、確率分布に基づいた単一の `int` 値が返されます。
+<Note>
+    このアプローチを使用すると、`d10` や `d20` など、プロジェクトのために複数のダイスを作成して簡単に振ることができます。各 Die ScriptableObject は独自のアイテム数（ダイスの面数）と確率分布を持つことができます。
+    ところで、6 面のダイスの名前を `D6 Die (biased)` に変更するのに良いタイミングです。
+</Note>
+
+---
+
+## 次のステップ
+RNGNeeds のセットアップが完了し、高度な確率制御の世界への第一歩を踏み出したことをおめでとうございます！しかし、まだ発見すべきことがたくさんあります。RNGNeeds を最大限に活用するために、以下のリソースを参照されることをお勧めします。
+
+### 基礎を学ぶ
+まず基本的な内容をしっかりと理解しましょう。以下の記事では、ユーザーインターフェースを案内し、主要な用語を紹介し、Preferences Window を通じてセットアップをカスタマイズする方法を説明します。
+
+- <a href={UserInterfacePage.Link}>ユーザーインターフェースを理解する</a>
+- <a href={PreferencesPage.Link}>Preferences Window で RNGNeeds をカスタマイズする</a>
+- <a href={TerminologyPage.Link}>RNGNeeds の主要用語</a>
+
+<Button href={SamplesOverviewPage.Link} arrow="right" children="Explore the RNGNeeds Example Usage" />
+
+---

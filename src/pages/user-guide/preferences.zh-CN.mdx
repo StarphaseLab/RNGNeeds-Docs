@@ -1,0 +1,114 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Col, Note, Row} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {CustomizingListsPage} from "@/components/PageLinks";
+import preferencesWindow from '@/images/screenshots/preferences-window.png';
+
+export const translationStatus = 'auto'
+
+export const description =
+  '了解并自定义您在 RNGNeeds 插件中的使用体验。学习关于抽屉交互、按钮显示、滚动方向以及基于主题的视觉偏好等选项。'
+
+<HeroPattern />
+
+# 偏好设置
+
+在 RNGNeeds 插件的"Preferences"部分，您可以自由调整与工具的交互方式。这些选项允许您在紧凑按钮和完整按钮显示之间进行选择、反转滚动方向以获得更自然的操作感等。此外，您还可以根据编辑器的主题（深色或浅色）设置视觉偏好。一切都是为了让您的体验尽可能地人性化，让您能够专注于为游戏元素精心设计概率列表。{{ className: 'lead' }}
+
+<Note>
+    打开 RNGNeeds Preferences 的方法……
+    - **Windows 系统** - 点击 **Editor Menu Bar &raquo; Edit &raquo; Preferences**。
+    - **Mac 系统** - 在顶部菜单栏中，点击 **Unity &raquo; Settings**
+
+    在弹出的窗口中，点击左侧的 **RNGNeeds**。
+</Note>
+
+---
+
+### 了解 RNGNeeds 偏好设置
+
+RNGNeeds 包含三种类型的偏好设置。
+
+- **Global Preferences**（全局偏好）- 这些选项在所有抽屉之间共享，定义其高级行为，例如选项级别、滚动方向、渐变着色或日志记录器设置。
+- **Default Drawer Settings**（默认抽屉设置）- 这些偏好是针对特定抽屉的，并在每个新抽屉首次初始化（查看）时应用。如果您发现自己每次都要为新抽屉更改相同的设置，这个功能非常实用。只需在 Preferences 窗口的 **Drawer Options &raquo; Default Drawer Settings** 下更改默认值即可。
+- **Color Palettes**（颜色调色板）- 所有抽屉共享的颜色主题列表。调色板不会直接应用于抽屉，抽屉仅保留对调色板名称的引用。这样您可以自定义现有调色板，抽屉将自动反映更改。
+
+---
+
+## Preferences 窗口
+
+RNGNeeds 偏好设置位于 Unity 项目中其他 Editor 偏好设置旁边。要打开偏好设置窗口，请前往 **Editor Menu Bar &raquo; Edit &raquo; Preferences &raquo; RNGNeeds**。
+
+<Row>
+  <Col>
+      ### 全局偏好
+
+      **Drawer Options Level** - 在抽屉中选择"Basic"或"Advanced"选项。Advanced 模式将在抽屉中显示额外功能，例如 Seeding 选项、Depletable List 控件、Selection Method 下拉菜单等。
+
+      **Drawer Option Buttons** - 在抽屉标题中显示 Full、Compact 或 Informative 按钮。如果 Inspector 空间有限，请使用 Compact 模式。Informative 模式（推荐）将直接在按钮内显示设置。
+
+      **Drawer Display Options Buttons** - 选择是在抽屉标题中显示单独的显示选项按钮，还是将它们归入紧凑的下拉菜单。下拉菜单有助于在较窄的 Inspector 中节省空间。
+
+      **Inspector Refresh Mode** - 为实现响应迅速的可视化编辑抽屉，Inspector 需要频繁重绘。如果您遇到编辑器卡顿，请尝试"Optimized"选项，该选项仅在鼠标拖动期间重绘。但其他操作（如更改设置）可能会感觉响应较慢。
+
+      **Invert Scroll Direction** - 用于补偿系统设置。例如，在 MacOS 上，使用滚动调整概率时，"自然"滚动方向可能感觉相反。
+
+      **Default Monochrome Color** - 这将成为每个新初始化抽屉的默认单色颜色。
+
+      **Test Color Gradient** - 此渐变将用于对测试结果与期望概率的偏差进行着色。
+
+      **Spread Color Gradient** - 此渐变将用于对受影响列表中的概率分布进行着色。
+
+      ### Depletable List 选项
+
+      **Scroll Wheel Units Adjustment** - 启用使用滚轮快速方便地调整单位数量。
+
+      **Units Adjustment Multiplier** - 设置使用 Multiply Units Modifier 键时单位的增减倍数。
+
+      **Units Adjustment Shortcuts** - 展开此设置组以自定义用于调整可耗尽物品单位的键盘快捷键。
+
+      **Editor Log Level** - 选择要在编辑器控制台中显示的消息类型。
+
+      **Allow Log Colors** - 启用或禁用编辑器控制台中的彩色消息。
+
+      **Open RNGNeeds Welcome Window** - 此按钮将显示安装后弹出的欢迎窗口。
+
+      ### 默认抽屉设置
+
+      **Default Drawer Settings** - 新抽屉将使用这些设置进行初始化。展开此项将显示新抽屉的默认设置。
+
+      ### 调色板选项
+
+      **Export Palettes** - 当前调色板列表可以导出为 XML 格式。
+
+      **Import Palettes** - 从 XML 导入调色板列表。请注意，当前列表将被覆盖。
+
+      **Reset to Defaults** - 清除当前调色板列表并导入出厂默认值。
+
+      **Color Palettes** - 展开此列表以修改调色板。您可以更改现有调色板或添加新调色板。
+  </Col>
+  <Col sticky>
+      <ImageX className="w-full h-auto" src={preferencesWindow} alt="RNGNeeds Inspectors" width={830} />
+  </Col>
+</Row>
+
+您可以在我们的 <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> 页面了解如何调整每个抽屉的单独选项。
+
+---
+
+## 持久化抽屉设置
+
+RNGNeeds 静默地单独追踪每个抽屉的偏好设置，让您在处理大量设计对象时保持井然有序。通过这种方式，您可以在设计 Probability Lists 时轻松更改抽屉的外观，之后再回来时设置保持不变。所有选项应随您的提交和版本控制一起保留。
+
+<Note>
+    偏好设置窗口提供将所有偏好重置为默认值的选项，这也会重置默认抽屉设置。<br/>
+    偏好设置存储在项目文件夹的 **\/ProjectSettings\/RNGNeedsSettings.asset** 下。<br/>
+    此文件的更改将频繁出现在您的版本控制中。这是设计如此，以确保您的所有设置在工作时得到保留。<br/>
+    如果您不想提交 RNGNeeds 的偏好设置，请将以下内容添加到您的 `.gitignore` 文件中：
+    ```
+    # Ignore RNGNeedsSettings Asset
+    /[Pp]roject[Ss]ettings/RNGNeedsSettings.*
+    ```
+</Note>
+
+---

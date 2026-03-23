@@ -1,0 +1,224 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {
+    CustomizingListsPage,
+    SamplesMonsterSpawnerPage,
+    GuideProbabilityInfluence,
+    PreferencesPage
+} from "@/components/PageLinks";
+import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
+import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
+import probabilityInfluencePercentagePreview from '@/images/screenshots/probability-influence-percentage-preview.png';
+import probabilityInfluenceHealthGlobeMaximumSpread from '@/images/screenshots/probability-influence-health-globe-maximum-spread.png';
+import probabilityInfluenceHealthGlobeInverted from '@/images/screenshots/probability-influence-health-globe-inverted.png';
+import probabilityInfluenceExternalProvider from '@/images/screenshots/probability-influence-external-provider.png';
+import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
+import {ImageX} from "@/components/ImageX";
+export const description =
+    'Discover how to dynamically modify odds based on external factors using the RNGNeeds\' Probability Influence.'
+
+<HeroPattern />
+
+# Probability Influence
+
+Dive into the world of dynamic probability where RNGNeeds becomes your toolkit for crafting engaging and reactive gameplay experiences.
+Probability Influence allows you to fine-tune the likelihood of various game events based on external factors, adapting in real-time to the unfolding game dynamics. {{ className: 'lead' }}
+
+<Note>
+    For detailed guides and examples on implementing Probability Influence, please visit the
+    <a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page.
+</Note>
+
+---
+
+## What is Probability Influence?
+
+At its core, Probability Influence is an **adjustment to predetermined probabilities**.
+
+Imagine you've set a 3% chance for a player to find a rare item. Probability Influence allows you to dynamically modify this chance based on gameplay factors. 
+For example, you could boost the drop rate as a reward for excellent performance, or lower it if a rare item was recently acquired.
+
+This concept introduces **dynamic probability** into gameplay, enabling a vast array of innovative mechanics. 
+Events can now be influenced by virtually any game element. 
+From linking critical hit chances to player stats, adjusting NPC interactions based on faction relationships, to varying the spawn rate of rare creatures as the in-game time approaches midnight, 
+or intensifying combat when the player cranks up the music volume. The possibilities are endless, and we've made it straightforward to implement.
+
+**Influence Providers** are the key. These are objects coded to supply dynamic adjustments to your fixed probabilities. For example, a Health Manager might track the player's health percentage. 
+The game designer then decides how to apply this information, assigning these providers to items in Probability Lists and using **Influence Spread** to fine-tune the impact on each probability.
+
+<Note>
+    Each item within the list can be assigned its own unique Influence Provider, allowing for a rich and dynamic interplay of external factors. This setup enables you to incorporate a variety of influences that work in concert to dynamically adjust the probabilities and outcomes. Whether it's the player's health, the time of day, or any other game state, you can tailor the influence on each item to reflect these changing conditions, offering a nuanced and responsive gameplay experience.
+</Note>
+
+---
+
+## Influence & Spread
+
+The influence is a `float` value between `-1 and 1`, with **zero** meaning there is **no influence**.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceFloatValue} alt="Probability Influence - Float Value" width="1000"/>
+
+This value is provided to the Probability List by an **Influence Provider**, a script or an object utilizing a special interface. More details on this will be discussed later.
+
+The influence value, ranging from -1 to 1, wouldn't be particularly useful without a mechanism to control how it adjusts individual items in the list.
+This is where **Influence Spread** comes into play, allowing game designers to fine-tune the actual impact of influence on designed probabilities.
+
+Spread maps the influence range onto the actual adjustment of probabilities. Using Spread, game designers can set limits on how much the incoming influence adjusts individual probabilities.
+
+In the example below, the chance of a monster dropping a health globe is designed to be 20%.
+The game designer wants this chance to be influenced by the player's health level, increasing the odds of a health globe drop when the player is injured, and decreasing it when the player is healthy.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpreadMapping} alt="Probability Influence - Spread Mapping" width="1000"/>
+
+Observe how the curved line maps the influence range onto the influence spread. The **maximum negative influence** (-1) reduces the probability of the item to 10%, while the **maximum positive influence** (1)
+increases the probability to 40%. Any value between -1 and 1 is proportionally mapped onto the spread range, with 0 influence mapping onto the designed probability of 20%.
+
+### Influenced Items & Lists
+
+Whenever any item in a list is influenced, the entire list is considered influenced as well. This means it will recalculate probabilities before each pick.
+This recalibration is necessary because if one item's probabilities can change dynamically, the probabilities of the others will naturally adjust in response.
+
+To aid in predicting the outcomes in such a dynamic environment, the Probability List inspector displays the outcome percentages of influenced probabilities.
+
+Percentages to the left of the probability bars represent the resulting probabilities **when all incoming influences are at -1**, and percentages to the right show the scenario **if all incoming influences are at 1**.
+The results are color-coded: by default, they turn red if the resulting probability will be lower than designed, and blue if higher.
+
+<ImageX className="w-full h-auto" src={probabilityInfluencePercentagePreview} alt="Probability Influence - Percentage Preview" width="1000"/>
+
+In the example above, there are four directions with equal designed probabilities of 25%. The **South** direction is influenced. Maximum negative influence would reduce its chance to 0%.
+In such a scenario, only three directions would be available to choose from, hence the preview displays their probabilities as equal. The South direction's preview percentage is red, indicating it is lower than the designed 25% probability.
+The remaining directions are coded blue because their probability would be higher than designed.
+
+Conversely, if the influence is at maximum positive, the South direction's probability would increase, causing the total probability of the items to exceed 100%. Therefore, the preview of resulting probabilities is normalized.
+
+<Note>
+    You can customize the color coding gradient globally in the
+    <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> window.
+    Look for the ***Spread Color Gradient*** setting.
+
+    Additionally, you can fine-tune the coloring sensitivity for the difference in each individual drawer.
+    Simply open the
+    <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>
+    and adjust the ***Spread Color Bias*** slider.
+</Note>
+
+### Logic of Selecting Influenced Items
+
+Whenever values are selected, the Probability List first checks if any of its items are influenced.
+If so, RNGNeeds calculates the adjusted probabilities based on the provided influence.
+After this adjustment, the selection process proceeds with these new probabilities.
+
+<Note>
+    Calculating the influence just before selection creates a dynamic environment where probabilities are adjusted in real-time, based on logic from external factors.
+    For an example, see the <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> sample, where monsters spawn randomly from three locations, influenced by the player's proximity to them.
+</Note>
+
+---
+
+## Influence Providers
+
+In RNGNeeds, influence mechanisms are established through the `IProbabilityInfluenceProvider` interface. This interface allows Provider objects to dynamically adjust the probabilities of items within a Probability List. There are two primary types of Providers:
+
+- **External Providers**: These are specific Unity Objects, such as `MonoBehaviour` or `ScriptableObject`, that implement the interface and can be assigned directly to items in the list to influence their probabilities.
+- **Item's Value as Provider**: This approach utilizes the inherent value of Unity Objects or custom classes within the ProbabilityList itself to influence probabilities.
+
+### External Providers
+
+Any Unity Object, whether it's a `MonoBehaviour` or a `ScriptableObject`, that implements the `IProbabilityInfluenceProvider` interface can serve as an **External Influence Provider**. 
+These providers offer a flexible way to adjust item probabilities dynamically, supplying a value range from -1 to 1 based on external conditions or states.
+
+Consider the Health Globe example mentioned earlier, where a simple Health Manager Component implements the interface to reflect the player's remaining health percentage.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceExternalProvider} alt="Probability Influence - External Provider" width="1000"/>
+
+This component then becomes an **external provider** for the Health Globe item. 
+Coders can also communicate the underlying logic to game designers by providing **Influence Info**, which is displayed in the inspector when the provider is linked.
+
+```csharp
+public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    public float maxHealth;
+    public float currentHealth;
+    public float HealthPercentage => currentHealth / maxHealth;
+    
+    public float ProbabilityInfluence => HealthPercentage.Remap(0, 1, 1, -1);
+    public string InfluenceInfo => $"Based on health percentage: {HealthPercentage:P2} = {ProbabilityInfluence} Influence";
+}
+```
+
+In the code snippet above, the `ProbabilityInfluence` property of the interface remaps the health percentage to inverse influence values, where 100% health equates to -1 influence, thereby reducing the drop chance for players in good health. 
+This logic is made transparent to game designers through the `InfluenceInfo` property.
+
+### Value as Influence Provider
+
+Values themselves can also act as influence providers. In the
+<a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> 
+sample, the `SpawnLocation` MonoBehaviour serves as the provider, with the influence logic based on the player's distance from the spawn location.
+
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpawnLocationsProviders} alt="Probability Influence - Spawn Locations Providers" width="1000"/>
+
+```csharp {{ title: 'Spawn Location Code'}}
+public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    // code not relevant for this guide was omitted
+    
+    public Transform playerLocation;
+    public float DistanceToPlayer => Vector3.Distance(transform.position, playerLocation.position);
+    
+    // Remaps the distance to player into an influence value
+    public float ProbabilityInfluence => DistanceToPlayer.Remap(0f, 30f, 1f, -1f);
+    public string InfluenceInfo => $"Distance to player: {DistanceToPlayer} = {ProbabilityInfluence}";
+}
+```
+
+In this implementation, the distance to the player is remapped so that a zero distance results in the maximum positive influence (1) on the probability. 
+Conversely, a distance of 30 units results in the maximum negative influence (-1).
+
+<Note>
+    It's important to note that if an External Provider is assigned and the Value itself is designated as an Influence Provider, the Value's influence will take precedence, effectively overriding the external one.
+</Note>
+
+---
+
+## Inverting Influence
+
+There are scenarios where inverting (or reversing) the incoming influence becomes beneficial. This feature can be particularly useful when you, as a game designer, wish to reverse the logic established by the coder, need to blend normal and reversed logic within a single list, or aim to amplify the effect of influence on specific items.
+
+Inverting influence is a versatile tool that significantly broadens your design possibilities for game mechanics that rely on dynamic probability adjustments.
+
+### Use Case Exploration
+
+Consider the earlier Health Globe example. Even when we set the maximum spread to 100%, with maximum positive influence, the Health Globe's drop rate caps at 56%.
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeMaximumSpread} alt="Probability Influence - Maximum Spread" width="1000"/>
+
+In practice, setting the spread to maximum indeed increases the item's probability to 100%. However, if another item in the list has an 80% designed chance, this results in a total list probability of 180%. Consequently, the list undergoes normalization before any selection:
+
+- **Item 0 -** 80 / 180 = 0.44
+- **Item 1 -** 100 / 180 = 0.56
+
+These figures are accurately reflected next to the spread bars, offering a preview of normalized probabilities under maximum positive influence.
+
+**To enhance the Health Globe's drop chance**, we must reduce the probability of the other item. This is where inverted influence comes into play. By assigning the same Influence Provider to the first item and enabling the **Invert Influence** toggle, we achieve our goal.
+
+<Note>
+    When you enable Inverted Influence for an item, its **Designed Probability Indicator** (the white line within the spread slider) becomes highlighted. This helps identifying inverted items when their Provider options are collapsed.
+</Note>
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeInverted} alt="Probability Influence - Inverted Influence" width="1000"/>
+
+Immediately, we observe that the Health Globe's drop chance with maximum **positive influence** jumps to 100%.
+This increase happens as the **negative influence**—essentially, the opposite of a **positive influence**—affects the top item's probability at the same time.
+
+In essence, the likelihood **to drop** a Health Globe increases, and the chance **not to drop** one decreases, both influenced by the same factor: the player's health.
+
+---
+
+### Conclusion
+
+With a solid understanding of Probability Influence under your belt, you're well-equipped to dive deeper into its practical applications. 
+The journey towards creating dynamic and engaging gameplay mechanics continues on the
+<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> page, where you'll find detailed guides and examples to inspire and guide your implementation.
+
+---

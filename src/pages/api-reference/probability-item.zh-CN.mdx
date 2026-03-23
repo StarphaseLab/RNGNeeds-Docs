@@ -1,0 +1,150 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { ProbabilityInfluencePage } from '@/components/PageLinks'
+
+export const translationStatus = 'auto'
+
+export const description =
+  'ProbabilityItem<T> 的参考文档，涵盖基础概率、评估概率、条目状态、影响值、权重与耗尽机制。'
+
+<HeroPattern />
+
+# ProbabilityItem&lt;T&gt;
+
+`ProbabilityItem<T>` 表示 `ProbabilityList<T>` 中的单个条目。它存储值本身，以及控制该条目在选择过程中如何行为的状态与元数据。{{ className: 'lead' }}
+
+## 此类型的职责
+
+`ProbabilityItem<T>` 可以持有：
+
+- 值本身
+- 基础概率
+- 启用 / 锁定状态
+- 权重
+- 影响提供者设置
+- 耗尽状态与单元计数
+- 从值类型中发现的提供者接口能力
+
+---
+
+## 核心条目数据
+
+<MemberGroup title="Core properties" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="Value" signature="T">
+    此条目存储的值。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="BaseProbability" signature="float">
+    存储的基线概率，限制在 0 到 1 之间。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Probability" signature="float">
+    选择过程中当前实际使用的有效概率。若条目受到影响，此值由 <code>BaseProbability</code>、扩散设置及当前影响值共同推导得出。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Enabled" signature="bool">
+    决定此条目是否有资格参与选择。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Locked" signature="bool">
+    阻止某些列表级概率操作修改此条目的基础概率。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Weight" signature="int">
+    供基于权重的列表辅助工具使用的权重表示。
+  </Member>
+</MemberGroup>
+
+<Note>
+  <p><strong><code>BaseProbability</code> 并非最终答案。</strong></p>
+  <p>若条目受到影响，<code>Probability</code> 才是选择过程中真正起作用的值。</p>
+</Note>
+
+---
+
+## 影响支持
+
+<MemberGroup title="Influence properties" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="InfluenceSpread" signature="Vector2">
+    应用影响时允许的概率低值/高值范围。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="InvertInfluence" signature="bool">
+    反转传入影响值的效果。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="InfluenceProvider" signature="IProbabilityInfluenceProvider">
+    用于影响此条目的外部提供者，除非值本身已实现影响提供者接口。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ValueIsInfluenceProvider" signature="bool">
+    当存储的值本身实现了 <code>IProbabilityInfluenceProvider</code> 时返回 true。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsInfluencedItem" signature="bool">
+    当条目当前受到外部提供者或值本身的影响时返回 true。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetInfluencedProbability" signature="float GetInfluencedProbability(float influence)">
+    计算特定影响值下得出的概率结果。
+  </Member>
+</MemberGroup>
+
+### 重要行为说明
+
+若存储的值实现了 `IProbabilityInfluenceProvider`，RNGNeeds 会优先使用该提供者，而非外部指定的提供者。这使值对象可以直接提供自身的影响值。
+
+关于概念指南与示例，请参见 <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>。
+
+---
+
+## 耗尽与可选择性
+
+<MemberGroup title="Depletable item properties" tone="emerald">
+  <Member kind="PROPERTY" color="sky" name="IsDepletable" signature="bool">
+    为 true 时，在父列表处于可耗尽模式下，每次选取都会消耗此条目的单元。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Units" signature="int">
+    当前剩余单元数。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="MaxUnits" signature="int">
+    补充后可用的最大单元数。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsDepleted" signature="bool">
+    当条目可耗尽且无剩余单元时返回 true。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsSelectable" signature="bool">
+    当条目当前有资格参与选择时返回 true，综合考虑启用状态与耗尽情况。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Refill" signature="void Refill()">
+    将 <code>Units</code> 重置回 <code>MaxUnits</code>。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetDepletable" signature="void SetDepletable(bool depletable = true, int units = 1, int maxUnits = 1)">
+    一并配置耗尽状态与单元计数。
+  </Member>
+</MemberGroup>
+
+---
+
+## 提供者能力发现
+
+<MemberGroup title="Provider-interface helpers" tone="violet">
+  <Member kind="METHOD" color="emerald" name="GetProviderTypes" signature="ItemProviderType GetProviderTypes()">
+    检查值并报告其实现了哪些提供者接口。
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityInfluenceProvider">
+    允许值或外部对象提供实时影响值，从而改变条目的有效概率。
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityItemInfoProvider">
+    允许值为编辑器 UI 提供额外的条目信息。
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityItemColorProvider">
+    允许值为编辑器 UI 提供自定义颜色。
+  </Member>
+</MemberGroup>
+
+---
+
+## 典型用法
+
+```csharp
+var item = new ProbabilityItem<string>("Rare Gem", 0.2f);
+item.Enabled = true;
+item.Locked = false;
+item.SetDepletable(true, units: 3, maxUnits: 3);
+```
+
+---
+
+## 相关页面
+
+- <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a>

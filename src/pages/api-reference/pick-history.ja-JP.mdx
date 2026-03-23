@@ -1,0 +1,83 @@
+import { HeroPattern } from '@/components/HeroPattern'
+
+export const description =
+  'PickHistory のリファレンスです。ProbabilityList<T> が最近のピックを保存・公開するために使用するヘルパータイプについて説明しています。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# PickHistory
+
+`PickHistory` は `ProbabilityList<T>` によって行われた最近のピックを保存します。`LastPickedIndex`、`LastPickedValues` など、リスト上のヒストリー関連APIを支える小さなヘルパータイプです。 {{ className: 'lead' }}
+
+各ヒストリーエントリーには以下の情報が記録されます：
+
+- ピックされたアイテムのインデックス
+- ピックの日時
+
+---
+
+## コアメンバー
+
+<MemberGroup title="ヒストリーへのアクセス" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="History" signature="List<HistoryEntry>">
+    ヒストリーエントリーの基底リストです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Capacity" signature="int">
+    保持するエントリーの最大数です。最小値は 1 です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LatestIndex" signature="int">
+    最新のピックのインデックスです。ヒストリーが空の場合は <code>-1</code> を返します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LatestEntry" signature="HistoryEntry">
+    最新のヒストリーエントリーです。ヒストリーが空の場合は <code>null</code> を返します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 取得ヘルパー
+
+<MemberGroup title="取得メソッド" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="GetLatestEntries" signature="List<HistoryEntry> GetLatestEntries(int count)">
+    最新のヒストリーエントリーを含む共有リストを返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestEntries" signature="void GetLatestEntries(List<HistoryEntry> list, int count)">
+    最新のエントリーを独自のリストに格納します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestPicks" signature="List<int> GetLatestPicks(int count)">
+    最新のピックされたアイテムインデックスの共有リストを返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestPicks" signature="void GetLatestPicks(List<int> list, int count)">
+    最新のピックインデックスを独自のリストに格納します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 変更ヘルパー
+
+<MemberGroup title="変更メソッド" tone="amber">
+  <Member kind="METHOD" color="emerald" name="ClearHistory" signature="void ClearHistory()">
+    すべてのヒストリーエントリーを削除し、プールに返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddEntry" signature="void AddEntry(int index)">
+    ピックされたインデックスを 1 件ヒストリーに追加します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddEntries" signature="void AddEntries(NativeList<int> picks)">
+    複数のピックを一度の操作でヒストリーに追加します。
+  </Member>
+</MemberGroup>
+
+---
+
+<Note>
+  <p><strong>一部の取得ヘルパーは共有リストを返します。</strong></p>
+  <p>これにより余分なメモリ確保を避けられます。安定したコピーが必要な場合は、独自のリストを渡してそこに格納してください。</p>
+</Note>
+
+<Note>
+  <p><strong>ヒストリーエントリーはプールされています。</strong></p>
+  <p>RNGNeeds はガベージの生成を抑えるために <code>HistoryEntry</code> オブジェクトを再利用します。必要に応じて <code>RNGNeedsCore.WarmupHistoryEntries(...)</code> でプールを事前に準備することもできます。</p>
+</Note>

@@ -1,0 +1,101 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {
+    GettingStartedPage, NestingListsPage,
+    PreferencesPage, SamplesOverviewPage,
+    ProbabilityInfluencePage,
+    RepeatPreventionPage,
+    SupportPage, GuideSelectingDistinctValues
+} from "@/components/PageLinks";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+export const description =
+    'RNGNeeds に関するよくある質問への回答を FAQ セクションでご確認ください。基本的なセットアップから高度な機能まで幅広くカバーしています。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# よくある質問（FAQ）
+
+RNGNeeds ドキュメントの FAQ セクションへようこそ。
+このページでは、RNGNeeds プラグインの使用方法や機能に関するよくある質問とご不明点にお答えします。
+現時点では想定されるお問い合わせをもとに初期の質問と回答を用意していますが、
+これはあくまでも始まりに過ぎません。実際のユーザーからの質問やフィードバックを収集しながら、
+このセクションはユーザーの皆さまのニーズの変化に合わせて定期的に更新されます。{{ className: 'lead' }}
+
+---
+
+## RNGNeeds のインストール方法は？
+
+RNGNeeds は Unity の Asset Store からパッケージとしてインストールします。
+<a href={GettingStartedPage.Link}>{GettingStartedPage.Title}</a>
+セクションをご覧のうえ、インストールガイドに従ってください。
+
+## 使用している Unity のバージョンで RNGNeeds は動作しますか？
+
+RNGNeeds は Unity 2020 LTS で開発され、Unity 6 まで動作確認済みです。最低動作バージョンは Unity 2020.2 です。
+
+## RNGNeeds にはサンプルが含まれていますか？
+
+はい、RNGNeeds にはデモシーンとサンプルのコレクションが含まれており、すぐに使い始めることができます。
+これらのサンプルはプラグインのさまざまな活用方法を示しており、機能を実際に体験しながら探索できます。
+インポートガイドは
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a>
+ページでご確認いただけます。
+
+## カスタムオブジェクトで RNGNeeds を使用できますか？
+
+もちろんです！RNGNeeds は Unity 標準の型でも独自の **serializable** クラスでも、あらゆる値型・参照型とシームレスに連携できるよう設計されています。*int、Vector3、GameObject、Enum、AnimationCurve、LayerMask* はもちろん、独自の *'Monster' Scriptable Object* でも、`ProbabilityList<OfAnyType>` を簡単に作成できます。
+
+## プラグインの設定はどこにありますか？
+
+RNGNeeds の設定は Editor Preferences パネル内にあります。設定の場所については、ユーザーガイドの
+<a href={PreferencesPage.Link}>{PreferencesPage.Title}</a>
+セクションをご参照ください。
+
+## 特定の結果の確率を動的に変更するにはどうすればよいですか？
+
+RNGNeeds には ***Probability Influence Providers*** という概念が導入されています。これを使用することで、外部の要因に基づいて確率を動的に変更するルールを設計できます。詳細については、ドキュメントの
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+セクションをご覧ください。
+
+## 重複しない値のみを選択するにはどうすればよいですか？
+ユニークな値を選択するには、RNGNeeds の **Depletable Lists** 機能を活用した
+<a href={GuideSelectingDistinctValues.Link}>このガイド</a>
+に記載の方法に従ってください。
+
+## 同じアイテムが連続して選択されないようにするにはどうすればよいですか？
+
+はい、RNGNeeds には連続した重複選択を制限・排除するための複数の ***Repeat Prevention Techniques*** が用意されています。詳細については、ドキュメントの
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a>
+セクションをご覧ください。
+
+## 複数の Probability List をネストすることはできますか？
+
+もちろん可能です！ただし、ProbabilityList を汎用の List や Array の中にネストすると、エディタで完全にサポートされない場合があり、再描画の問題が発生する可能性があることにご注意ください。
+ネストされたリストを便利に扱うには、専用クラス `PLCollection<T>` の使用をお勧めします。
+Probability List を効果的にネストする方法の詳細については、ドキュメントの
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+セクションをご参照ください。
+
+## ガイドに従った後、スクリプトがコンパイルされないのはなぜですか？
+
+ドキュメント内のコードスニペットでは、簡潔さを保つために名前空間を省略する場合があります。
+コンパイルエラーが発生した場合は、必要な名前空間が追加されているかご確認ください。
+スクリプトの冒頭に `using RNGNeeds;` を追加するだけで、関連する問題を解決できます。
+
+---
+
+## 問題が発生した場合、どのようなサポートが受けられますか？
+
+お客様のご満足が私たちの最優先事項です。お困りの場合は、
+<a href={SupportPage.Link}>{SupportPage.Title}</a>
+をご覧のうえ、ガイダンスとお問い合わせオプションをご確認ください。
+
+## RNGNeeds の改善提案や新機能のリクエストはどこに送ればよいですか？
+
+皆さまのフィードバックやご提案をお待ちしています！
+<a href={SUPPORT_EMAIL_LINK}>メール</a>
+または
+<a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord サーバー</a>
+でお気軽にお知らせください。RNGNeeds をさらに良くするための方法を常に模索しています！
+
+---

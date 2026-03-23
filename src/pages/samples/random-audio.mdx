@@ -1,0 +1,54 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+
+import samplesUnitAudioScene from '@/images/screenshots/samples-unit-audio-scene.png';
+import samplesUnitAudioAnnie from '@/images/screenshots/samples-unit-audio-annie.png';
+import { RepeatPreventionPage } from "@/components/PageLinks";
+
+export const description =
+    'Discover how RNGNeeds can randomize your game\'s audio for unit responses, dialogue choices, or ambient sounds. The Random Audio sample showcases how to create a dynamic auditory experience.'
+
+<HeroPattern />
+
+# Random Audio
+
+Bring your game characters to life with RNGNeeds' Random Audio sample. 
+This example showcases how you can randomize unit responses, dialogue choices, and ambient sounds to create a more immersive and dynamic audio experience. 
+From quirky character lines to rare responses, learn how to fine-tune your game's auditory landscape with ease. {{ className: 'lead' }}
+
+---
+
+## AudioClip with Probability
+
+Randomizing a game's audio is a common scenario where RNG can truly shine, whether it's for unit responses, dialogue choices, or ambient sounds. RNGNeeds is perfectly suited for these tasks, handling them as easily as a simple integer dice roll.
+To achieve this, you can define a `ProbabilityList` of type `AudioClip`. Picking a value from such a list returns the AudioClip, ready to be played. 
+
+```csharp {{ title: 'ProbabilityList handling AudioClip Type'}}
+public ProbabilityList<AudioClip> randomAudio;
+
+if(audioSource.isPlaying == false) audioSource.PlayOneShot(randomAudio.PickValue());
+```
+
+To see this in action, open the **RandomAudioClip** scene. In this simple mini-game, you control Annie, an overly-enthusiastic and talkative lab assistant. You can find her audio setup by locating and opening
+the **Annie Lab Assistant** prefab in the **/Prefabs** folder. In the prefab hierarchy, locate the **UnitAudio** GameObject.
+The attached `UnitAudio` script contains three Probability Lists - for Select, Move, and Interact responses.
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioAnnie} alt="Samples Random Unit Audio Annie" width="1000"/>
+
+The varying probabilities of these responses enable unique and rare reactions, like Annie's quirky line that plays infrequently.
+
+This flexibility in setting probabilities allows you to fine-tune the auditory experience.
+For instance, if you receive feedback that a particular response is annoying to players, you can simply reduce its odds of being played instead of removing it altogether.
+
+These ProbabilityLists make use of the
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> feature, ensuring that Annie does not say the same line twice in a row.
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioScene} alt="Samples Random Unit Audio Scene" width="1000"/>
+
+### Controlling Annie
+
+- **Left click to select the unit** (blue object). Repeated clicks will prompt a *Select Response*.
+- **Right click on the ground to initiate movement** and play a *Move Response*.
+- **Right click on a golden object to interact** and play an *Interact Response*
+
+---

@@ -1,0 +1,199 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_RNGNeeds, SupportPage } from '@/components/PageLinks'
+
+export const translationStatus = 'auto'
+
+export const description =
+  'RNGNeeds 的内置选择方法、扩展路径，以及自定义选择逻辑的使用指南。'
+
+<HeroPattern />
+
+# Selection Methods
+
+Selection Methods 决定 **RNGNeeds 如何从概率列表中选取条目索引**。列表本身仍负责定义概率、启用状态、锁定条目、耗尽机制与重复预防——选择方法是将这些数据转化为结果的算法。{{ className: 'lead' }}
+
+## 应该选择哪条路径？
+
+### 使用内置方法
+
+适用于需要默认行为、性能已经足够、且只需切换算法而无需创造新算法的场景。
+
+### 扩展系统
+
+适用于需要自定义选择逻辑、想要内置方法未覆盖的特殊规则，或者习惯在 API 层面工作的场景。
+
+---
+
+## 内置选择方法
+
+<MemberGroup title="Built-in methods" tone="sky">
+  <Member kind="METHOD" color="emerald" name="Linear Search" signature="Identifier: LSMRegular">
+    简单线性搜索。适合较小列表和常见游戏场景的强力默认选项。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Linear Search [BURST]" signature="Identifier: LSMBurst">
+    Linear Search 的 Burst 编译版本。更适合较大工作负载以及单次操作中大量选取的场景。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Cumulative Probability" signature="Identifier: CPMRegular">
+    使用累积概率与二分搜索。适用于不同列表规模的通用选项。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Cumulative Probability [BURST]" signature="Identifier: CPMBurst">
+    累积概率方法的 Burst 编译版本。在需要为较大选择任务提升吞吐量时效果出色。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Random Selection" signature="Identifier: RSMRegular">
+    完全忽略条目概率，从所有条目中均匀随机选取。
+  </Member>
+</MemberGroup>
+
+---
+
+## 快速指引
+
+<MemberGroup title="When each built-in method makes sense" tone="neutral">
+  <Member kind="USE" color="zinc" name="Linear Search / Linear Search [BURST]">
+    适合大多数游戏列表，尤其是较小列表，或每次调用选取数量较少的场景。
+  </Member>
+  <Member kind="USE" color="zinc" name="Cumulative Probability / Cumulative Probability [BURST]">
+    适合列表规模较大，或希望使用扩展性更好的通用选择算法的场景。
+  </Member>
+  <Member kind="USE" color="zinc" name="Random Selection">
+    仅在明确希望使用均匀分布、且不希望概率起作用时使用。
+  </Member>
+</MemberGroup>
+
+---
+
+## 完全自定义路径：`ISelectionMethod`
+
+`ISelectionMethod` 是最底层的扩展路径。
+
+当你需要完全掌控选择过程时使用它。
+
+这也意味着所有技术细节都由你自己负责。
+
+<MemberGroup title="ISelectionMethod contract" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="Identifier" signature="string">
+    用于注册和查找该方法的唯一键。这是存储在 <code>ProbabilityList&lt;T&gt;.SelectionMethodID</code> 中的值。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Name" signature="string">
+    该方法的人类可读显示名称。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EditorTooltip" signature="string (Editor only)">
+    在 Unity 编辑器中显示的工具提示（适用时）。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SelectItems" signature="NativeList<int> SelectItems(IProbabilityList probabilityList, int pickCount)">
+    执行实际选择并返回被选中的索引列表。
+  </Member>
+</MemberGroup>
+
+---
+
+## 推荐自定义路径：`SelectionMethodBase`
+
+<Note>
+  <p><strong><code>SelectionMethodBase</code> 是用于自定义选择逻辑的部分实现基类。</strong></p>
+  <p>如果你希望专注于自己的算法，而不是从头重建整个选择管线，从这里开始。</p>
+</Note>
+
+该基类承担了选择过程中大量繁重的工作，让你可以专注于使你的方法独特的那一部分。
+
+### `SelectionMethodBase` 的辅助功能
+
+<MemberGroup title="Why inherit from SelectionMethodBase" tone="amber">
+  <Member kind="HELPER" color="amber" name="Prep and item data setup">
+    基类负责准备概率列表、条目数据、已启用条目追踪、正概率追踪以及种子随机状态。
+  </Member>
+  <Member kind="HELPER" color="amber" name="Repeat-prevention integration">
+    它已知晓如何与 RNGNeeds 的重复预防选项（如 Spread、Repick 和 Shuffle）集成。
+  </Member>
+  <Member kind="HELPER" color="amber" name="Depletable-list support">
+    它处理感知耗尽的选择流程，并在需要时将条目单元变化写回列表。
+  </Member>
+  <Member kind="HELPER" color="amber" name="Selection loop lifecycle">
+    基类管理通用循环与清理生命周期，意味着更少的样板代码，以及更少无意中破坏预期行为的机会。
+  </Member>
+</MemberGroup>
+
+### 你通常需要关注的主要成员
+
+<MemberGroup title="SelectionMethodBase members" tone="violet">
+  <Member kind="PROPERTY" color="sky" name="ProbabilityList" signature="IProbabilityList">
+    当前正在处理的活跃概率列表。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemData" signature="NativeArray<ItemData>">
+    选择过程中使用的运行时条目数据。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EnabledIndicesWithPositiveProbability" signature="NativeList<int>">
+    当前有资格参与选择且具有正概率的条目索引。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="AllIndicesWithPositiveProbability" signature="NativeList<int>">
+    所有具有正概率的条目索引，无论当前是否可选。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickedIndex" signature="int">
+    列表历史记录中最近一次被选中的条目索引。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
+    列表中的条目数量。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="TotalProbability" signature="float">
+    准备阶段累计的总概率。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SelectItem" signature="protected abstract bool SelectItem(out int selectedIndex)">
+    你需要实现的核心方法。自定义选择逻辑通常在此处编写。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Prep" signature="protected virtual void Prep(IProbabilityList probabilityList)">
+    仅在需要在选择开始前进行额外准备时覆写此方法。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PrepItem" signature="protected virtual void PrepItem(IProbabilityItem probabilityItem, int index, bool isEnabled, bool hasPositiveProbability)">
+    当你希望在列表准备阶段收集每个条目的数据时覆写此方法。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SpreadResult" signature="protected virtual int SpreadResult(int index)">
+    重复预防扩散行为的钩子方法。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ShuffleResult" signature="protected virtual void ShuffleResult(NativeList<int> indices, int iterations)">
+    重复预防随机打乱行为的钩子方法。
+  </Member>
+</MemberGroup>
+
+### 最简自定义方法示例
+
+```csharp
+public class MySelectionMethod : SelectionMethodBase
+{
+    public override string Identifier => "MySelectionMethod";
+    public override string Name => "My Selection Method";
+
+    protected override bool SelectItem(out int selectedIndex)
+    {
+        selectedIndex = EnabledIndicesWithPositiveProbability[
+            m_Random.NextInt(0, EnabledIndicesWithPositiveProbability.Length)
+        ];
+
+        return true;
+    }
+}
+```
+
+然后通过 <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> 进行注册：
+
+```csharp
+RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
+```
+
+---
+
+## 哪条自定义路径更好？
+
+<MemberGroup title="Choose your difficulty level" tone="neutral">
+  <Member kind="RECOMMENDED" color="amber" name="Inherit from SelectionMethodBase">
+    适合大多数自定义扩展场景。你可以保留熟悉的 RNGNeeds 管线，专注于使你的选择逻辑特别的那一部分。
+  </Member>
+  <Member kind="ADVANCED" color="violet" name="Implement ISelectionMethod directly">
+    适合明确需要完全控制权，且愿意自行重建所有必要行为的场景。
+  </Member>
+</MemberGroup>
+
+---
+
+## 需要自定义方法方面的帮助？
+
+如果你需要帮助选择方案、构建自定义方法，或验证算法的行为是否符合预期，欢迎访问我们的 <a href={SupportPage.Link}>{SupportPage.Title}</a> 页面，并从那里加入 Discord。

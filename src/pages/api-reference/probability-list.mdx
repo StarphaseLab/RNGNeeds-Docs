@@ -1,0 +1,324 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import {
+  API_PickHistory,
+  API_ProbabilityItem,
+  API_RNGNeeds,
+  API_SelectionMethods,
+  GuidePLCollection,
+  ProbabilityInfluencePage,
+} from '@/components/PageLinks'
+
+export const description =
+  'Reference for ProbabilityList<T>, the core RNGNeeds type for creating lists, managing probabilities, and selecting values.'
+
+<HeroPattern />
+
+# ProbabilityList&lt;T&gt;
+
+If you are learning RNGNeeds from the top down, start with the <a href={GuidePLCollection.Link}>guides</a> and conceptual docs first, then come back here when you want the exact runtime shape of the main list type. {{ className: 'lead' }}
+
+`ProbabilityList<T>` is the core runtime type in RNGNeeds.
+
+It stores a list of `ProbabilityItem<T>` entries and provides the APIs for:
+
+- adding and removing items
+- managing probabilities and weights
+- picking one or many values
+- preventing repeats
+- working with seeds and pick history
+- supporting depletable lists
+- connecting influence providers
+
+---
+
+## Important concepts first
+
+<Note>
+  <p><strong>Base probability vs evaluated probability.</strong></p>
+  <p><code>GetItemBaseProbability(...)</code> returns the stored baseline. <code>GetItemProbability(...)</code> returns the effective probability currently used during selection, including influence.</p>
+</Note>
+
+<Note>
+  <p><strong>Locked is not the same as disabled.</strong></p>
+  <p>Disabled items are ignored during selection. Locked items can still be picked, but certain list operations will not redistribute their probability.</p>
+</Note>
+
+<Note>
+  <p><strong>Some pick methods return shared lists.</strong></p>
+  <p>Properties like <code>LastPickedValues</code> and methods returning shared lists are optimized to avoid extra allocations. If you need stable ownership, copy the data into your own list.</p>
+</Note>
+
+---
+
+## Common workflow
+
+```csharp
+var lootTable = new ProbabilityList<string>();
+
+lootTable.AddItem("Potion", 0.5f);
+lootTable.AddItem("Gold", 0.3f);
+lootTable.AddItem("Rare Gem", 0.2f);
+
+string reward = lootTable.PickValue();
+```
+
+---
+
+## Core properties
+
+<MemberGroup title="Core properties" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="ListName" signature="string">
+    Optional display name for the list. This becomes especially useful when the list is used inside a <code>PLCollection&lt;T&gt;</code>, where the collection can look up and manage lists by name.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
+    Number of items in the list.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="UnlockedItemsCount" signature="int">
+    Number of items that are not locked.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EnabledItemsCount" signature="int">
+    Number of enabled items.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsListInfluenced" signature="bool">
+    Returns <code>true</code> when at least one item is affected by an influence provider.
+  </Member>
+</MemberGroup>
+
+---
+
+## Selection behavior
+
+<MemberGroup title="Selection settings" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="SelectionMethodID" signature="string">
+    Identifier of the selection method used by this list. The identifier is resolved through <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a>.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PreventRepeat" signature="PreventRepeatMethod">
+    Controls how repeated picks are handled.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ShuffleIterations" signature="int">
+    Number of shuffle passes used by <code>PreventRepeatMethod.Shuffle</code>. Clamped between 1 and 5.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountMin" signature="int">
+    Minimum number of values selected by multi-pick methods.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountMax" signature="int">
+    Maximum number of values selected by multi-pick methods.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LinkPickCounts" signature="bool">
+    When true, the effective pick count is fixed to <code>PickCountMin</code>.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="MaintainPickCountIfDisabled" signature="bool">
+    Keeps trying to reach the desired pick count even when disabled items interfere. This can change the resulting distribution and has built-in fail-safe checks for pathological cases.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountCurve" signature="AnimationCurve">
+    Controls the bias used when the pick count is randomly chosen between min and max.
+  </Member>
+</MemberGroup>
+
+---
+
+## Picking values
+
+<MemberGroup title="Pick methods" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="PickValue" signature="T PickValue()">
+    Picks one value and returns it. If selection fails, the default value of <code>T</code> is returned.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValue" signature="bool TryPickValue(out T value)">
+    Safest single-pick method when you need to distinguish failure from a valid default value.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValues" signature="List<T> PickValues() / overloads">
+    Picks multiple values and returns a shared list of results.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValueWithIndex" signature="(T Value, int Index) PickValueWithIndex()">
+    Picks one value and also returns the selected item index.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValueWithIndex" signature="bool TryPickValueWithIndex(out T value, out int index)">
+    Safer version of <code>PickValueWithIndex()</code> when you need explicit success/failure.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RunTest" signature="TestResults RunTest()">
+    Runs a selection test using the current configuration and returns diagnostic results.
+  </Member>
+</MemberGroup>
+
+---
+
+## Working with items
+
+<MemberGroup title="Item management" tone="sky">
+  <Member kind="METHOD" color="emerald" name="AddItem" signature="ProbabilityItem<T> AddItem(...) / overloads">
+    Adds an item using a value, explicit probability, explicit weight, or an already-created <code>ProbabilityItem&lt;T&gt;</code>.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddItems" signature="void AddItems(...) / overloads">
+    Adds multiple values at once.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveItem" signature="bool RemoveItem(...) / overloads">
+    Removes an item by value or item reference.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveItemAtIndex" signature="bool RemoveItemAtIndex(int index, bool normalize = true)">
+    Removes an item by index.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearList" signature="void ClearList()">
+    Removes all items and clears history.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetProbabilityItem" signature="ProbabilityItem<T> GetProbabilityItem(int index)">
+    Gets the item at a specific index.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryGetProbabilityItem" signature="bool TryGetProbabilityItem(...) / overloads">
+    Safely retrieves an item by index or value.
+  </Member>
+</MemberGroup>
+
+---
+
+## Probability operations
+
+<MemberGroup title="Probability operations" tone="violet">
+  <Member kind="METHOD" color="emerald" name="GetItemProbability" signature="float GetItemProbability(int index)">
+    Returns the effective probability currently used during selection.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetItemBaseProbability" signature="float GetItemBaseProbability(int index)">
+    Returns the raw stored base probability.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AdjustItemBaseProbability" signature="void AdjustItemBaseProbability(int index, float amount)">
+    Adds a value to an item's base probability.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemBaseProbability" signature="bool SetItemBaseProbability(int index, float baseProbability, bool normalize = true)">
+    Sets an item's base probability, optionally normalizing the rest of the list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetAllProbabilities" signature="void ResetAllProbabilities()">
+    Evens out probabilities of all unlocked items.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="NormalizeProbabilities" signature="float NormalizeProbabilities()">
+    Normalizes unlocked items so the list sums to 1.
+  </Member>
+</MemberGroup>
+
+---
+
+## Weights
+
+<MemberGroup title="Weight-based distribution helpers" tone="neutral">
+  <Member kind="PROPERTY" color="sky" name="TotalWeight" signature="int">
+    Sum of all item weights in the list.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="BaseWeight" signature="int">
+    Reference weight used by helper methods. Clamped between 1 and 10000.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="WeightsPriority" signature="bool">
+    When enabled, probabilities snap back to weight-derived fractions during certain operations.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetItemWeight" signature="int GetItemWeight(int index)">
+    Returns an item's current weight.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemWeight" signature="void SetItemWeight(int index, int weight)">
+    Sets an item's weight and redistributes or recalculates as needed.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="CalculatePercentageFromWeights" signature="void CalculatePercentageFromWeights()">
+    Rebuilds probabilities from weights.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetWeights" signature="void ResetWeights()">
+    Rebuilds weights from the current probability distribution.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RecalibrateWeights" signature="void RecalibrateWeights()">
+    Rebalances unlocked-item weights while preserving total weight where possible.
+  </Member>
+</MemberGroup>
+
+---
+
+## Item state and influence
+
+<MemberGroup title="Item state and influence helpers" tone="amber">
+  <Member kind="METHOD" color="emerald" name="SetItemProperties" signature="bool SetItemProperties(int index, float baseProbability, bool enabled, bool locked)">
+    Updates several core item properties together.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemEnabled / SetAllItemsEnabled" signature="bool SetItemEnabled(int index, bool enabled)">
+    Enables or disables one item or the whole list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemLocked / SetAllItemsLocked" signature="bool SetItemLocked(int index, bool locked)">
+    Locks or unlocks one item or the whole list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInfluenceProvider" signature="void SetItemInfluenceProvider(int index, IProbabilityInfluenceProvider influenceProvider)">
+    Assigns an external influence provider to an item.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInfluenceSpread" signature="void SetItemInfluenceSpread(int index, Vector2 spread)">
+    Controls the minimum and maximum probability range allowed under influence.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInvertInfluence" signature="void SetItemInvertInfluence(int index, bool invertInfluence)">
+    Reverses how influence affects that item.
+  </Member>
+</MemberGroup>
+
+For the conceptual walkthrough of influence, see <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>.
+
+---
+
+## Seeding and history
+
+<MemberGroup title="Seeding and history" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="CurrentSeed" signature="uint">
+    The seed currently stored on the list.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Seed" signature="uint">
+    Returns or sets the list seed. When <code>KeepSeed</code> is false, RNGNeeds regenerates it before each pick.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="KeepSeed" signature="bool">
+    Keeps the same seed between picks when enabled.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickHistory" signature="PickHistory">
+    Access to the stored history of recent picks.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickCount / LastPickedIndex / LastPickedValue" signature="history helpers">
+    Convenience accessors for the most recent selection.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickedIndices / LastPickedValues" signature="shared lists">
+    Shared result lists representing the last pick operation.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLastPickedIndices / GetLastPickedValues" signature="void GetLastPicked...(List<...> listToFill)">
+    Fills your own list instead of using the shared internal lists.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetHistoryCapacity" signature="void SetHistoryCapacity(int capacity)">
+    Changes the history size.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearHistory" signature="void ClearHistory()">
+    Clears the list's pick history.
+  </Member>
+</MemberGroup>
+
+See also <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>.
+
+---
+
+## Depletable lists
+
+<MemberGroup title="Depletable list helpers" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="IsDepletable" signature="bool">
+    Enables depletion behavior for the list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RefillItems" signature="void RefillItems()">
+    Refills all item units back to their max values.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsUnits" signature="void SetAllItemsUnits(int units)">
+    Sets the current units of all items.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsMaxUnits" signature="void SetAllItemsMaxUnits(int units)">
+    Sets the maximum units of all items.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsDepletable / SetAllItemsDepletableProperties" signature="bulk depletion helpers">
+    Configures depletion behavior across all items.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemDepletable" signature="void SetItemDepletable(int index, bool depletable = true, int units = 1, int maxUnits = 1)">
+    Configures depletion for one item.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetTotalUnits / GetTotalMaxUnits" signature="int GetTotal...()">
+    Returns aggregate depletion information for enabled depletable items.
+  </Member>
+</MemberGroup>
+
+---
+
+## Related pages
+
+- <a href={API_ProbabilityItem.Link}>{API_ProbabilityItem.Title}</a>
+- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
+- <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>

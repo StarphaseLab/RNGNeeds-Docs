@@ -1,0 +1,135 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_SeedProvider, API_SelectionMethods, SupportPage } from '@/components/PageLinks'
+
+export const description =
+  'RNGNeedsCore 的参考文档——用于注册选择方法、控制种子提供者以及检查全局 RNGNeeds 行为的静态集成中心。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# RNGNeedsCore
+
+`RNGNeedsCore` 是 RNGNeeds 的静态集成与扩展入口点。当你需要自定义包级别的行为时使用它，例如注册选择方法、配置种子提供者、控制日志输出或其他全局集成点。对于日常的列表创建和值的抽取，请从 <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a> 开始。{{ className: 'lead' }}
+
+## 何时使用此类型
+
+在以下情况下使用 `RNGNeedsCore`：
+
+- 注册自定义 `ISelectionMethod`
+- 检查可用选择方法的列表
+- 替换全局种子提供者
+- 将种子提供者重置为默认行为
+- 为对内存分配敏感的场景预热历史条目对象池
+- 在调试时控制 RNGNeeds 的日志详细程度
+
+---
+
+## 选择方法
+
+`RNGNeedsCore` 的这一部分负责发现、注册和解析选择方法。
+
+<MemberGroup title="Selection method members" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="RegisteredSelectionMethods" signature="List<(string Identifier, string Name)>">
+    以标识符/名称对的形式返回当前已注册的选择方法。当你需要在运行时检查可用方法，或构建自定义方法选择 UI 时，此属性非常有用。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="DefaultSelectionMethodID" signature="string">
+    返回在找不到有效方法时所使用的后备选择方法的标识符。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RegisterSelectionMethod" signature="void RegisterSelectionMethod(ISelectionMethod selectionMethod)">
+    注册一个自定义选择方法。该方法必须公开一个非空的唯一 <code>Identifier</code>。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetSelectionMethod" signature="ISelectionMethod GetSelectionMethod(string identifier)">
+    通过标识符获取已注册的选择方法。如果标识符未知，RNGNeeds 将回退到默认选择方法。
+  </Member>
+</MemberGroup>
+
+### 为什么 `Identifier` 很重要
+
+选择方法标识符是 RNGNeeds 用于查找方法的稳定字符串键。
+
+这意味着它在以下几个地方都至关重要：
+
+- 当你注册自定义方法时
+- 当 `ProbabilityList<T>.SelectionMethodID` 存储所选方法时
+- 当序列化数据需要在之后解析正确的方法时
+- 当 RNGNeeds 因标识符无效或已不再注册而回退时
+
+```csharp
+public class MySelectionMethod : SelectionMethodBase
+{
+    public override string Identifier => "MyCustomMethod";
+    public override string Name => "My Custom Method";
+
+    protected override bool SelectItem(out int selectedIndex)
+    {
+        // Your custom selection logic here.
+    }
+}
+
+RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
+```
+
+---
+
+## 种子提供者
+
+这一部分控制 RNGNeeds 在全局层面如何生成新种子。
+
+<MemberGroup title="Seed provider members" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="NewSeed" signature="uint">
+    使用当前激活的全局种子提供者生成一个新种子。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetSeedProvider" signature="void SetSeedProvider(ISeedProvider seedProvider)">
+    替换 RNGNeeds 使用的全局种子提供者。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetSeedProvider" signature="void ResetSeedProvider()">
+    恢复默认种子提供者。
+  </Member>
+</MemberGroup>
+
+如果你需要确定性运行、可重复的测试或自定义的全局种子策略，请参阅 <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>。
+
+---
+
+## 日志与诊断
+
+本节介绍用于调试和对内存分配敏感场景的全局辅助方法。
+
+<MemberGroup title="Diagnostics helpers" tone="violet">
+  <Member kind="METHOD" color="emerald" name="SetLogLevel" signature="void SetLogLevel(LogMessageType logMessageLevel)">
+    更改 RNGNeeds 日志的详细程度。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetLogAllowColors" signature="void SetLogAllowColors(bool allowColors)">
+    启用或禁用彩色日志输出。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="WarmupHistoryEntries" signature="void WarmupHistoryEntries(int count)">
+    预先分配池化的 <code>HistoryEntry</code> 实例，以减少抽取过程中的运行时内存分配。
+  </Member>
+</MemberGroup>
+
+---
+
+## 行为说明
+
+<Note>
+  <p><strong>回退行为是有意为之的。</strong></p>
+  <p>如果请求的选择方法标识符无法被解析，<code>GetSelectionMethod(...)</code> 会返回后备方法，而不是抛出异常。这有助于在自定义方法丢失或被重命名时，仍能保持序列化资产可用。</p>
+</Note>
+
+<Note>
+  <p><strong>自定义方法必须使用唯一标识符。</strong></p>
+  <p>如果你尝试注册第二个具有相同标识符的方法，RNGNeeds 会记录一条警告并保留已有的方法。</p>
+</Note>
+
+---
+
+## 相关页面
+
+- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
+- <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>
+
+<Note>
+  <p><strong>需要帮助或指导？</strong></p>
+  <p>如果你需要帮助来设计自定义扩展、选择实现方案或排查配置问题，欢迎访问我们的 <a href={SupportPage.Link}>{SupportPage.Title}</a> 页面，并从那里加入 Discord。</p>
+</Note>

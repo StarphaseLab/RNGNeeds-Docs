@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- User Guide -->
+  <url><loc>https://docs.rngneeds.com/user-guide/introduction</loc></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/getting-started</loc></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/user-interface</loc></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/preferences</loc></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/faq</loc></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/support</loc></url>
+
+  <!-- Documentation -->
+  <url><loc>https://docs.rngneeds.com/documentation/docs-overview</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/terminology</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/designing-a-list</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/selecting-values</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/depletable-lists</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/repeat-prevention</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/probability-influence</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/testing-outcomes</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/seeding-options</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/pick-history</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/nesting-lists</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/customizing-lists</loc></url>
+  <url><loc>https://docs.rngneeds.com/documentation/change-log</loc></url>
+
+  <!-- Samples -->
+  <url><loc>https://docs.rngneeds.com/samples/samples-overview</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/dice-playground</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/random-audio</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/monster-spawner</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/basic-samples</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/intermediate-samples</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/advanced-samples</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/influence-deep-dive</loc></url>
+  <url><loc>https://docs.rngneeds.com/samples/treasure-chest</loc></url>
+
+  <!-- Guides -->
+  <url><loc>https://docs.rngneeds.com/guides/guides-overview</loc></url>
+  <url><loc>https://docs.rngneeds.com/guides/guide-selecting-distinct-values</loc></url>
+  <url><loc>https://docs.rngneeds.com/guides/guide-probability-influence</loc></url>
+  <url><loc>https://docs.rngneeds.com/guides/guide-plcollection</loc></url>
+  <url><loc>https://docs.rngneeds.com/guides/guide-depletable-list-examples</loc></url>
+
+  <!-- API Reference -->
+  <url><loc>https://docs.rngneeds.com/api-reference/api-overview</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/rngneeds</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/probability-list</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/probability-item</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/pick-history</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/selection-methods</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/seed-provider</loc></url>
+  <url><loc>https://docs.rngneeds.com/api-reference/pl-collection</loc></url>
+</urlset>

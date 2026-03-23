@@ -1,0 +1,134 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage, RepeatPreventionPage, SelectingValuesPage} from "@/components/PageLinks";
+import obstacleSpawner from '@/images/screenshots/testing-outcomes-obstacle-spawner.png';
+import obstacleSpawnerTest from '@/images/screenshots/testing-outcomes-obstacle-spawner-test.png';
+import testingOutcomesConsole from '@/images/screenshots/testing-outcomes-console.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeeds のテストツールをマスターして、Inspector およびランタイムシナリオの両方で確率設定を評価・最適化しましょう。'
+
+<HeroPattern />
+
+# Testing Outcomes
+
+このガイドでは、RNGNeeds がテストのために提供するツールとテクニックを紹介します。
+さまざまなシナリオをシミュレートすることで、設計した確率と設定によって形成される結果をより深く理解できます。 {{ className: 'lead' }}
+
+---
+
+## Inspector でのテスト
+
+確率分布を設計する際、Play Mode に入ることなく結果を視覚化することが不可欠な場合があります。
+RNGNeeds のテスト機能を使用すると、選択をシミュレートして抽象的なパーセンテージを具体的な統計に変換し、設定の理解と改善を助けます。
+
+**このシナリオを考えてみましょう**：ランダムな障害物が出現するエンドレスランナーゲームを開発しています。
+コードは、さまざまな確率を持つ 6 つのリストから障害物を選択しようとしており、そのうち 1 つは無効になっています。
+
+<ImageX className="w-full h-auto" src={obstacleSpawner} alt="Obstacle Spawner Inspector" width="1000"/>
+
+```csharp {{ title: 'Obstacle Spawner Code'}}
+public class ObstacleSpawner : MonoBehaviour
+{
+    public ProbabilityList<GameObject> obstacles;
+
+    public void SpawnObstacle()
+    {
+        if (obstacles.TryPickValue(out var obstacle))
+        {
+            // Spawn Obstacle
+        }
+    }
+}
+```
+
+1 分のゲームプレイで約 180 個の障害物がスポーンすると予想したとします。これらのスポーンの分布を視覚化するには、ドロワーの **PICK** セクションを開き、
+ピック数を 180 に設定して **TEST** ボタンを押します。
+
+<ImageX className="w-full h-auto" src={obstacleSpawnerTest} alt="Obstacle Spawner Test" width="1000"/>
+
+Inspector には各アイテムの結果が表示されます。ピックされた回数と結果の確率です。
+**パーセンテージは色分け**されており、設計された結果と実際の結果の差異が強調されます。デフォルトでは、過少に表れたアイテムはオレンジ色に、過多に表れたアイテムは緑色に色付けされます。
+
+<Note>
+    **テスト結果のカスタマイズ**
+
+    **カラーティント** - デフォルトの色がニーズに合わない場合は、<a href={PreferencesPage.Link}>{PreferencesPage.Title}</a> ウィンドウの *Test Color Gradient* で変更できます。これはすべての Probability List ドロワーに対するグローバル設定です。
+
+    **感度** - 各ドロワーの Additional Options サブメニューで、カラーバイアス（感度）を個別に微調整できます。
+
+    **パーセンテージ桁数** - ドロワーの Additional Options サブメニューの *Test % Digits* スライダーで、表示されるパーセンテージの精度を制御できます。
+
+    カスタマイズの詳細については、<a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> ドキュメントページをご覧ください。
+</Note>
+
+
+包括的な分析のため、結果はコンソールにもログ出力され、選択方法、シード、ピック数、繰り返しパーセンテージなどの詳細が記載されます。
+
+<ImageX className="w-full h-auto" src={testingOutcomesConsole} alt="Testing Outcomes Console" width="1000"/>
+
+### Depletable List のテスト
+
+**Depletable List のテストでは、実際のゲームプレイと同様にアイテムのユニットが消費される**ことを覚えておくことが重要です。
+テスト中にアイテムが選択されると、そのユニットは減少し、毎回リストの新しい状態が設定されます。
+ゲームプレイ体験の一部としてリストが部分的に消耗するよう意図的に設計する場合もありますが、永続的な変更なしに結果をテストすることが目的の場合は、テスト後にアイテムを補充することを検討してください。
+
+<Note>
+    ヒント：より正確な洞察を得るために、頻繁なテストが推奨されます。
+    各テスト後にアイテムを手動で補充する手間を省くには、**Control + クリック**（macOS の場合は **Command + クリック**）で **TEST** ボタンを押してください。
+    このショートカットにより、各テスト前にアイテムが自動的に補充されます。
+</Note>
+
+---
+
+## テスト結果の解釈
+
+結果を分析する際、デザイナーは *「1 分のゲームプレイで、約 34 個の爆発するバレルが障害物としてスポーンする」* と解釈するかもしれません。コンソールデータからは、*「約 158 個の障害物がスポーンし、そのうち 32 個が繰り返しである」* ことが明らかです。予想される 180 ピックと実際の数の差異は、リスト内の無効化されたアイテムが原因です。
+
+<Note>
+    無効化されたアイテムがピック数や確率にどのように影響するかについては、<a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> ページをご覧ください。連続した同一ピックを最小化または排除する方法については、<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> ページをご参照ください。
+</Note>
+
+ただし、180 ピックでは包括的な統計的表現を提供できない場合があることに注意が必要です。繰り返しテストすると、結果にわずかなばらつきが見られる場合があります。より正確な洞察を得るには、ピック数を増やすことを検討してください。たとえば、1,800 ピックでテストすると、意図した確率により近い結果が得られる場合があります。
+
+テストが終了したら、TEST ボタンの隣にある X ボタンをクリックして結果をリセットできます。この手順は必須ではありません。テスト結果はリストと一緒に保存されないためです。テスト結果はドロワーデータの一部であり、Inspector を切り替えるとリセットされます。
+
+---
+
+## コードでのテスト
+
+ランタイム中に設定を評価する必要がある場合や、コードから直接テスト統計を分析したい場合、RNGNeeds はテストを実行して `TestResults` を取得する方法を提供します。
+
+```csharp {{ title: 'Testing in Code'}}
+var testResults = myProbabilityList.RunTest();
+testResults.Print();
+```
+
+`TestResults` クラスは結果を `Dictionary<int, int> indexPicks` にカプセル化します。キーはリスト内のアイテムのインデックスを表し、値はピック頻度を示します。このクラスは追加の情報も提供します：
+
+- `string selectionMethodName` - 適用された選択方法の名前。
+- `PreventRepeatMethod preventRepeat` - 繰り返し防止に使用されたメソッド。
+- `uint seed` - 選択前に生成されたシード。
+- `int pickCountMin` - 指定された最小ピック数。
+- `int pickCountMax` - 指定された最大ピック数。
+- `int pickCount` - 最小〜最大範囲内でランダムに選ばれたピック数。
+- `int actualPickCount` - ピックされたアイテムの合計数。
+- `int repeatCount` - 連続した同一ピックの数。
+- `double testDuration` - テストの所要時間。
+- `float RepeatsPercentage` - `repeatCount / actualPickCount` として計算。
+
+さらに、`TestResults` は結果をフォーマットして表示するためのユーティリティプロパティとメソッドを提供します：
+
+- `void Print()` - Inspector ベースのテストと同様の結果を表示します。
+- `string SelectionMethodInfo` - 選択方法、繰り返し防止、シードに関する情報。
+- `string PickCountInfo` - 最小、最大、ランダムに選ばれたピック数の詳細。
+- `string ActualPickCountInfo` - ピックされたアイテム、繰り返しパーセンテージ、合計数のデータ。
+- `string TestDurationInfo` - テスト所要時間をユーザーフレンドリーな形式で表示。
+- `string GetFormattedResults()` - 結果の簡潔なビュー。
+- `string GetFormattedPickDetails()` - 各インデックスの詳細な内訳。
+- `string GetFormattedResultsWithDetails()` - 上記 2 つの出力を統合。
+
+テスト結果をリセットするには、`myTestResults.Clear();` を呼び出すだけです。
+
+---

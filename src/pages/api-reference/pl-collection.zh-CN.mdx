@@ -1,0 +1,137 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { GuidePLCollection, NestingListsPage, SupportPage } from '@/components/PageLinks'
+
+export const description =
+  'PLCollection<T> 的参考文档——用于组织和跨多个 ProbabilityList<T> 实例进行选择的集合类型。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# PLCollection&lt;T&gt;
+
+想先看实操教程？从 <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a> 开始，然后将本页作为集合 API 的简明代码参考。{{ className: 'lead' }}
+
+`PLCollection<T>` 将多个 `ProbabilityList<T>` 实例组织到一个集合中。
+
+当一个列表不够用，且你需要一个更高层次的结构来管理命名或索引列表组时，请使用它。
+
+---
+
+## 典型使用场景
+
+- 分组战利品表
+- 命名对话池
+- 遭遇事件分类
+- 多生物群系刷新列表
+- 任何需要将多个概率列表归为一组的系统
+
+---
+
+## 核心集合成员
+
+<MemberGroup title="Collection basics" tone="sky">
+  <Member kind="METHOD" color="emerald" name="ItemType" signature="Type ItemType()">
+    返回集合及其所有内部列表所使用的值类型。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Count" signature="int">
+    集合中列表的数量。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddList" signature="void AddList(...) / overloads">
+    添加一个已有列表，或创建一个带有可选名称的新列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveList" signature="bool RemoveList(...) / overloads">
+    通过索引或名称移除一个列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetList" signature="ProbabilityList<T> GetList(...) / overloads">
+    通过索引或名称检索一个列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetListName" signature="bool SetListName(...) / overloads">
+    重命名一个列表。由于名称存储在底层 <code>ProbabilityList&lt;T&gt;</code> 上，这是在集合中保持名称实用且一致的推荐方式。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="MoveListUp / MoveListDown" signature="bool MoveListUp(int index) / bool MoveListDown(int index)">
+    对集合内的列表进行重新排序。
+  </Member>
+</MemberGroup>
+
+---
+
+## 通过集合抽取值
+
+<MemberGroup title="Selection helpers" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="PickValueFrom" signature="bool PickValueFrom(...) / overloads">
+    从一个命名或索引列表中抽取单个值。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValueFrom" signature="(bool ListFound, bool ValuePicked) TryPickValueFrom(...) / overloads">
+    更安全的单值抽取辅助方法，当你需要区分"列表不存在"和"抽取未成功"时使用。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValuesFrom" signature="List<T> PickValuesFrom(...) / overloads">
+    从一个列表中抽取多个值。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValuesFromAll" signature="List<T> PickValuesFromAll()">
+    从所有列表中抽取值，并将结果合并到一个新列表中。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValueFromAll" signature="List<T> PickValueFromAll()">
+    从每个列表中各抽取一个值，并返回汇总结果。
+  </Member>
+</MemberGroup>
+
+---
+
+## 维护辅助方法
+
+<MemberGroup title="Maintenance and state helpers" tone="amber">
+  <Member kind="METHOD" color="emerald" name="ClearCollection" signature="void ClearCollection()">
+    从集合中移除所有列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearList / ClearAllLists" signature="bool ClearList(...) / void ClearAllLists()">
+    清空一个列表或所有列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="IsListEmpty" signature="(bool ListFound, bool IsEmpty) IsListEmpty(...) / overloads">
+    检查一个列表是否存在，以及它当前是否包含条目。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RefillList / RefillAllLists" signature="bool RefillList(...) / void RefillAllLists()">
+    补充一个列表或所有列表中可消耗的条目。
+  </Member>
+</MemberGroup>
+
+---
+
+## 命名访问与索引访问
+
+<Note>
+  <p><strong>命名访问通常是更简洁的 API。</strong></p>
+  <p>基于索引的访问适用于严格受控的内部系统，但当集合代表内容分组时，基于名称的访问通常更清晰、更易于维护。</p>
+</Note>
+
+<Note>
+  <p><strong>列表名称比初看起来更重要。</strong></p>
+  <p><code>ListName</code> 不仅仅是一个可选的显示标签。它也是让 <code>PLCollection&lt;T&gt;</code> 中的命名查找变得实用的关键——无论是在编辑器工作流中，还是在通过名称检索或抽取列表的代码中。</p>
+</Note>
+
+---
+
+## 示例
+
+```csharp
+var responses = new PLCollection<string>();
+responses.AddList("Friendly");
+responses.AddList("Hostile");
+
+responses.GetList("Friendly")?.AddItems("Hello", "Good to see you", "Welcome back");
+responses.GetList("Hostile")?.AddItems("Go away", "Not interested", "Leave me alone");
+
+responses.PickValueFrom("Friendly", out var line);
+```
+
+---
+
+## 相关页面
+
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+- <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>
+
+<Note>
+  <p><strong>正在用 PLCollection 构建项目并希望获得反馈？</strong></p>
+  <p>如果你想比较不同方案、询问命名策略或验证某个配置，<a href={SupportPage.Link}>{SupportPage.Title}</a> 页面将为你指引我们的 Discord 社区。</p>
+</Note>

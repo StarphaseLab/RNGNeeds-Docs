@@ -1,0 +1,104 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+
+import samplesMonsterSpawnerStructure from '@/images/screenshots/samples-monster-spawner-structure.png';
+import samplesMonsterSpawnerScene from '@/images/screenshots/samples-monster-spawner-scene.png';
+import samplesSpawnLocationSpread from '@/images/screenshots/samples-spawn-location-spread.png';
+import { ProbabilityInfluencePage } from "@/components/PageLinks";
+
+export const description =
+    '探索 RNGNeeds 中的 Monster Spawner 示例，利用 Probability Influence 动态控制怪物生成。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# Monster Spawner
+
+使用 RNGNeeds 的 Monster Spawner 示例，释放野兽的力量。借助 Probability Influence，本示例根据位置及其他因素动态控制各类怪物的生成。无论您正在设计恐怖游戏还是奇幻冒险，Monster Spawner 都能为您提供灵感，展示如何在运行时动态调整概率。{{ className: 'lead' }}
+
+---
+
+## 动态概率
+
+Monster Spawner 示例展示了 **Probability Influence** 系统的用法，该系统允许根据外部因素动态控制各项概率。这是 RNGNeeds 中非常强大的功能，通过为固定概率注入活力，将其转化为引人入胜的游戏机制，从而开启了创意游戏设计的无限可能。
+
+在本示例中，怪物将根据玩家与生成点之间的距离，以不同概率进行生成。设计好的概率会动态变化，确保英雄受到来自附近位置的攻击，同时在所有位置仍保留一定的小概率生成机会。这次您扮演的是 **Chancellor，倒霉蛋**，一个不幸出现在怪物墓地中央的可怜家伙。让我们给他一个喘息的机会——为了简化设计，他只需走过怪物即可将其驱逐。
+
+<ImageX className="w-full h-auto" src={samplesMonsterSpawnerScene} alt="Samples Monster Spawner Scene" width="1000"/>
+
+## 示例结构
+
+首先，让我们了解本示例的结构。找到并打开 **MonsterSpawner** 场景，并在其层级中检查 *MonsterSpawner GameObject*。附加的 `MonsterSpawner` 脚本持有三个不同类型的 Probability List：
+
+- **Monster Types** - 此列表类型为 `Monster`（Scriptable Object），用于处理随机怪物选取
+- **Monster Levels** - 提供一个随机 `int`，用于定义怪物等级
+- **Spawn Locations** - 此列表提供 `SpawnLocation` 类型，这是放置在场景中的 MonoBehaviour
+
+<ImageX className="w-full h-auto" src={samplesMonsterSpawnerStructure} alt="Samples Monster Spawner Structure" width="1000"/>
+
+如您所见，列表中的所有项目都有设计好的概率。但请仔细查看 Spawn Locations。Center 位置有 40% 的概率，East 和 West 位置各有 30%。此外，所有位置都被 **"influenced"**——受影响的项目不会显示与其他列表项目类似的概率条，而是以带有手柄的滑块替代显示。
+
+滑块定义了 **Influence Spread** 的最小值和最大值，即正向或负向影响的限制范围。例如，最大正向影响会将概率提升至右侧（最大值）滑块手柄所对应的值。在游玩小游戏时，试着移动手柄来改变影响程度。
+
+<Note>
+    要进一步了解此概念、其设计理念及使用细节，请访问
+    <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> 页面。
+
+    **就本示例而言，我们只关注结果**——在某位置生成怪物的概率将取决于玩家与该位置的距离。
+</Note>
+
+## Monster Spawner 代码
+
+让我们仔细看看 `MonsterSpawner` MonoBehaviour 的代码。确定怪物类型、等级以及生成位置的逻辑相当简单直接。
+
+- 首先，从 Monster Types Probability List 中选取一个 `Monster` Scriptable Object。
+- 接下来，代码尝试选取一个 `SpawnLocation` MonoBehaviour 组件。之所以是"尝试"，是因为如果所有生成点都受到最大负向影响，则不会选取并返回任何值。
+- 然后，在所选位置生成 **Monster Prefab**。
+- 最后，将随机怪物等级和玩家位置发送给 `MonsterController` MonoBehaviour 组件。等级将决定怪物追逐玩家时的速度，并知晓玩家位置。
+
+```csharp {{ title: 'Monster Spawner Code'}}
+public class MonsterSpawner : MonoBehaviour
+{
+    // non-relevant code was omitted
+
+    public Transform playerLocation;
+    public ProbabilityList<Monster> monsterTypes;
+    public ProbabilityList<int> monsterLevels;
+    public ProbabilityList<SpawnLocation> spawnLocations;
+
+    private void Start()
+    {
+        InvokeRepeating(nameof(SpawnMonster), .5f, .5f);
+    }
+
+    public void SpawnMonster()
+    {
+        Monster monster = monsterTypes.PickValue();
+        if (spawnLocations.TryPickValue(out var location) == false) return;
+        var monsterObject = location.Spawn(monster.monsterPrefab);
+        var monsterController = monsterObject.GetComponent<MonsterController>();
+        monsterController.SetStatsByLevel(monsterLevels.PickValue(), playerLocation);
+    }
+}
+```
+
+### 将控制权交给设计师
+
+选择内容由设计师在 Inspector 中定义，设计师可以按自己的意愿改变游戏体验。例如，他们可能会选择只从 Center 位置生成 2 级哥布林，从而去除 RNG 元素。通过采纳这种理念，并且如果编程人员也将生成频率暴露给设计师，则可以创建任何类型的生成机制。
+
+请随意在 Play Mode 中进行实验。左键单击以选择 Chancelor（黄色物体），右键单击地面以开始移动。在每个生成点，您将看到两个数字。顶部数字代表传入的负向或正向影响值，范围从 -1 到 1。该值根据玩家与该位置的距离计算得出。底部数字是最终概率，表示怪物在该位置生成的机会。
+
+<ImageX className="w-full h-auto" src={samplesSpawnLocationSpread} alt="Samples Spawn Location Spread" width="1000"/>
+
+您可以即时更改 `MonsterSpawner` 组件的设置、概率或影响。通过拖动扩展滑块的手柄，可以设置影响改变概率的限制范围。
+
+如果您仔细观察中心位置，可能会注意到其扩展滑块紧贴在白线上。由于白线代表设计好的概率（在本例中为 40%），因此没有扩展范围。这意味着对于中心位置，影响将不起任何作用，概率将始终保持在 40%。如果您向上拖动滑块的右侧手柄，则允许正向影响提高其概率。同样的原则适用于左侧手柄，它控制负向影响。
+
+<Note>
+    要进一步了解此概念、其设计理念及使用细节，请访问
+    <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> 页面。
+</Note>
+
+---

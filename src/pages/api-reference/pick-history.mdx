@@ -1,0 +1,81 @@
+import { HeroPattern } from '@/components/HeroPattern'
+
+export const description =
+  'Reference for PickHistory, the helper type used by ProbabilityList<T> to store and expose recent picks.'
+
+<HeroPattern />
+
+# PickHistory
+
+`PickHistory` stores the recent picks made by a `ProbabilityList<T>`. It is the small helper type behind convenience properties such as `LastPickedIndex`, `LastPickedValues`, and other history-related APIs on the list itself. {{ className: 'lead' }}
+
+Each history entry records:
+
+- the picked item index
+- the time of the pick
+
+---
+
+## Core members
+
+<MemberGroup title="History access" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="History" signature="List<HistoryEntry>">
+    The underlying list of history entries.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Capacity" signature="int">
+    Maximum number of entries to retain. Minimum value is 1.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LatestIndex" signature="int">
+    Index of the most recent pick, or <code>-1</code> if history is empty.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LatestEntry" signature="HistoryEntry">
+    The most recent history entry, or <code>null</code> when history is empty.
+  </Member>
+</MemberGroup>
+
+---
+
+## Retrieval helpers
+
+<MemberGroup title="Retrieval methods" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="GetLatestEntries" signature="List<HistoryEntry> GetLatestEntries(int count)">
+    Returns a shared list containing the newest history entries.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestEntries" signature="void GetLatestEntries(List<HistoryEntry> list, int count)">
+    Fills your own list with the newest entries.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestPicks" signature="List<int> GetLatestPicks(int count)">
+    Returns a shared list of the latest picked item indices.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestPicks" signature="void GetLatestPicks(List<int> list, int count)">
+    Fills your own list with the latest picked indices.
+  </Member>
+</MemberGroup>
+
+---
+
+## Mutation helpers
+
+<MemberGroup title="Mutation methods" tone="amber">
+  <Member kind="METHOD" color="emerald" name="ClearHistory" signature="void ClearHistory()">
+    Removes all history entries and returns them to the pool.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddEntry" signature="void AddEntry(int index)">
+    Adds one picked index to history.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddEntries" signature="void AddEntries(NativeList<int> picks)">
+    Adds multiple picks to history in one operation.
+  </Member>
+</MemberGroup>
+
+---
+
+<Note>
+  <p><strong>Some retrieval helpers return shared lists.</strong></p>
+  <p>That avoids extra allocations. If you need a stable copy, pass in your own list and fill that instead.</p>
+</Note>
+
+<Note>
+  <p><strong>History entries are pooled.</strong></p>
+  <p>RNGNeeds reuses <code>HistoryEntry</code> objects to reduce garbage creation. You can pre-warm the pool via <code>RNGNeedsCore.WarmupHistoryEntries(...)</code> if needed.</p>
+</Note>

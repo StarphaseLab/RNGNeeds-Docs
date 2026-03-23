@@ -1,0 +1,88 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {NestingListsPage, SamplesOverviewPage} from "@/components/PageLinks";
+import plCollectionGuideCharacterResponsesFilled from '@/images/screenshots/plcollection-guide-character-responses-filled.png';
+export const translationStatus = 'auto'
+export const description = 'Unity プロジェクトで Probability List をネストして整理するための PLCollection クラスの実装と活用方法を学びましょう。';
+
+<HeroPattern />
+
+# PLCollection ガイド
+
+これらのガイドは、Unity プロジェクトで Probability List をネストして整理するための PLCollection クラスの実装と活用を支援するために設計されています。
+PLCollection についてさらに詳しく知るには、ドキュメントの
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> ページをご覧ください。 {{ className: 'lead' }}
+
+<Note>
+    このページで取り上げてほしいユースケースをお持ちですか？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord コミュニティに参加して</a>、ご意見をお聞かせください。
+</Note>
+
+---
+
+## NPC レスポンスのコレクション
+
+NPC キャラクターのレスポンスのコレクションを作成し、異なるカテゴリーに整理するシンプルな例を作ってみましょう。
+
+まず、レスポンスのコレクションを保持する `CharacterResponses` という MonoBehaviour クラスを作成します。
+特定のカテゴリーからレスポンスを選択する `SelectResponse` メソッドも含めます。
+
+```csharp {{ title: 'CharacterResponses.cs' }}
+using UnityEngine;
+using RNGNeeds;
+
+public class CharacterResponses : MonoBehaviour
+{
+    public PLCollection<string> characterResponses;
+    
+    public string SelectResponse(string category)
+    {
+        var result = characterResponses.PickValueFrom(category, out var response);
+        if (result.ValueSelected)
+        {
+            return response;
+        }
+
+        if (result.ListFound)
+        {
+            Debug.Log($"No responses found for category {category}");
+        }
+        else
+        {
+            Debug.Log($"Category {category} not found in collection");
+        }
+
+        return string.Empty;
+    }
+}
+```
+
+次に、Unity Editor で新しい GameObject を作成し、`CharacterResponses` スクリプトをアタッチします。
+Inspector でコレクションに Probability List を追加することで、レスポンスのコレクションのデザインを始めることができます。
+
+ここでは、**Friendly**、**Neutral**、**Hostile** のカテゴリーで3つのレスポンスリストを追加しました。
+
+<ImageX className="w-full h-auto" src={plCollectionGuideCharacterResponsesFilled} alt="PLCollection - Character Responses Filled" width="1000"/>
+
+これで、`SelectResponse` メソッドを呼び出して特定のカテゴリーからレスポンスを取得できます。
+
+```csharp {{ title: 'CharacterResponsesUsage.cs' }}
+Debug.Log(characterResponses.SelectResponse("Friendly"));   // Output: "Welcome back, friend! What's new?"
+Debug.Log(characterResponses.SelectResponse("Neutral"));    // Output: "Can I help you with something?"
+Debug.Log(characterResponses.SelectResponse("Hostile"));    // Output: "Careful here. I'm watching."
+```
+
+---
+
+モジュール式のルートテーブルアプローチを活用したより複雑なユースケースについては、プラグインに付属の **Treasure Chest** および **Deck Builder** サンプルをご確認ください。
+これらやその他の例については、
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a> でご覧いただけます。
+
+<Note>
+    このページで取り上げてほしいユースケースをお持ちですか？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord コミュニティに参加して</a>、ご意見をお聞かせください。
+</Note>
+
+---

@@ -1,0 +1,88 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {NestingListsPage, SamplesOverviewPage} from "@/components/PageLinks";
+import plCollectionGuideCharacterResponsesFilled from '@/images/screenshots/plcollection-guide-character-responses-filled.png';
+
+export const description = 'Learn how to implement and utilize the PLCollection class for nesting and organizing Probability Lists in your Unity projects.';
+
+<HeroPattern />
+
+# PLCollection Guides
+
+These guides are designed to help you implement and utilize the PLCollection class for nesting and organizing Probability Lists in your Unity projects. 
+To learn more about PLCollection, visit the 
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> page of our documentation. {{ className: 'lead' }}
+
+<Note>
+    Have a use case in mind that we should explore on this page?
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
+</Note>
+
+---
+
+## Collection of NPC Responses
+
+Let's create a simple example where we have a collection of responses for NPC characters, organizing them into different categories.
+
+First, create a MonoBehaviour class called `CharacterResponses` that will hold our collection of responses.
+We will include method `SelectResponse` that will select a response from a specific category.
+
+```csharp {{ title: 'CharacterResponses.cs' }}
+using UnityEngine;
+using RNGNeeds;
+
+public class CharacterResponses : MonoBehaviour
+{
+    public PLCollection<string> characterResponses;
+    
+    public string SelectResponse(string category)
+    {
+        var result = characterResponses.PickValueFrom(category, out var response);
+        if (result.ValueSelected)
+        {
+            return response;
+        }
+
+        if (result.ListFound)
+        {
+            Debug.Log($"No responses found for category {category}");
+        }
+        else
+        {
+            Debug.Log($"Category {category} not found in collection");
+        }
+
+        return string.Empty;
+    }
+}
+```
+
+Next, create a new GameObject in the Unity Editor and attach the `CharacterResponses` script to it.
+You can start designing your collection of responses by adding Probability Lists to collection in the inspector.
+
+Here, we added three lists of responses with the categories **Friendly**, **Neutral**, and **Hostile**.
+
+<ImageX className="w-full h-auto" src={plCollectionGuideCharacterResponsesFilled} alt="PLCollection - Character Responses Filled" width="1000"/>
+
+Now, you can call the `SelectResponse` method to get a response from a specific category.
+
+```csharp {{ title: 'CharacterResponsesUsage.cs' }}
+Debug.Log(characterResponses.SelectResponse("Friendly"));   // Output: "Welcome back, friend! What’s new?"
+Debug.Log(characterResponses.SelectResponse("Neutral"));    // Output: "Can I help you with something?"
+Debug.Log(characterResponses.SelectResponse("Hostile"));    // Output: "Careful here. I’m watching."
+```
+
+---
+
+For more complex use cases utilizing a modular loot table approach, check out the **Treasure Chest** and **Deck Builder** samples included with the plugin.
+Learn more about these and other examples on the
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a>.
+
+<Note>
+    Have a use case in mind that we should explore on this page?
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
+</Note>
+
+---

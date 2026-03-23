@@ -1,0 +1,54 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+
+import samplesUnitAudioScene from '@/images/screenshots/samples-unit-audio-scene.png';
+import samplesUnitAudioAnnie from '@/images/screenshots/samples-unit-audio-annie.png';
+import { RepeatPreventionPage } from "@/components/PageLinks";
+
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeeds を使ってゲームの音声をランダム化する方法をご紹介します。ユニットの反応、会話の選択肢、環境音など、Random Audio サンプルで動的な音響体験を作り出す方法を学びましょう。'
+
+<HeroPattern />
+
+# Random Audio
+
+RNGNeeds の Random Audio サンプルで、ゲームキャラクターに命を吹き込みましょう。
+このサンプルでは、ユニットの反応、会話の選択肢、環境音をランダム化し、より没入感があり動的な音響体験を作り出す方法を紹介します。
+個性的なキャラクターのセリフから希少なリアクションまで、ゲームの音響を細かく調整する方法を学びましょう。 {{ className: 'lead' }}
+
+---
+
+## AudioClip と確率
+
+ゲームの音声をランダム化することは、ユニットの反応、会話の選択肢、環境音など、RNG が真価を発揮できる一般的なシナリオです。RNGNeeds はこれらのタスクを、単純な整数のサイコロを振るのと同じくらい簡単に処理できます。
+これを実現するには、`AudioClip` 型の `ProbabilityList` を定義します。そのリストから値を取得すると、再生可能な AudioClip が返されます。
+
+```csharp {{ title: 'ProbabilityList handling AudioClip Type'}}
+public ProbabilityList<AudioClip> randomAudio;
+
+if(audioSource.isPlaying == false) audioSource.PlayOneShot(randomAudio.PickValue());
+```
+
+実際の動作を確認するには、**RandomAudioClip** シーンを開いてください。このシンプルなミニゲームでは、元気いっぱいでおしゃべりなラボアシスタントの Annie を操作します。彼女の音声設定は、**/Prefabs** フォルダにある **Annie Lab Assistant** プレハブを開いて確認できます。プレハブの階層で **UnitAudio** GameObject を探してください。
+アタッチされている `UnitAudio` スクリプトには、Select（選択）、Move（移動）、Interact（インタラクト）の各反応用に3つの Probability List が含まれています。
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioAnnie} alt="Samples Random Unit Audio Annie" width="1000"/>
+
+これらの反応の確率を変えることで、Annie が稀に発する個性的なセリフのような、ユニークで希少なリアクションが実現できます。
+
+この確率設定の柔軟性により、音響体験を細かく調整することができます。
+たとえば、特定の反応がプレイヤーに不評だとフィードバックがあった場合、その反応を完全に削除するのではなく、単純に再生される確率を下げるだけで対応できます。
+
+これらの ProbabilityList は
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> 機能を活用しており、Annie が同じセリフを連続して言わないようになっています。
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioScene} alt="Samples Random Unit Audio Scene" width="1000"/>
+
+### Annie の操作方法
+
+- **左クリックでユニットを選択します**（青いオブジェクト）。繰り返しクリックすると *Select Response* が再生されます。
+- **地面を右クリックすると移動が始まり**、*Move Response* が再生されます。
+- **金色のオブジェクトを右クリックするとインタラクトが発生し**、*Interact Response* が再生されます。
+
+---

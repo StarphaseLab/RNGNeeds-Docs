@@ -1,0 +1,208 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import {DepletableListsPage, PreferencesPage, SelectingValuesPage} from "@/components/PageLinks";
+import guideDepDistinctSelectionList from '@/images/screenshots/guide-dep-distinct-selection-list.png';
+import guideDepDistinctSelectionListOptions from '@/images/screenshots/guide-dep-distinct-selection-list-options.png';
+import guideDepDistinctSelectionListResult from '@/images/screenshots/guide-dep-distinct-selection-list-result.png';
+import guideDistinctSelectionList from '@/images/screenshots/guide-distinct-selection-list.png';
+import guideDistinctSelectionPick from '@/images/screenshots/guide-distinct-selection-pick.png';
+import {Note} from "@/components/mdx";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeeds のリストから重複しないユニークな値を選択する方法を学び、ゲームメカニクスで多様かつ独自の結果を確保しましょう。'
+
+<HeroPattern />
+
+# 重複しない値の選択
+
+選択した各値がユニークであることを保証することが重要な場面はよくあります。
+重複しない値を選択すると本来の確率が変化しますが、このガイドでは RNGNeeds の Depletable Lists 機能を使ってこれを実現するシンプルなアプローチを説明します。 {{ className: 'lead' }}
+
+
+---
+
+## ユニークな報酬の選択
+
+ゲームレベルをクリアした際に、プレイヤーに3つのユニークな報酬を提供したいシナリオを想像してください。
+**Depletable Lists** 機能はここで理想的な選択肢です。選ばれた報酬は自動的に枯渇するため、結果に一度しか登場しません。
+
+<Note>
+    *Depletable Items* の概念について詳しく学ぶには、ドキュメントの
+    <a href={DepletableListsPage.Link}>こちらのページ</a>をご覧ください。
+</Note>
+
+まず、基本的な `Reward` クラスを作成しましょう。このクラスは以下の役割を果たします。
+- ゲーム内通貨に関する詳細情報を保持する。
+- info provider インターフェースを通じてドロワーに関連情報を提供する。
+
+```csharp {{ title: 'Basic Reward Class'}}
+using System;
+using RNGNeeds;
+
+[Serializable]
+public class Reward : IProbabilityItemInfoProvider
+{
+    public string currency;
+    public int value;
+    public string ItemInfo => $"{currency} ({value.ToString()})";
+}
+```
+
+次に、様々な潜在的報酬を管理する `LevelCompletionRewards` コンポーネントを導入します。
+
+```csharp {{ title: 'Add a ProbabilityList for Rewards'}}
+using UnityEngine;
+using RNGNeeds;
+
+public class LevelCompletionRewards : MonoBehaviour
+{
+    public ProbabilityList<Reward> rewards;
+}
+```
+
+コンポーネントを GameObject にアタッチしたら、報酬の配列を設定し始めることができます。
+
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionList} alt="Distinct Selection - Depletable List" width="1000"/>
+
+報酬プールが整ったら、リストを Depletable に設定します。まず、Advanced オプションが有効になっていることを確認してください。
+
+1. **Advanced Drawer Options Level を有効化**: <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> ウィンドウに移動し、Drawer Options Level を **Advanced** に切り替えます。このグローバル設定を有効にすると、すべての Probability List Inspector で高度な機能が表示されるようになります。
+
+2. ドロワーの **PICK** セクションを開き、**Depletable** ボタンをクリックします。デフォルトでは、各 Probability Item は `1 / 1` の利用可能数／最大数で **Depletable** としてマークされています。
+
+3. **Maintain Pick Count** オプションをオンにして、このリストの Pick Count を `3` に設定します。
+
+4. 各アイテムの残り数量をより見やすく表示するために、**Visualize Units in the Stripe** オプションを有効にします。
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionListOptions} alt="Distinct Selection - Depletable List Options" width="1000"/>
+
+**TEST** ボタンをクリックすると、確率分布と利用可能な数量を考慮しながら、リストから3つの異なるアイテムが選択されます。
+各アイテムは1単位しか持っていないため、それぞれ1回だけ選択されます。
+残り数量はストライプ上に明確に表示され、各アイテム横の数量カウントも相応に減少します。
+テストを繰り返すと、選択可能なアイテムがなくなるまでリストが枯渇していきます。
+
+<Note>
+    ヒント：**TEST** ボタンをクリックする際に **Control**（Mac では **Command**）を押しながらクリックすると、テスト開始前にアイテムの数量を自動的に補充できます。または、選択したアクション横の **矢印ボタン** をクリックして **Action Menu** から手動でアイテムを補充することもできます（デフォルトでは **Refill Items** に設定されています）。
+</Note>
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionListResult} alt="Distinct Selection - Depletable List Result" width="1000"/>
+
+ユニークな報酬のリストを作成し結果をテストしたので、最後のステップは報酬を選択するコードを実装することです。
+`LevelCompletionRewards` コンポーネントに次のメソッドを追加してください。
+
+```csharp {{ title: 'Add the PickRewards method'}}
+public List<Reward> PickRewards(int count)
+{
+    rewards.RefillItems();
+    rewards.MaintainPickCountIfDisabled = true;
+    return rewards.PickValues(count);
+}
+```
+
+値を選択する前に、`PickRewards` メソッドは以下の処理を実行します。
+- すべてのアイテムの数量を最大値に補充し、前回のピックで枯渇していた場合でも全ての報酬にアクセスできるようにします。
+- Inspector でまだこのように設定されていない場合に備えて、`MaintainPickCountIfDisabled` プロパティを `true` に設定します。
+
+実際の動作を確認するには、`PickRewards` メソッドを呼び出します。
+
+```csharp {{ title: 'Test the distinct selection'}}
+var pickedRewards = PickRewards(rewardsToPick);
+
+foreach (var reward in pickedRewards)
+{
+    Debug.Log(reward.ItemInfo);
+}
+
+// An example console output with three unique rewards could be:
+// Gold (250)
+// Diamonds (7)
+// StarDust (50)
+```
+
+
+---
+
+## 代替アプローチ
+
+<Note>
+    v0.9.7 での **Depletable Lists** 機能の導入以前は、重複しない値の選択は一般的に、選ばれたアイテムを無効化して後続の選択で選ばれないようにする方法で実現されていました。
+    この方法はコードとパフォーマンスの面で効率が低く（選ばれたアイテムごとにループ内で個別の選択呼び出しが必要でした）、depletable アイテムを使用しない場合に備えてこのガイドを残しています。
+</Note>
+
+まず、上記のガイドに従って `Reward` クラスと `LevelCompletionRewards` クラスを作成します。
+
+コンポーネントを GameObject にアタッチしたら、報酬の配列を設定し始めることができます。
+
+<ImageX className="w-full h-auto" src={guideDistinctSelectionList} alt="Distinct Selection - List" width="1000"/>
+
+報酬プールが整ったら、重複しない報酬のみが選ばれることを保証するロジックを導入します。`LevelCompletionRewards` コンポーネントに次のセグメントを追加してください。
+
+```csharp {{ title: 'Add Distinct Selection Logic'}}
+using UnityEngine;
+using RNGNeeds;
+using System.Collections.Generic;
+
+public class LevelCompletionRewards : MonoBehaviour
+{
+    public ProbabilityList<Reward> rewards;
+
+    public List<Reward> PickRewards(int count)
+    {
+        rewards.SetAllItemsEnabled(true);
+        rewards.MaintainPickCountIfDisabled = true;
+        
+        var pickedRewards = new List<Reward>();
+        
+        for (var i = 1; i <= count; i++)
+        {
+            if (!rewards.TryPickValueWithIndex(out var pickedReward, out var pickedIndex)) continue;
+            pickedRewards.Add(pickedReward);
+            rewards.SetItemEnabled(pickedIndex, false);
+        }
+
+        return pickedRewards;
+    }
+}
+```
+
+`PickRewards` メソッドの処理内容を分解して説明します。
+- `.SetAllItemsEnabled(true)` を使用して、すべての報酬が選択可能な状態であることを確認することから始まります。
+- `MaintainPickCountIfDisabled` プロパティにより、リスト内に無効化されたアイテムがある場合でも各ピックが成功することを保証します。
+- 各報酬について、メソッドは報酬を選択し、リストに追加した後、ユニーク性を確保するために即座に無効化します。
+
+<Note>
+    無効化されたアイテムと「Maintain Pick Count」設定を組み合わせると、新しく無効化されるアイテムごとに結果の確率が変化します。
+    この背後にあるロジックとその影響についての詳しい理解は、<a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> ページの無効化されたアイテムに関するセクションをご参照ください。
+</Note>
+
+
+実際の動作を確認するには、`PickRewards` メソッドを呼び出します。
+
+```csharp {{ title: 'Test the distinct selection'}}
+var pickedRewards = PickRewards(rewardsToPick);
+
+foreach (var reward in pickedRewards)
+{
+    Debug.Log(reward.ItemInfo);
+}
+
+// An example console output with three unique rewards could be:
+// Gold (100)
+// Diamonds (5)
+// StarDust (75)
+```
+
+テスト後にリストを確認すると、選ばれたアイテムが無効化されていることがわかります。
+
+<ImageX className="w-full h-auto" src={guideDistinctSelectionPick} alt="Distinct Selection - Pick" width="1000"/>
+
+まとめると、選択後に各アイテムを一時的に無効化することで、この方法はリストから完全にユニークなアイテムのセットを効率的に生成します。
+
+<Note>
+    **推奨アプローチ：** **Depletable Lists** を使用する方法は、一般的により効果的でシンプルです。この機能はユニークな選択の管理プロセスを簡素化するだけでなく、リスト構造内でアイテムの入手可能状態を直接管理することで全体的なパフォーマンスも向上させます。
+</Note>
+
+
+
+---

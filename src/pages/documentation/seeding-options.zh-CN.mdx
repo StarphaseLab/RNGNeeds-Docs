@@ -1,0 +1,139 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {PreferencesPage} from "@/components/PageLinks";
+import seedingOptionsInspector from '@/images/screenshots/seeding-options-inspector.png';
+import seedingOptionsCustomSeed from '@/images/screenshots/seeding-options-custom-seed.png';
+import {ImageX} from "@/components/ImageX";
+
+export const description =
+    '探索 RNGNeeds 中的种子选项，或了解如何使用自定义 Seed Provider。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# 种子选项
+
+种子是随机数生成中的基本概念。通过提供种子，您可以确保一系列随机数具有可重现性。这在需要重现特定事件序列的场景中极为宝贵，例如以相同的随机挑战重新进行某个游戏关卡。让我们深入了解 RNGNeeds 如何处理种子。{{ className: 'lead' }}
+
+---
+
+## RNGNeeds 中的种子
+
+在核心层面，本插件利用 **Unity.Mathematics Random** 对象来处理所有随机数生成任务。该对象需要使用 `uint` 种子进行初始化。RNGNeeds 拥有一个可扩展的 **Seed Provider**，负责提供 `uint` 值。在本节稍后，您将学习如何创建自己的 Seed Provider。
+
+以下是我们的选择方法如何利用种子的逐步说明：
+
+1. 在选取过程开始时，Probability List 使用 `ProbabilityList.Seed` 属性生成一个新种子。
+2. 生成的种子决定随机拾取次数，该次数可通过参数提供，也可根据所用 `PickValues()` 重载从列表的 `PickCountMin` 和 `PickCountMax` 属性派生。
+3. Probability List 随后被传递给所选的选择方法。由于种子包含在列表中，选择方法通过 `ProbabilityList.CurrentSeed` 属性获取种子，以初始化新的 Random 对象。
+4. 新初始化的 Random 对象随后用于在整个选取过程中生成随机数。
+
+<Note>
+    **选取过程**是负责根据列表各种设置（如拾取次数、选择方法、重复防止等）从列表中获取值的复杂算法。关键要点如下：当您调用 `PickValues()` 时，它会在开始时提示列表提供其种子。该种子随后在整个过程中被一致使用，以根据设定的概率确定值，从而确保有序的拾取量基于该特定种子。
+</Note>
+
+默认情况下，调用 `ProbabilityList.Seed` 会使用 RNGNeeds **Seed Provider** 生成一个新种子。简而言之，每次拾取值时，列表都会使用唯一的种子来产生结果。
+
+选取过程完成后，列表会保留所使用的新生成种子。您可以使用 `ProbabilityList.CurrentSeed` 属性访问此值。
+
+### 默认 Seed Provider
+
+RNGNeeds 附带一个名为 `DefaultSeedProvider` 的内置种子提供器。该提供器结合 .NET `System.Random` 类与当前 UTC 时间的 ticks 来生成种子，这种组合确保了高度的随机性。为防止潜在的线程问题，种子生成使用锁机制，是线程安全的。
+
+```csharp {{ title: 'Default Seed Provider Code'}}
+public class DefaultSeedProvider : ISeedProvider
+{
+    private readonly System.Random _random = new System.Random();
+    private readonly object _lockObject = new object();
+
+    public uint NewSeed
+    {
+        get
+        {
+            lock (_lockObject)
+            {
+                return (uint)(_random.Next() * DateTime.UtcNow.Ticks % uint.MaxValue);
+            }
+        }
+    }
+}
+```
+
+---
+
+## 保持种子
+
+"Keep Seed"功能允许您通过禁用种子自动生成，在多次选取之间保持相同的种子。要启用"Keep Seed"，请导航至抽屉的 **PICK** 部分。确保在 <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 窗口中将 *Drawer Options Level* 设置为 Advanced。
+
+**Seed Readout Field** 显示该 Probability List 最后使用的种子。如果启用 Keep Seed，该字段将变为可编辑状态，允许您指定自定义种子。
+
+<ImageX className="w-full h-auto" src={seedingOptionsInspector} alt="Seeding Options - Inspector" width="1000"/>
+
+```csharp {{ title: 'Enabling Keep Seed in Code'}}
+var result = myProbabilityList.PickValue();     // a new seed is generated
+myProbabilityList.KeepSeed = true;
+var newResult = myProbabilityList.PickValue();  // produces the same results
+```
+
+<Note>
+    **重要提示**：我们已发现一个问题，即在使用随机拾取次数范围时，"Keep Seed"选项无法正常工作。
+
+    **此问题已在 0.9.2 版本中修复。** 请确保将 RNGNeeds 更新至最新版本。
+</Note>
+
+---
+
+## 自定义种子
+
+一旦启用 **Keep Seed** 选项（即禁用自动种子功能），您就可以指定自定义种子。Seed Readout Field 将变为可编辑状态，您可以输入自定义种子。
+
+种子是一个 `uint` 值，范围为 `1 到 4294967295`。
+
+<ImageX className="w-full h-auto" src={seedingOptionsCustomSeed} alt="Seeding Options - Custom Seed" width="1000"/>
+
+```csharp {{ title: 'Setting Custom Seed in Code'}}
+myProbabilityList.KeepSeed = true;
+myProbabilityList.Seed = 1337;
+```
+
+从此，该 Probability List 将使用种子 1337，产生完全相同的结果。要恢复默认的自动种子生成，只需在 Inspector 中禁用 Keep Seed 功能，或在代码中使用 `myProbabilityList.KeepSeed = false;`。
+
+---
+
+## Seed Provider
+
+如果您想对种子生成机制进行更多控制，可以实现 `ISeedProvider` 接口并设计您的自定义种子逻辑。
+
+以下是逐步指南：
+
+1. 首先，创建一个实现 `ISeedProvider` 接口的新类：
+
+```csharp {{ title: 'Custom Seed Provider Example'}}
+using System;
+using RNGNeeds;
+
+public class MySeedProvider : ISeedProvider
+{
+    public uint NewSeed
+    {
+        get
+        {
+            // Replace this with your custom seed generation logic
+            return (uint)(DateTime.UtcNow.Ticks % uint.MaxValue);
+        }
+    }
+}
+```
+
+2. 然后，将您的自定义种子提供器注册到 `RNGNeedsCore` 类：
+
+```csharp {{ title: 'Setting Custom Seed Provider'}}
+RNGNeedsCore.SetSeedProvider(new MySeedProvider());
+```
+
+设置完成后，所有 Probability List 将使用您的自定义种子生成逻辑。如果您需要用于其他目的的新种子，可以通过 `RNGNeedsCore.NewSeed` 获取。
+
+要恢复默认种子提供器，只需调用 `RNGNeedsCore.ResetSeedProvider()`。
+
+---

@@ -1,0 +1,110 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Col, Note, Row} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {CustomizingListsPage} from "@/components/PageLinks";
+import preferencesWindow from '@/images/screenshots/preferences-window.png';
+export const description =
+  'RNGNeedsプラグインのユーザー体験をカスタマイズしましょう。drawerの操作、ボタン表示、スクロール方向、テーマに基づいたビジュアル設定などのオプションについて学べます。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# Preferences
+
+RNGNeedsプラグインの「Preferences」セクションでは、ツールとの操作方法を細かく調整する自由があります。コンパクト表示とフル表示のボタン選択、より自然な操作感のためのスクロール方向の反転など、さまざまなオプションが用意されています。さらに、ダークテーマやライトテーマに合わせてビジュアル設定を行うこともできます。ゲーム要素に最適な確率リストの作成に集中できるよう、できる限りユーザーフレンドリーな体験を追求しています。 {{ className: 'lead' }}
+
+<Note>
+    RNGNeeds Preferencesを開くには…
+    - **Windowsの場合** - **Editor Menu Bar &raquo; Edit &raquo; Preferences**をクリックします。
+    - **Macの場合** - トップバーの**Unity &raquo; Settings**をクリックします。
+    
+    表示されたウィンドウの左側にある**RNGNeeds**をクリックしてください。
+</Note>
+
+---
+
+### RNGNeeds Preferencesについて
+
+RNGNeedsには3種類の設定があります。
+
+- **Global Preferences** - すべてのdrawerで共有される設定で、オプションのレベル、スクロール方向、グラデーションのカラー化、ロガー設定など、全体的な動作を定義します。
+- **Default Drawer Settings** - drawer固有の設定で、各新しいdrawerが最初に初期化（表示）されたときに適用されます。新しいdrawerごとに同じ設定を変更していると感じる場合に便利です。**Drawer Options &raquo; Default Drawer Settings**のPreferences Windowでデフォルト値を変更してください。
+- **Color Palettes** - すべてのdrawerで共有されるカラーテーマのリストです。パレットはdrawerに直接適用されるのではなく、drawerはパレット名への参照のみを保持します。これにより、既存のパレットをカスタマイズするとdrawerにも変更が反映されます。
+
+---
+
+## Preferences Window
+
+RNGNeedsの設定は、UnityプロジェクトのEditor設定の隣にあります。Preferences Windowを開くには、**Editor Menu Bar &raquo; Edit &raquo; Preferences &raquo; RNGNeeds**に移動してください。
+
+<Row>
+  <Col>
+      ### Global Preferences
+      **Drawer Options Level** - drawerで「Basic」または「Advanced」オプションを選択します。Advancedを選ぶと、Seedingオプション、Depletable Listコントロール、Selection Methodドロップダウンなど、追加機能がdrawerに表示されます。
+      
+      **Drawer Option Buttons** - drawer Headerに表示するボタンをFull、Compact、Informativeから選択します。Inspectorのスペースが限られている場合はCompactを使用してください。Informativeモード（推奨）では、設定がボタン内に直接表示されます。
+      
+      **Drawer Display Options Buttons** - drawerヘッダーに個別の表示オプションボタンを表示するか、コンパクトなドロップダウンメニューにまとめるかを選択します。ドロップダウンメニューは狭いInspectorでスペースを節約するのに役立ちます。
+      
+      **Inspector Refresh Mode** - レスポンシブなビジュアルオーサリングdrawerを実現するために、Inspectorは頻繁に再描画する必要があります。エディタが遅くなる場合は、マウスドラッグ中のみ再描画する「Optimized」オプションを試してください。ただし、設定変更などの他の操作の反応が若干遅くなる場合があります。
+      
+      **Invert Scroll Direction** - システム設定を補正するために使用します。例えばMacOSでは、「ナチュラル」スクロール方向が確率調整のスクロール操作時に逆に感じられる場合があります。
+      
+      **Default Monochrome Color** - 新しく初期化されたすべてのdrawerのデフォルトのモノクロカラーになります。
+      
+      **Test Color Gradient** - このグラデーションは、目標確率からのテスト結果のばらつきをカラー化するために使用されます。
+      
+      **Spread Color Gradient** - このグラデーションは、影響を受けたリストの確率スプレッドをカラー化するために使用されます。
+
+      ### Depletable List Options
+
+      **Scroll Wheel Units Adjustment** - スクロールホイールを使用したUnit調整を有効にします。すばやく簡単に変更できます。
+
+      **Units Adjustment Multiplier** - Multiply Units Modifier keyを使用する際のUnitsの増減乗数を設定します。
+
+      **Units Adjustment Shortcuts** - この設定グループを展開して、消耗アイテムのUnit調整に使用するキーボードショートカットをカスタマイズします。
+
+      
+      **Editor Log Level** - エディタコンソールに表示するメッセージの種類を選択します。
+      
+      **Allow Log Colors** - エディタコンソールのカラーコードメッセージを有効または無効にします。
+      
+      **Open RNGNeeds Welcome Window** - インストール後に表示されるWelcome Windowを表示するボタンです。
+      
+      ### Default Drawer Settings
+      **Default Drawer Settings** - 新しいdrawerはこれらの設定で初期化されます。展開すると、新しいdrawerのデフォルト設定が表示されます。
+      
+      ### Palette Options
+      **Export Palettes** - 現在のパレットリストをXMLとしてエクスポートできます。
+      
+      **Import Palettes** - XMLからパレットリストをインポートします。現在のリストは上書きされますのでご注意ください。
+      
+      **Reset to Defaults** - 現在のパレットリストをクリアし、出荷時のデフォルトをインポートします。
+      
+      **Color Palettes** - このリストを展開してパレットを編集します。既存のパレットの変更や新しいパレットの追加が可能です。
+  </Col>
+  <Col sticky>
+      <ImageX className="w-full h-auto" src={preferencesWindow} alt="RNGNeeds Inspectors" width={830} />
+  </Col>
+</Row>
+
+各drawerの個別オプションの調整方法については、<a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a>ページをご覧ください。
+
+---
+
+## Persistent Drawer Settings
+
+RNGNeedsは各drawerの設定を個別に自動的に記録します。これにより、多数のオブジェクトを設計する際も整理された状態を保てます。このアプローチにより、Probability Listを設計しながらdrawerの外観を自由に変更でき、後で戻ってきたときも設定は変わらずそのまま残っています。すべてのオプションはコミットやバージョン管理でも保持されます。
+
+<Note>
+    Preferences Windowには、すべての設定をデフォルトにリセットするオプションがあり、デフォルトのdrawer設定もリセットされます。<br/>
+    設定はプロジェクトフォルダの**\/ProjectSettings\/RNGNeedsSettings.asset**に保存されています。<br/>
+    このファイルへの変更はバージョン管理に頻繁に表示されます。これは意図的な設計であり、作業中にすべての設定が引き継がれるようにするためです。<br/>
+    RNGNeedsの設定をコミットしたくない場合は、`.gitignore`ファイルに以下の行を追加してください：
+    ```
+    # Ignore RNGNeedsSettings Asset
+    /[Pp]roject[Ss]ettings/RNGNeedsSettings.*
+    ```
+</Note>
+
+---

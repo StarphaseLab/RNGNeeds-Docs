@@ -1,0 +1,201 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_RNGNeeds, SupportPage } from '@/components/PageLinks'
+
+export const description =
+  'RNGNeeds の組み込み選択メソッド、拡張パス、カスタム選択ロジックのガイダンスです。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# Selection Methods
+
+選択メソッドは、**RNGNeeds が確率リストからアイテムのインデックスをどのように選ぶかを決定します**。リストは依然として確率、有効状態、ロックされたアイテム、枯渇、繰り返し防止を定義します。選択メソッドはそのデータを結果に変換するアルゴリズムです。 {{ className: 'lead' }}
+
+## どのパスを使うべきか？
+
+### 組み込みメソッドを使用する
+
+デフォルトの動作で十分で、パフォーマンスに問題がなく、新しいアルゴリズムを発明する必要はなくアルゴリズムを切り替えるだけでよい場合に最適です。
+
+### システムを拡張する
+
+カスタムの選択ロジックが必要な場合、組み込みメソッドでは対応できない特別なルールが必要な場合、または API レベルでの作業に慣れている場合に最適です。
+
+---
+
+## 組み込み選択メソッド
+
+<MemberGroup title="Built-in methods" tone="sky">
+  <Member kind="METHOD" color="emerald" name="Linear Search" signature="Identifier: LSMRegular">
+    シンプルな線形探索です。小さなリストや一般的なゲームプレイシナリオに適した強力なデフォルトです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Linear Search [BURST]" signature="Identifier: LSMBurst">
+    Linear Search の Burst コンパイル版です。大きなワークロードや 1 回の操作で大量の抽選を行う場合に適しています。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Cumulative Probability" signature="Identifier: CPMRegular">
+    累積確率と二分探索を使用します。さまざまなリストサイズに対応した汎用的なオプションです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Cumulative Probability [BURST]" signature="Identifier: CPMBurst">
+    Burst コンパイル版の累積確率メソッドです。大きな選択ジョブのスループットを重視する場合に最適です。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Random Selection" signature="Identifier: RSMRegular">
+    アイテムの確率を完全に無視し、アイテムから均一にランダムで選択します。
+  </Member>
+</MemberGroup>
+
+---
+
+## クイックガイダンス
+
+<MemberGroup title="When each built-in method makes sense" tone="neutral">
+  <Member kind="USE" color="zinc" name="Linear Search / Linear Search [BURST]">
+    多くのゲームプレイリスト、特に小さなリストや 1 回の呼び出しでの抽選数が少ない場合に適しています。
+  </Member>
+  <Member kind="USE" color="zinc" name="Cumulative Probability / Cumulative Probability [BURST]">
+    リストが大きくなる場合や、よりスケーラブルな汎用選択アルゴリズムが必要な場合に適しています。
+  </Member>
+  <Member kind="USE" color="zinc" name="Random Selection">
+    意図的に一様分布を使用したく、確率を考慮したくない場合にのみ使用してください。
+  </Member>
+</MemberGroup>
+
+---
+
+## 完全カスタムパス：`ISelectionMethod`
+
+`ISelectionMethod` は最も低レベルの拡張パスです。
+
+選択プロセスを完全に掌握したい場合に使用します。
+
+そのため、技術的な詳細はすべて自分で管理する責任があります。
+
+<MemberGroup title="ISelectionMethod contract" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="Identifier" signature="string">
+    メソッドを登録・検索するために使用される一意のキーです。これは <code>ProbabilityList&lt;T&gt;.SelectionMethodID</code> に保存される値です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Name" signature="string">
+    メソッドの人間が読みやすい表示名です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EditorTooltip" signature="string (Editor only)">
+    該当する場合に Unity エディターで表示されるツールチップです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SelectItems" signature="NativeList<int> SelectItems(IProbabilityList probabilityList, int pickCount)">
+    実際の選択を実行し、選ばれたインデックスを返します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 推奨カスタムパス：`SelectionMethodBase`
+
+<Note>
+  <p><strong><code>SelectionMethodBase</code> はカスタム選択ロジックのための部分実装です。</strong></p>
+  <p>選択パイプライン全体を再構築するのではなく、独自のアルゴリズムに集中したい場合は、ここから始めてください。</p>
+</Note>
+
+この基底クラスは選択プロセス周りの多くの重労働を処理するため、あなたのメソッドを独自にする部分に集中できます。
+
+### `SelectionMethodBase` が助けてくれること
+
+<MemberGroup title="Why inherit from SelectionMethodBase" tone="amber">
+  <Member kind="HELPER" color="amber" name="Prep and item data setup">
+    基底クラスは確率リスト、アイテムデータ、有効アイテムの追跡、正の確率の追跡、シード付きランダム状態を準備します。
+  </Member>
+  <Member kind="HELPER" color="amber" name="Repeat-prevention integration">
+    Spread、Repick、Shuffle などの RNGNeeds の繰り返し防止オプションとの統合方法を既に把握しています。
+  </Member>
+  <Member kind="HELPER" color="amber" name="Depletable-list support">
+    枯渇を考慮した選択フローを処理し、必要に応じてリストへのアイテムユニット変更を適用します。
+  </Member>
+  <Member kind="HELPER" color="amber" name="Selection loop lifecycle">
+    基底クラスは共通のループとクリーンアップのライフサイクルを管理するため、ボイラープレートが減り、期待される動作を微妙に壊す機会が少なくなります。
+  </Member>
+</MemberGroup>
+
+### 通常よく使うメンバー
+
+<MemberGroup title="SelectionMethodBase members" tone="violet">
+  <Member kind="PROPERTY" color="sky" name="ProbabilityList" signature="IProbabilityList">
+    処理中のアクティブな確率リストです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemData" signature="NativeArray<ItemData>">
+    選択中に使用される実行時アイテムデータです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EnabledIndicesWithPositiveProbability" signature="NativeList<int>">
+    現在選択可能で正の確率を持つアイテムのインデックスです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="AllIndicesWithPositiveProbability" signature="NativeList<int>">
+    現在選択可能かどうかに関わらず、正の確率を持つすべてのアイテムのインデックスです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickedIndex" signature="int">
+    リストの履歴から最後に選ばれたアイテムのインデックスです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
+    リスト内のアイテム数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="m_Random" signature="Unity.Mathematics.Random">
+    シード付きの乱数状態です。カスタムロジックでランダムな判断に使用します。
+  </Member>
+</MemberGroup>
+
+### オーバーライド可能なメソッド
+
+<MemberGroup title="Overridable methods" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="SelectItem" signature="protected abstract bool SelectItem(out int selectedIndex)">
+    唯一の必須オーバーライドです。確率に基づいて 1 つのアイテムインデックスを選択し返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="OnPrepareItem" signature="protected virtual void OnPrepareItem(int index, ItemData itemData)">
+    リストの準備中にアイテムごとのデータを収集したい場合にオーバーライドします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SpreadResult" signature="protected virtual int SpreadResult(int index)">
+    繰り返し防止の Spread 動作のためのフックです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ShuffleResult" signature="protected virtual void ShuffleResult(NativeList<int> indices, int iterations)">
+    繰り返し防止の Shuffle 動作のためのフックです。
+  </Member>
+</MemberGroup>
+
+### 最小限のカスタムメソッド例
+
+```csharp
+public class MySelectionMethod : SelectionMethodBase
+{
+    public override string Identifier => "MySelectionMethod";
+    public override string Name => "My Selection Method";
+
+    protected override bool SelectItem(out int selectedIndex)
+    {
+        selectedIndex = EnabledIndicesWithPositiveProbability[
+            m_Random.NextInt(0, EnabledIndicesWithPositiveProbability.Length)
+        ];
+
+        return true;
+    }
+}
+```
+
+次に <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> を通じて登録します：
+
+```csharp
+RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
+```
+
+---
+
+## どちらのカスタムパスが適切か？
+
+<MemberGroup title="Choose your difficulty level" tone="neutral">
+  <Member kind="RECOMMENDED" color="amber" name="Inherit from SelectionMethodBase">
+    ほとんどのカスタム拡張に最適です。使い慣れた RNGNeeds のパイプラインを維持しながら、独自の選択ロジックの特別な部分に集中できます。
+  </Member>
+  <Member kind="ADVANCED" color="violet" name="Implement ISelectionMethod directly">
+    完全な制御を意図的に求め、必要なすべての動作を自分で再構築することに慣れている場合に最適です。
+  </Member>
+</MemberGroup>
+
+---
+
+## カスタムメソッドについてサポートが必要ですか？
+
+アプローチの選択、カスタムメソッドの設計、またはアルゴリズムの動作確認についてサポートが必要な場合は、<a href={SupportPage.Link}>{SupportPage.Title}</a> ページをご覧いただき、そこから Discord にご参加ください。

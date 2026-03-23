@@ -1,0 +1,141 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {PreferencesPage} from "@/components/PageLinks";
+import seedingOptionsInspector from '@/images/screenshots/seeding-options-inspector.png';
+import seedingOptionsCustomSeed from '@/images/screenshots/seeding-options-custom-seed.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeedsにおけるシードのオプションを確認したり、独自のSeed Providerの使い方を学びましょう。'
+
+<HeroPattern />
+
+# シードオプション
+
+シードは乱数生成における基本的な概念です。シードを指定することで、乱数のシーケンスを再現可能にすることができます。
+これは、同じランダムな課題でゲームレベルを再プレイするなど、特定のイベントシーケンスを再現したい場面で非常に役立ちます。
+RNGNeedsがシードをどのように扱うか、詳しく見ていきましょう。{{ className: 'lead' }}
+
+---
+
+## RNGNeedsにおけるシード
+
+このプラグインの核心は、すべての乱数生成タスクに **Unity.Mathematics Random** オブジェクトを活用しています。このオブジェクトは `uint` 型のシードで初期化する必要があります。
+RNGNeedsは拡張可能な **Seed Provider** を備えており、この `uint` 値を提供する役割を担います。このセクションの後半では、独自のSeed Providerの作り方を学びます。
+
+選択メソッドがシードをどのように利用するか、手順を追って説明します。
+
+1. 選択プロセスの開始時に、Probability Listは `ProbabilityList.Seed` プロパティを使って新しいシードを生成します。
+2. この生成されたシードが、ランダムなピック数を決定します。ピック数はパラメータで指定されるか、使用する `PickValues()` のオーバーロードに応じて、Listの `PickCountMin` および `PickCountMax` プロパティから導出されます。
+3. 次に、Probability Listは選択された Selection Method に渡されます。
+シードはListに含まれているため、Selection MethodはProbabilityListの `ProbabilityList.CurrentSeed` プロパティを通じてそれを取得し、新しいRandomオブジェクトを初期化します。
+4. この新しく初期化されたRandomオブジェクトが、選択プロセス全体で乱数を生成するために使用されます。
+
+<Note>
+    **Selection Process** とは、ピック数、選択方法、繰り返し防止などのさまざまな設定に基づいて、Listから値を取得する精巧なアルゴリズムです。重要なポイントは、`PickValues()` を呼び出すと、処理の開始時にListへシードが要求されるということです。このシードは、各ピックの確率に基づいた値の決定において、プロセス全体を通じて一貫して使用されます。これにより、指定された数のピックがそのシードに基づいて決定されます。
+</Note>
+
+デフォルトでは、`ProbabilityList.Seed` を呼び出すと RNGNeeds の **Seed Provider** を使って新しいシードが生成されます。つまり、値をピックするたびに、Listはユニークなシードを使用して結果を生成します。
+
+選択プロセスの後、Listは使用された新しいシードを保持します。この値には `ProbabilityList.CurrentSeed` プロパティを使ってアクセスできます。
+
+### デフォルトのSeed Provider
+
+RNGNeedsには `DefaultSeedProvider` という組み込みのSeed Providerが付属しています。このProviderは .NET の `System.Random` クラスと現在のUTC時刻のTicksを組み合わせてシードを生成します。この組み合わせにより、高度なランダム性が確保されます。スレッドの問題を防ぐため、シード生成はロック機構を使ったスレッドセーフな実装になっています。
+
+```csharp {{ title: 'Default Seed Provider Code'}}
+public class DefaultSeedProvider : ISeedProvider
+{
+    private readonly System.Random _random = new System.Random();
+    private readonly object _lockObject = new object();
+
+    public uint NewSeed
+    {
+        get
+        {
+            lock (_lockObject)
+            {
+                return (uint)(_random.Next() * DateTime.UtcNow.Ticks % uint.MaxValue);
+            }
+        }
+    }
+}
+```
+
+---
+
+## Keep Seed（シードを保持する）
+
+「Keep Seed」機能は、シードの自動生成を無効にすることで、選択間で同じシードを維持できます。「Keep Seed」を有効にするには、ドロワーの **PICK** セクションに移動してください。
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> ウィンドウで、*Drawer Options Level* がAdvancedに設定されていることを確認してください。
+
+**Seed Readout Field** には、その Probability List で最後に使用されたシードが表示されます。Keep Seedを有効にすると、このフィールドが編集可能になり、カスタムシードを指定できます。
+
+<ImageX className="w-full h-auto" src={seedingOptionsInspector} alt="Seeding Options - Inspector" width="1000"/>
+
+```csharp {{ title: 'Enabling Keep Seed in Code'}}
+var result = myProbabilityList.PickValue();     // a new seed is generated
+myProbabilityList.KeepSeed = true;
+var newResult = myProbabilityList.PickValue();  // produces the same results
+```
+
+<Note>
+    **重要**：「Keep Seed」オプションがランダムなピック数の範囲を使用する場合に正しく機能しない問題を確認しています。
+    
+    **この問題はバージョン0.9.2で修正されました。** RNGNeedsを最新バージョンに更新してください。
+</Note>
+---
+
+## カスタムシード
+
+**Keep Seed** オプションを有効にする（自動シード機能を無効にする）と、カスタムシードを指定できます。Seed Readout Fieldが編集可能になり、カスタムシードを入力できます。
+
+シードは `1 から 4294967295` の範囲の `uint` 値です。
+
+<ImageX className="w-full h-auto" src={seedingOptionsCustomSeed} alt="Seeding Options - Custom Seed" width="1000"/>
+
+```csharp {{ title: 'Setting Custom Seed in Code'}}
+myProbabilityList.KeepSeed = true;
+myProbabilityList.Seed = 1337;
+```
+
+これ以降、この Probability List はシード1337を使用し、同一の結果を生成します。デフォルトの自動シード生成に戻すには、Inspectorで Keep Seed 機能を無効にするか、コードで `myProbabilityList.KeepSeed = false;` を使用してください。
+
+---
+
+## Seed Provider
+
+シード生成のメカニズムをより細かく制御したい場合は、`ISeedProvider` インターフェースを実装して、独自のシードロジックを設計することができます。
+
+手順を追って説明します。
+
+1. まず、`ISeedProvider` インターフェースを実装する新しいクラスを作成します。
+
+```csharp {{ title: 'Custom Seed Provider Example'}}
+using System;
+using RNGNeeds;
+
+public class MySeedProvider : ISeedProvider
+{
+    public uint NewSeed
+    {
+        get
+        {
+            // Replace this with your custom seed generation logic
+            return (uint)(DateTime.UtcNow.Ticks % uint.MaxValue);
+        }
+    }
+}
+```
+
+2. 次に、カスタムSeed Providerを `RNGNeedsCore` クラスに登録します。
+
+```csharp {{ title: 'Setting Custom Seed Provider'}}
+RNGNeedsCore.SetSeedProvider(new MySeedProvider());
+```
+
+設定が完了すると、すべての Probability List がカスタムシード生成ロジックを使用します。また、他の目的で新しいシードが必要な場合は、`RNGNeedsCore.NewSeed` を使って取得できます。
+
+デフォルトのSeed Providerに戻すには、`RNGNeedsCore.ResetSeedProvider()` を呼び出すだけです。
+
+---

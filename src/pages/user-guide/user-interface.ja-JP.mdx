@@ -1,0 +1,100 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import uiBasic from '@/images/screenshots/ui-basic.png';
+import headerBarFull from '@/images/screenshots/header-bar-options-full.png';
+import headerBarCompact from '@/images/screenshots/header-bar-options-compact.png';
+import headerBarInformative from '@/images/screenshots/header-bar-options-informative.png';
+import headerBarInformativePick from '@/images/screenshots/header-bar-options-informative-pick.png';
+import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
+export const description =
+    'RNGNeedsのユーザーフレンドリーなインターフェースで、Unityにおけるランダム性の管理方法を学びましょう。Header Bar、Probability Stripe、Probability Item Listの使い方を理解し、ゲームのランダムイベントを完全にコントロールしましょう。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# User Interface
+
+RNGNeedsのUser Interfaceガイドへようこそ！RNGNeedsは使いやすさを重視して設計されたUnityプラグインです。このガイドでは、インターフェースの操作方法と、RNGNeedsの強力な機能を最大限に活用する方法を説明します。Probability List Drawerの理解から動的なStripeウィジェットの使い方まで、Unity Inspector内での確率リストの管理・設計に必要なことをすべてカバーします。RNGNeedsのユーザーインターフェースを一緒に探っていきましょう。 {{ className: 'lead' }}
+
+## 基本構成
+
+RNGNeeds Inspector drawerは、**Header Bar**、**Probability Stripe**、**Item List**の3つの異なるセクションで構成されています。これらの各セクションは、Probability Listの作成・管理において独自の役割を担っています。
+
+<ImageX className="w-full h-auto" src={uiBasic} alt="RNGNeeds Inspector" width="1000"/>
+
+### Header Bar
+
+Header Barは、RNGNeeds Inspector drawerのコントロールパネルです。drawerのカスタマイズ、Probability Listのオプション調整、リストへの新しいアイテムの追加が行えます。
+
+### The Stripe
+
+RNGNeeds Inspectorにおけるビジュアルツールで、各アイテムをその確率に比例した幅の色付きブロックとして表示します。ブロックの端またはブロック自体をドラッグすることで、各アイテムの確率を視覚的に調整できます。
+
+### The List
+
+RNGNeeds Inspectorでアイテムが表示されるセクションです。各エントリには、有効・無効のトグル、インデックス、確率プレビューバー、正確な確率値、カラーコード、リストからアイテムを削除するオプションなどの情報が表示されます。
+
+---
+
+## Header Bar
+
+Header Barは、RNGNeeds Inspector drawerの上部に配置されています。ここでグローバルな調整やカスタマイズを行います。
+プロパティ名がAddボタンの隣に表示され、そのボタンでProbability Listへ新しいアイテムを追加できます。
+
+<ImageX className="w-full h-auto" src={headerBarFull} alt="Header Bar - Full Option Buttons" width="1000"/>
+
+Header Barの左側には**Quick Toggles**があり、小さな長方形のボタンで表示オプションをコントロールします。Stripe上のアイテム情報の表示・非表示、色の暗転、Listのプレビューバーの管理などが含まれます。
+これらのオプションの詳細については、ドキュメントの
+<a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a>ページをご覧ください。
+
+Quick Togglesの右隣には**Option Buttons**があり、Theme colors、Stripe height、Pick controlsをカスタマイズするためのサブセクションを展開します。
+
+これらのOption Buttonsの表示に関する設定は、RNGNeedsの
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a>でグローバルに3種類カスタマイズできます：
+
+- **Full** - デフォルト設定で、ボタンにセクション名が完全に表示されます。
+- **Compact** - Inspectorのスペースが限られている場合に便利です。展開されたセクションのみフルネームが表示されます。
+- **Informative** - この設定では、Option Buttonsにそのセクションの設定が直接表示されます。
+
+<ImageX className="w-full h-auto" src={headerBarCompact} alt="Header Bar - Compact Option Buttons" width="1000"/>
+
+<ImageX className="w-full h-auto" src={headerBarInformative} alt="Header Bar - Informative Option Buttons" width="1000"/>
+
+Informative Option Buttonsでは、カラーパレット、Stripeの高さ、Pick設定がボタン内に表示されます。
+
+<ImageX className="w-full h-auto" src={headerBarInformativePick} alt="Header Bar - Informative Pick Section Button" width="1000"/>
+
+**Pick**ボタンはリストの選択ロジックの概要を簡潔に表示し、Pickセクションを開かなくても現在の設定を確認できます：
+
+- **M**の文字は、このリストの**Maintain Pick Count**オプションが有効であることを示します。
+- **2 - 5**の数字は、**Pick Count**の最小値と最大値を示します。
+- 角括弧内の数字**[8 - 13]**は、Depletable Listの利用可能Unitsと最大Unitsを示します。
+- 最後に、使用中の**Repeat Prevention**メソッドが表示されます。この場合は**Spread**です。
+
+---
+
+## The Stripe
+
+Stripeは、確率を直感的にデザイン・調整できる強力なビジュアルツールです。Probability List内の各アイテムは、Stripe上の色付きブロックとして表示されます。各ブロックの幅はそのアイテムの確率に比例しており、すべてのブロックが合わさってStripe全体を埋め、合計確率値1を表します。
+
+<ImageX className="w-full h-auto" src={adjustingProbabilities} alt="Adding Items" width="1000"/>
+
+ブロック間の端またはブロック自体をドラッグすることで、アイテムの確率を調整できます。細かい調整には、Ctrlを押しながらスクロールすると0.1%単位で調整でき、Ctrl+Shiftで0.01%の精度で調整できます。ブロックの色はList内のアイテムの色に対応しており、インターフェース全体で視覚的に一貫した参照を提供します。
+
+<Note>
+    スクロール方向が直感に反すると感じる場合（例：Mac OSの「ナチュラル」設定など）、反転させることができます。追加の高度なオプションについては、<a href={PreferencesPage.Link}>Preferences Section</a>をご覧ください。
+</Note>
+
+---
+
+## The List
+
+Listは、アイテムが整然と並べられる場所です。List内の各アイテムには複数のプロパティが表示されます。左から右に順に、有効・無効のトグル、インデックス、アイテムの確率を視覚的に表すプレビューバー、正確な確率値、カラーコード、アイテム削除ボタンが並んでいます。
+
+カラーコードの四角は、アイテムの色の視覚的な参照を提供するだけでなく、誤った変更や再計算からアイテムの確率を保護するロックとしても機能します。カラーコードの四角をクリックすることで、アイテムをロックまたはアンロックできます。アイテムエントリの残りのスペースはvalueフィールドに使われており、プリミティブ型や複雑なUnityオブジェクト型など、アイテムの値を直接操作できます。
+
+以上がRNGNeeds Inspector drawerの3つのメインセクションの基本的な説明です。これらの機能をさらに深く探り、RNGNeedsを最大限に活用してください。
+
+---

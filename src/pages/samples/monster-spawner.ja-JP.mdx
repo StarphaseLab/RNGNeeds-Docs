@@ -1,0 +1,112 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+
+import samplesMonsterSpawnerStructure from '@/images/screenshots/samples-monster-spawner-structure.png';
+import samplesMonsterSpawnerScene from '@/images/screenshots/samples-monster-spawner-scene.png';
+import samplesSpawnLocationSpread from '@/images/screenshots/samples-spawn-location-spread.png';
+import { ProbabilityInfluencePage } from "@/components/PageLinks";
+
+export const translationStatus = 'auto'
+
+export const description =
+    'RNGNeeds の Monster Spawner サンプルを探索し、Probability Influence を活用してモンスターのスポーンを動的に制御する方法を学びましょう。'
+
+<HeroPattern />
+
+# Monster Spawner
+
+RNGNeeds の Monster Spawner サンプルでビーストたちを解き放ちましょう。Probability Influence を活用し、場所やその他の要因に基づいてさまざまなモンスターのスポーンを動的に制御する例を紹介します。
+ホラーゲームを設計する場合でも、ファンタジーアドベンチャーを作る場合でも、Monster Spawner はランタイム中にオッズを動的に変更する方法のインスピレーションを提供します。{{ className: 'lead' }}
+
+---
+
+## 動的な確率
+
+Monster Spawner サンプルは **Probability Influence** システムの使い方を示しています。このシステムにより、外部要因に基づいて個々の確率を動的に制御できます。
+これは RNGNeeds の非常に強力な機能であり、固定オッズに命を吹き込み、魅力的なゲームメカニクスへと変えることで、クリエイティブなゲームデザインの世界を広げます。
+
+このサンプルでは、プレイヤーからスポーン地点までの距離に基づいて、モンスターのスポーン確率が変化します。設計されたオッズは動的に変化し、ヒーローの近くからの攻撃が確保されつつも、すべての場所でわずかなスポーンの可能性も残されます。
+今回は **Chancellor, the Unlucky**（不運な男で、気づいたらモンスターの墓場に現れてしまった）を操作します。
+シンプルにするため、彼はモンスターの上を歩くだけで追い払うことができます。
+
+<ImageX className="w-full h-auto" src={samplesMonsterSpawnerScene} alt="Samples Monster Spawner Scene" width="1000"/>
+
+## サンプルの構造
+
+まず、このサンプルの構造を確認しましょう。**MonsterSpawner** シーンを開き、そのヒエラルキー内の *MonsterSpawner GameObject* を調べてください。
+アタッチされた `MonsterSpawner` スクリプトには、異なるタイプの3つの Probability List が含まれています：
+
+- **Monster Types** — このリストは `Monster`（ScriptableObject）型で、ランダムなモンスターのピックを処理します
+- **Monster Levels** — モンスターレベルを定義するランダムな `int` を提供します
+- **Spawn Locations** — シーン内に配置された MonoBehaviour である `SpawnLocation` 型を提供します
+
+<ImageX className="w-full h-auto" src={samplesMonsterSpawnerStructure} alt="Samples Monster Spawner Structure" width="1000"/>
+
+ご覧のとおり、リスト内のすべてのアイテムには設計された確率があります。しかし、Spawn Locations をよく見てください。Center の場所には40%の確率があり、East と West にはそれぞれ30%あります。
+さらに、すべての場所は **「influenced（影響を受けている）」** 状態です。他のリストのアイテムのような確率バーの代わりに、影響を受けているアイテムにはハンドル付きのスライダーが表示されます。
+
+スライダーは **Influence Spread** の最小値と最大値を定義し、正または負の影響の限界を設定します。
+例えば、最大の正の影響は確率を右（最大）スライダーハンドルの値まで引き上げます。
+ミニゲームをプレイしながら、ハンドルを動かして影響の度合いを変えてみてください。
+
+<Note>
+    この概念の詳細、その哲学や使用方法については、
+    <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> ページをご覧ください。
+
+    **このサンプルの目的として、結果のみに注目します** — 場所でのモンスタースポーンの確率は、プレイヤーからその場所までの距離によって決まります。
+</Note>
+
+## Monster Spawner のコード
+
+`MonsterSpawner` MonoBehaviour のコードを詳しく見てみましょう。モンスターのタイプ、レベル、スポーン場所を決定するロジックは非常にシンプルです。
+
+- まず、Monster Types Probability List から `Monster` ScriptableObject が選択されます。
+- 次に、`SpawnLocation` MonoBehaviour Component の選択を試みます。すべてのスポーン場所が最大の負の影響を受けている場合、値が選択されない可能性があるため「試み」が必要です。
+- そして、**Monster Prefab** が選択された場所にスポーンされます。
+- 最後に、ランダムなモンスターレベルとプレイヤーの位置が `MonsterController` MonoBehaviour Component に送られます。レベルはモンスターがプレイヤーを追いかける速度を定義します。
+
+```csharp {{ title: 'Monster Spawner Code'}}
+public class MonsterSpawner : MonoBehaviour
+{
+    // non-relevant code was omitted
+
+    public Transform playerLocation;
+    public ProbabilityList<Monster> monsterTypes;
+    public ProbabilityList<int> monsterLevels;
+    public ProbabilityList<SpawnLocation> spawnLocations;
+
+    private void Start()
+    {
+        InvokeRepeating(nameof(SpawnMonster), .5f, .5f);
+    }
+
+    public void SpawnMonster()
+    {
+        Monster monster = monsterTypes.PickValue();
+        if (spawnLocations.TryPickValue(out var location) == false) return;
+        var monsterObject = location.Spawn(monster.monsterPrefab);
+        var monsterController = monsterObject.GetComponent<MonsterController>();
+        monsterController.SetStatsByLevel(monsterLevels.PickValue(), playerLocation);
+    }
+}
+```
+
+### デザイナーへの権限付与
+
+選択内容は Inspector でデザイナーが定義し、ゲームプレイ体験を自由に変更できます。例えば、Center Location からは Level 2 の Goblin のみをスポーンさせることで、RNG の要素を排除することも可能です。この哲学を採用し、コーダーがスポーン頻度もデザイナーに公開すれば、あらゆるタイプのスポーンメカニクスを作成できます。
+
+Play Mode で自由に実験してみてください。左クリックで Chancellor（黄色いオブジェクト）を選択し、右クリックで地面上の移動先を指定します。各スポーン場所には2つの数字が表示されます。上の数字は -1 から 1 の範囲で、プレイヤーとその場所の距離に基づいて計算された受信中の負または正の影響を表します。下の数字は結果としての確率で、その場所にモンスターがスポーンする確率を示します。
+
+<ImageX className="w-full h-auto" src={samplesSpawnLocationSpread} alt="Samples Spawn Location Spread" width="1000"/>
+
+`MonsterSpawner` Component の設定、確率、または影響をその場で変更できます。スプレッドスライダーのハンドルをドラッグすることで、影響が確率を変える範囲の限界を設定できます。
+
+Center の場所をよく見ると、スプレッドスライダーが白い線にスナップされていることに気づくでしょう。白い線は設計された確率（この場合40%）を表しているため、スプレッドはありません。つまり、Center の場所では影響は効果を持たず、確率は常に40%のままです。スライダーの右ハンドルを上げると、正の影響が確率を上げることができます。同じ原則が負の影響を制御する左ハンドルにも適用されます。
+
+<Note>
+    この概念の詳細、その哲学や使用方法については、
+    <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> ページをご覧ください。
+</Note>
+
+---

@@ -1,0 +1,143 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import {
+    API_PickHistory,
+    API_PLCollection,
+    API_ProbabilityItem,
+    API_ProbabilityList,
+    API_RNGNeeds,
+    API_SeedProvider,
+    API_SelectionMethods,
+    DocsOverviewPage,
+    NestingListsPage,
+    ProbabilityInfluencePage,
+    SeedingOptionsPage,
+    SupportPage,
+} from '@/components/PageLinks'
+
+export const description =
+    'RNGNeeds APIの実用的なマップ：まずコアタイプ、次に拡張ポイント、そして生のリファレンスよりもガイドが役立つ場面へのリンクを掲載しています。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# API Overview
+
+このセクションが初めての方は、まず <a href={DocsOverviewPage.Link}>Documentation Overview</a> で全体像を把握してから、このページをランタイムタイプと拡張ポイントのクイックマップとしてご活用ください。 {{ className: 'lead' }}
+
+API Reference は、ドキュメントの他の部分に対するコード向けの補完資料です。
+
+- **ドキュメント・ガイド・サンプル**では、ワークフロー、ユースケース、実践的なセットアップを解説しています。
+- **API Reference** では、ランタイムタイプが実際に何を行うか、各メンバーの意味、および拡張ポイントの場所を説明しています。
+
+そのため、このセクションは意図的により技術的な内容になっています。目的は、パッケージのソースをリバースエンジニアリングしなくても、**「どのタイプを使えばよいか？」**、**「このプロパティは実際に何を制御しているか？」**、**「カスタム選択メソッドはどこに登録するか？」**といった疑問に答えられるようにすることです。
+
+---
+
+## APIの全体像
+
+以下は最もシンプルな形のAPIマップです。まず日常的な使用で最も直接利用するコアランタイムタイプ、次に RNGNeeds をカスタマイズ・拡張したいときに使う拡張ポイントを示します。
+
+### コアランタイムタイプ
+
+これらは日常的なランタイム使用における主要な構成要素です。リストの作成、アイテムの操作、リストグループの整理、最近のピック結果の確認など、最初に触れることになるタイプです。
+
+<LinkGrid>
+    <LinkCard href={API_ProbabilityList.Link} title={API_ProbabilityList.Title}>
+        メインのランタイムタイプです。リストの作成、アイテムの追加、値のピック、確率とウェイトの管理、シーディング、デプレーション、ヒストリー、リピート防止など、まずここから始めてください。
+    </LinkCard>
+    <LinkCard href={API_ProbabilityItem.Link} title={API_ProbabilityItem.Title}>
+        アイテムごとのレイヤーです。有効・ロック状態のアイテム、インフルエンス、ウェイト、ユニット、デプレーション、そしてアイテムの有効確率の評価方法を理解したい場合に使用します。
+    </LinkCard>
+    <LinkCard href={API_PLCollection.Link} title={API_PLCollection.Title}>
+        複数の名前付きまたはインデックス付き確率リストをまとめて扱うためのコレクションレイヤーです。グループ化されたルートテーブル、ダイアログプール、エンカウントセットなどのシステムに適しています。
+    </LinkCard>
+    <LinkCard href={API_PickHistory.Link} title={API_PickHistory.Title}>
+        最近のピック結果を管理するヒストリーヘルパーです。選択された内容の確認、リピート防止ロジックのサポート、最近のピック結果の操作などに便利です。
+    </LinkCard>
+</LinkGrid>
+
+### 拡張ポイント
+
+これらのページは高度な統合作業向けです。カスタム選択ビヘイビア、決定論的ワークフロー、シード制御、およびそれらのシステムを結びつける静的レジストリについて説明しています。
+
+<LinkGrid>
+    <LinkCard href={API_SelectionMethods.Link} title={API_SelectionMethods.Title}>
+        選択アルゴリズムのエントリーポイントです。組み込みメソッドを理解したい場合や、カスタムメソッドを作成したい場合はここを参照してください。
+    </LinkCard>
+    <LinkCard href={API_RNGNeeds.Link} title={API_RNGNeeds.Title}>
+        上級ユーザー向けの静的統合ハブです。選択メソッドの登録、登録済みメソッドの確認、シードプロバイダーの操作、フォールバック動作の理解に使用します。
+    </LinkCard>
+    <LinkCard href={API_SeedProvider.Link} title={API_SeedProvider.Title}>
+        決定論的ワークフロー、再現可能なテスト、デバッグ、またはカスタムシーディング戦略のための拡張ポイントです。
+    </LinkCard>
+</LinkGrid>
+
+---
+
+## 始める前に知っておくべき重要な概念
+
+<Note>
+    <p><strong>Base probability（基本確率）</strong>は、選択時に使用される最終的な確率と必ずしも同じではありません。</p>
+    <p><code>ProbabilityItem&lt;T&gt;</code> は <code>BaseProbability</code> を保持しますが、評価後の <code>Probability</code> はインフルエンスプロバイダー、スプレッド設定、その他のランタイム状態によって変化する場合があります。</p>
+</Note>
+
+<Note>
+    <p><strong>Enabled（有効）</strong>と <strong>Locked（ロック）</strong>は異なる意味を持ちます。</p>
+    <p>無効化されたアイテムは選択時に無視されます。ロックされたアイテムは選択対象になりますが、正規化や再配分などの特定のリスト操作から確率が保護されます。</p>
+</Note>
+
+<Note>
+    <p><strong>キュレーションドキュメントとAPIドキュメントは役割が異なります。</strong></p>
+    <p>チュートリアル、例、設計アドバイスが必要な場合は、キュレーションセクションが適切な参照先です。特に <a href={DocsOverviewPage.Link}>Documentation Overview</a>、<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>、<a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>、<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> を参照してください。</p>
+</Note>
+
+---
+
+## このセクションのリファレンスページ
+
+<MemberGroup title="コアランタイムタイプ" tone="sky">
+    <Member kind="CLASS" color="sky" name="ProbabilityList<T>">
+        確率アイテムの管理と値の選択を行うメインのリストAPIです。
+    </Member>
+    <Member kind="CLASS" color="sky" name="ProbabilityItem<T>">
+        確率リスト内の単一アイテムです。確率、状態、インフルエンス、ウェイト、デプレーションデータを含みます。
+    </Member>
+    <Member kind="CLASS" color="sky" name="PLCollection<T>">
+        複数の確率リストのコレクションです。ルックアップ、ピック、リフィル、クリアのためのヘルパーを備えています。
+    </Member>
+    <Member kind="CLASS" color="sky" name="PickHistory">
+        最近のピックを保存し、ヒストリーエントリーや最新のピックインデックスを取得するためのヘルパーメソッドを提供します。
+    </Member>
+</MemberGroup>
+
+<MemberGroup title="拡張ポイント" tone="amber">
+    <Member kind="STATIC" color="violet" name="RNGNeedsCore">
+        選択メソッド、シードプロバイダー、ロギング、グローバルヘルパーのための静的レジストリと統合エントリーポイントです。
+    </Member>
+    <Member kind="INTERFACE" color="amber" name="ISelectionMethod">
+        完全にカスタムな選択アルゴリズムを実装するためのフルカスタムパスです。
+    </Member>
+    <Member kind="BASE CLASS" color="amber" name="SelectionMethodBase">
+        準備、シード付きランダム性、デプレーション、リピート防止の仕組みのサポートが必要なカスタム選択ロジックの部分的な実装です。
+    </Member>
+    <Member kind="INTERFACE" color="amber" name="ISeedProvider">
+        RNGNeeds が使用するシードを生成するためのコントラクトです。
+    </Member>
+</MemberGroup>
+
+---
+
+## メンバーの説明だけでなく、例も見たい場合は？
+
+意図、ワークフロー、例が必要な場合はキュレーションセクションをご覧ください：
+
+- <a href={DocsOverviewPage.Link}>Documentation Overview</a>
+- <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+- <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+
+<Note>
+    <p><strong>アイデアについてご意見を聞かせてください。</strong></p>
+    <p>RNGNeeds を拡張していて、APIの設計、カスタム選択メソッド、または全体的なセットアップについてフィードバックが欲しい場合は、<a href={SupportPage.Link}>{SupportPage.Title}</a> ページをご覧になり、そこから Discord にご参加ください。</p>
+</Note>

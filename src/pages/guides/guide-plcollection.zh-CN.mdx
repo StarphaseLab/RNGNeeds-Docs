@@ -1,0 +1,86 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {NestingListsPage, SamplesOverviewPage} from "@/components/PageLinks";
+import plCollectionGuideCharacterResponsesFilled from '@/images/screenshots/plcollection-guide-character-responses-filled.png';
+
+export const translationStatus = 'auto'
+
+export const description = '了解如何在 Unity 项目中实现和使用 PLCollection 类，以嵌套和组织 Probability Lists。';
+
+<HeroPattern />
+
+# PLCollection 使用指南
+
+这些指南旨在帮助您在 Unity 项目中实现和使用 PLCollection 类，以嵌套和组织 Probability Lists。要进一步了解 PLCollection，请访问我们文档中的
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>页面。{{ className: 'lead' }}
+
+<Note>
+    您是否有希望我们在此页面探索的使用案例？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">加入我们的 Discord 社区</a>并分享您的想法。
+</Note>
+
+---
+
+## NPC 响应集合
+
+让我们创建一个简单示例：为 NPC 角色建立一个响应集合，并将其组织成不同的类别。
+
+首先，创建一个名为 `CharacterResponses` 的 MonoBehaviour 类，用于保存我们的响应集合。我们将包含 `SelectResponse` 方法，该方法会从特定类别中选择一条响应。
+
+```csharp {{ title: 'CharacterResponses.cs' }}
+using UnityEngine;
+using RNGNeeds;
+
+public class CharacterResponses : MonoBehaviour
+{
+    public PLCollection<string> characterResponses;
+    
+    public string SelectResponse(string category)
+    {
+        var result = characterResponses.PickValueFrom(category, out var response);
+        if (result.ValueSelected)
+        {
+            return response;
+        }
+
+        if (result.ListFound)
+        {
+            Debug.Log($"No responses found for category {category}");
+        }
+        else
+        {
+            Debug.Log($"Category {category} not found in collection");
+        }
+
+        return string.Empty;
+    }
+}
+```
+
+接下来，在 Unity Editor 中创建一个新的 GameObject，并将 `CharacterResponses` 脚本附加到它上面。您可以通过在 Inspector 中向集合添加 Probability Lists 来开始设计您的响应集合。
+
+此处，我们添加了三个响应列表，类别分别为 **Friendly**、**Neutral** 和 **Hostile**。
+
+<ImageX className="w-full h-auto" src={plCollectionGuideCharacterResponsesFilled} alt="PLCollection - Character Responses Filled" width="1000"/>
+
+现在，您可以调用 `SelectResponse` 方法从特定类别中获取响应。
+
+```csharp {{ title: 'CharacterResponsesUsage.cs' }}
+Debug.Log(characterResponses.SelectResponse("Friendly"));   // Output: "Welcome back, friend! What's new?"
+Debug.Log(characterResponses.SelectResponse("Neutral"));    // Output: "Can I help you with something?"
+Debug.Log(characterResponses.SelectResponse("Hostile"));    // Output: "Careful here. I'm watching."
+```
+
+---
+
+对于使用模块化战利品表方式的更复杂场景，请查看插件附带的 **Treasure Chest** 和 **Deck Builder** 示例。在
+<a href={SamplesOverviewPage.Link}>示例 {SamplesOverviewPage.Title}</a>页面了解更多示例信息。
+
+<Note>
+    您是否有希望我们在此页面探索的使用案例？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">加入我们的 Discord 社区</a>并分享您的想法。
+</Note>
+
+---

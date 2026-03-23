@@ -1,0 +1,204 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import {DepletableListsPage, PreferencesPage, SelectingValuesPage} from "@/components/PageLinks";
+import guideDepDistinctSelectionList from '@/images/screenshots/guide-dep-distinct-selection-list.png';
+import guideDepDistinctSelectionListOptions from '@/images/screenshots/guide-dep-distinct-selection-list-options.png';
+import guideDepDistinctSelectionListResult from '@/images/screenshots/guide-dep-distinct-selection-list-result.png';
+import guideDistinctSelectionList from '@/images/screenshots/guide-distinct-selection-list.png';
+import guideDistinctSelectionPick from '@/images/screenshots/guide-distinct-selection-pick.png';
+import {Note} from "@/components/mdx";
+export const translationStatus = 'auto'
+export const description =
+    '学习如何从 RNGNeeds 列表中选取不重复的唯一值，确保游戏机制中的结果多样且不重复。'
+
+<HeroPattern />
+
+# 选取不重复的值
+
+在很多情况下，确保从集合中选取的每个值都是唯一的至关重要。
+尽管选取不重复的值会改变固有的概率分布，但本指南将带您了解一种简单直接的方法，利用 RNGNeeds 的 Depletable Lists 功能来实现这一目标。 {{ className: 'lead' }}
+
+---
+
+## 选取唯一奖励
+
+假设您希望在玩家完成某个游戏关卡后给予三个唯一奖励。
+使用 **Depletable Lists** 功能是理想选择，因为每个被选取的奖励将自动消耗，从而确保在结果中只出现一次。
+
+<Note>
+    若要深入了解*可消耗条目（Depletable Items）*的概念，请访问文档中的
+    <a href={DepletableListsPage.Link}>此页面</a>。
+</Note>
+
+首先，让我们建立一个基本的 `Reward` 类。该类将：
+- 包含游戏内货币的详细信息。
+- 通过信息提供者接口向抽屉提供相关信息。
+
+```csharp {{ title: 'Basic Reward Class'}}
+using System;
+using RNGNeeds;
+
+[Serializable]
+public class Reward : IProbabilityItemInfoProvider
+{
+    public string currency;
+    public int value;
+    public string ItemInfo => $"{currency} ({value.ToString()})";
+}
+```
+
+接下来，我们将引入一个 `LevelCompletionRewards` 组件，负责存储我们的潜在奖励范围。
+
+```csharp {{ title: 'Add a ProbabilityList for Rewards'}}
+using UnityEngine;
+using RNGNeeds;
+
+public class LevelCompletionRewards : MonoBehaviour
+{
+    public ProbabilityList<Reward> rewards;
+}
+```
+
+将组件挂载到 GameObject 后，即可开始构建奖励数组。
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionList} alt="Distinct Selection - Depletable List" width="1000"/>
+
+奖励池建立完成后，是时候将列表设置为可消耗模式了。首先，确保已启用高级选项：
+
+1. **激活高级抽屉选项级别**：导航至
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a>
+窗口，将 Drawer Options Level 切换为 **Advanced**。激活此全局设置后，所有 Probability List Inspector 中的高级功能将被显示。
+
+2. 打开抽屉的 **PICK** 部分，点击 **Depletable** 按钮。默认情况下，每个 Probability Item 被标记为 **Depletable**，可用单位为 `1 / 1`（可用 / 最大）。
+
+3. 开启 **Maintain Pick Count** 选项，并将此列表的 Pick Count 设置为 `3`。
+
+4. 启用 **Visualize Units in the Stripe** 选项，以更直观地显示每个条目的剩余单位数。
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionListOptions} alt="Distinct Selection - Depletable List Options" width="1000"/>
+
+点击 **TEST** 按钮时，系统会考虑概率分布和可用单位，从列表中选取三个不重复的条目。
+由于每个条目只有一个可用单位，每个条目只会被选取一次。
+条纹上清晰显示剩余单位数，每个条目旁的单位计数也会相应减少。
+反复测试后，列表将被耗尽，直到没有可选条目为止。
+
+<Note>
+    提示：点击 **TEST** 按钮时按住 **Control**（Mac 上为 **Command**），可在开始测试前自动补充所有条目的单位。或者，您也可以通过点击所选操作旁的 **箭头按钮** 打开 **Action Menu**，手动补充条目（默认操作通常为 **Refill Items**）。
+</Note>
+
+<ImageX className="w-full h-auto" src={guideDepDistinctSelectionListResult} alt="Distinct Selection - Depletable List Result" width="1000"/>
+
+在建立唯一奖励列表并测试结果之后，最后一步是实现选取奖励的代码。
+在 `LevelCompletionRewards` 组件中加入以下方法：
+
+```csharp {{ title: 'Add the PickRewards method'}}
+public List<Reward> PickRewards(int count)
+{
+    rewards.RefillItems();
+    rewards.MaintainPickCountIfDisabled = true;
+    return rewards.PickValues(count);
+}
+```
+
+在选取值之前，`PickRewards` 方法执行以下操作：
+- 将所有条目的单位补充至最大值，确保在上次选取后已消耗的情况下每个奖励依然可访问。
+- 将 `MaintainPickCountIfDisabled` 属性设置为 `true`，以防 Inspector 中未预先配置此项。
+
+调用 `PickRewards` 方法查看实际效果：
+
+```csharp {{ title: 'Test the distinct selection'}}
+var pickedRewards = PickRewards(rewardsToPick);
+
+foreach (var reward in pickedRewards)
+{
+    Debug.Log(reward.ItemInfo);
+}
+
+// An example console output with three unique rewards could be:
+// Gold (100)
+// Diamonds (5)
+// StarDust (75)
+```
+
+---
+
+## 替代方案：禁用条目法
+
+<Note>
+    在 v0.9.7 引入 **Depletable Lists** 功能之前，选取不重复值通常通过在选取后立即禁用该条目来实现，以防止在后续选取中被再次选中。
+    虽然这种方法在代码和性能方面效率较低——每个选取的条目都需要在循环内进行单独的选取调用——但我们保留了这个指南，以供您选择不使用可消耗条目的情况参考。
+</Note>
+
+首先，按照上面的指南创建 `Reward` 和 `LevelCompletionRewards` 类。
+
+将组件挂载到 GameObject 后，即可开始构建奖励数组。
+
+<ImageX className="w-full h-auto" src={guideDistinctSelectionList} alt="Distinct Selection - List" width="1000"/>
+
+奖励池准备就绪后，是时候引入确保只选取不重复奖励的逻辑。将以下代码添加到 `LevelCompletionRewards` 组件中。
+
+```csharp {{ title: 'Add Distinct Selection Logic'}}
+using UnityEngine;
+using RNGNeeds;
+using System.Collections.Generic;
+
+public class LevelCompletionRewards : MonoBehaviour
+{
+    public ProbabilityList<Reward> rewards;
+
+    public List<Reward> PickRewards(int count)
+    {
+        rewards.SetAllItemsEnabled(true);
+        rewards.MaintainPickCountIfDisabled = true;
+        
+        var pickedRewards = new List<Reward>();
+        
+        for (var i = 1; i <= count; i++)
+        {
+            if (!rewards.TryPickValueWithIndex(out var pickedReward, out var pickedIndex)) continue;
+            pickedRewards.Add(pickedReward);
+            rewards.SetItemEnabled(pickedIndex, false);
+        }
+
+        return pickedRewards;
+    }
+}
+```
+
+让我们分析 `PickRewards` 方法的工作原理：
+- 通过 `.SetAllItemsEnabled(true)` 确保每个奖励都可被选取。
+- `MaintainPickCountIfDisabled` 属性保证即使列表中存在已禁用的条目，每次选取也能成功。
+- 对于每个期望的奖励，方法选取一个奖励，将其添加到列表中，然后立即禁用该条目以确保唯一性。
+
+<Note>
+    当您将禁用条目与"Maintain Pick Count"设置结合使用时，每次新禁用一个条目都会导致最终概率产生偏移。
+    要深入了解这一逻辑及其影响，请参阅 <a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> 页面中关于禁用条目的部分。
+</Note>
+
+调用 `PickRewards` 方法查看实际效果：
+
+```csharp {{ title: 'Test the distinct selection'}}
+var pickedRewards = PickRewards(rewardsToPick);
+
+foreach (var reward in pickedRewards)
+{
+    Debug.Log(reward.ItemInfo);
+}
+
+// An example console output with three unique rewards could be:
+// Gold (100)
+// Diamonds (5)
+// StarDust (75)
+```
+
+测试后，检查列表会发现已选中的条目已被禁用。
+
+<ImageX className="w-full h-auto" src={guideDistinctSelectionPick} alt="Distinct Selection - Pick" width="1000"/>
+
+总之，通过在选取后临时禁用每个条目，这种方法可以高效地从列表中筛选出完全不重复的条目集合。
+
+<Note>
+    **推荐方案：** 使用 **Depletable Lists** 通常更高效且更简洁。该功能不仅简化了管理唯一选取的过程，还通过在列表结构内直接处理条目的可用性来提升整体性能。
+</Note>
+
+---

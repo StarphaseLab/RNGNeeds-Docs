@@ -1,0 +1,68 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+
+import samplesDiceRoller from '@/images/screenshots/samples-dice-roller.png';
+import samplesBiasedDie from '@/images/screenshots/samples-biased-die.png';
+import samplesDicePlaygroundScene from '@/images/screenshots/samples-dice-playground-scene.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import { SelectingValuesPage, DesigningAListPage } from "@/components/PageLinks";
+
+export const translationStatus = 'auto'
+
+export const description =
+    '探索 RNGNeeds 中的 Dice Playground 示例，模拟各种骰子投掷和组合。学习如何创建自定义骰子、偏置投掷等更多玩法。'
+
+<HeroPattern />
+
+# Dice Playground
+
+使用 RNGNeeds 的 Dice Playground，探索虚拟骰子投掷的世界。本示例展示了如何模拟各种骰子投掷与组合——从简单的六面骰到复杂的偏置投掷。无论您是想制作桌游，还是单纯想研究概率，Dice Playground 都提供了一种有趣且互动的方式，让您深入了解随机性的运作机制。{{ className: 'lead' }}
+
+---
+
+## The Die（Scriptable Object）
+
+在 **/Dice** 文件夹中，您会找到若干个 `Die` Scriptable Object，例如 1D6、2D4 等。您可以修改它们以创建具有特定行为的骰子，也可以通过 **Create » RNGNeeds » Dice Playground » Die** 创建自己的骰子。
+
+<ImageX className="w-full h-auto" src={samplesBiasedDie} alt="Samples Biased Die" width="1000"/>
+
+## The Dice Roller（Scriptable Object）
+
+同样在该文件夹中，您还会发现一个 `Dice Roller` Scriptable Object。这个实用工具提供了一个专属 Inspector，允许您拖入已创建的骰子并进行投掷。Dice Roller 会显示每个 Die 的投掷结果，并汇总所有点数。您可以将此系统集成到自己的项目中并直接使用——只需调用 DiceRoller 的 `.RollDice()`，它将返回一个表示点数总和的 `int`。
+
+<ImageX className="w-full h-auto" src={samplesDiceRoller} alt="Samples Dice Roller" width="1000"/>
+
+<Note>
+    **结果表格（The Results Table）** — 投掷结果以表格形式显示，包含以下列：
+
+    - **Die** — 每个 Die Scriptable Object 的名称
+    - **Total** — 每个 Die 的投掷点数总和
+    - **Min & Max** — 为每个 Die 指定的最小和最大抽取数量
+    - **Picks** — 实际抽取数量（基于 Min 与 Max 之间的随机值）
+    - **Rolled Values** — 每次投掷（抽取）的具体数值。请注意，若抽取数量过大，这些统计数据将被截断显示。
+</Note>
+
+## Dice Playground（场景）
+
+最后但同样重要的是，您会找到一个 **DicePlayground 场景**。这是一个确定性骰子投掷模拟器，专为配合 Die 对象使用而设计。进入 Play Mode 并点击 Roll Dice 按钮，骰子将以物理方式滚落到平面上，且结果是预先确定的——您可以在骰子入镜之前就看到最终点数。
+
+<ImageX className="w-full h-auto" src={samplesDicePlaygroundScene} alt="Samples Dice Playground Scene" width="1000"/>
+
+这一效果的实现方式是：先模拟投掷的物理过程，判断模拟骰子落地时朝上的一面，再旋转贴图材质，使得实时投掷时结果面恰好朝上。虽然这个模拟示例已经超出了 RNGNeeds 的功能范畴——我们的插件仅提供 RNG 方面的支持，即"投掷"本身——但我们认为，一个确定性骰子投掷的示例会是一个有趣且引人入胜的补充。
+
+<Note>
+    如果您想使用确定性模拟来实验带偏置的六面骰，请在 DicePlayground 场景中导航到 **DICE THROWER** GameObject，找到挂载的 `DiceSimulator` 脚本，并为其指定您的自定义六面骰。
+</Note>
+
+**Pick Counts 与禁用项目** — 默认情况下，已指定的 `1D6` Die 在列表中只有一个启用项，即点数面 **one**。这意味着列表只会在概率满足条件时选取该值。如果随机抽取命中了一个禁用项（例如点数面 six），则本次抽取将失败并返回空值。这正是 `Maintain Pick Count` 功能发挥作用的场景。
+
+在场景中，您可以通过滑块控制投掷的骰子数量，也可以通过启用或禁用 **Maintain Pick Count** 开关来控制是否强制满足目标抽取数量。若禁用该功能，实际投掷的骰子数将减少，仅保留通过筛选的那些。
+
+您可以在 <a href={DesigningAListPage.Link + "#pick-counts"}>{DesigningAListPage.Title}</a> 页面了解更多关于 Pick Count 的内容，以及在 <a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> 页面了解禁用项目的工作原理。
+
+<Note>
+    ***请注意：*** 骰子模拟器目前仅支持六面骰。不过，我们在设计时已考虑到可扩展性。若要使其支持其他类型的骰子（例如十面骰），需要为其配置一个自定义的 `Die Face Data` Scriptable Object。虽然这在很大程度上超出了 RNGNeeds 及其示例用法的范围，但如果您需要关于如何扩展模拟器的提示，欢迎加入我们的 <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord 服务器</a>，随时提问。
+</Note>
+
+---

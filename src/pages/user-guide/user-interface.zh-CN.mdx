@@ -1,0 +1,96 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import uiBasic from '@/images/screenshots/ui-basic.png';
+import headerBarFull from '@/images/screenshots/header-bar-options-full.png';
+import headerBarCompact from '@/images/screenshots/header-bar-options-compact.png';
+import headerBarInformative from '@/images/screenshots/header-bar-options-informative.png';
+import headerBarInformativePick from '@/images/screenshots/header-bar-options-informative-pick.png';
+import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage} from "@/components/PageLinks";
+export const translationStatus = 'auto'
+export const description = 
+    '探索 RNGNeeds 直观易用的界面，轻松管理 Unity 中的随机性。学习如何使用 Header Bar、Probability Stripe 和 Probability Item List，全面掌控游戏中的随机事件。'
+
+<HeroPattern />
+
+# 用户界面
+
+欢迎阅读 RNGNeeds 用户界面指南！作为一款以易用性为核心设计理念的 Unity 插件，我们力求让界面直观友好。本指南将帮助您熟悉各项功能，充分发挥 RNGNeeds 的强大能力。从了解 Probability List Drawer 到使用动态 Stripe 组件，我们将全面介绍在 Unity Inspector 中管理和设计概率列表所需的一切知识。让我们一起深入探索 RNGNeeds 的用户界面——您管理游戏随机性的得力工具。 {{ className: 'lead' }}
+
+## 基本结构
+
+RNGNeeds Inspector 面板由三个独立区域组成：**Header Bar**、**Probability Stripe** 和 **Item List**。每个区域在创建和管理 Probability Lists 的过程中各司其职。
+
+<ImageX className="w-full h-auto" src={uiBasic} alt="RNGNeeds Inspector" width="1000"/>
+
+### Header Bar
+
+Header Bar 是 RNGNeeds Inspector 面板的控制中心，您可以在这里自定义面板外观、调整 Probability List 的选项，以及向列表中添加新项目。
+
+### The Stripe
+
+Stripe 是 RNGNeeds Inspector 中的可视化工具，将各项目以彩色色块的形式呈现，色块宽度与对应的概率成比例。您可以通过拖动色块边缘或色块本身来直观地调整各项目的概率。
+
+### The List
+
+这是 RNGNeeds Inspector 中展示所有项目的区域。每个条目显示以下信息：启用/禁用开关、索引、概率预览条、精确概率值、颜色代码，以及从列表中移除该项目的选项。
+
+---
+
+## Header Bar
+
+Header Bar 位于 RNGNeeds Inspector 面板的顶部，是进行全局调整与自定义设置的地方。在这里，您可以看到属性名称显示在添加按钮旁边，该按钮用于向 Probability List 中添加新项目。
+
+<ImageX className="w-full h-auto" src={headerBarFull} alt="Header Bar - Full Option Buttons" width="1000"/>
+
+Header Bar 左侧区域是 **Quick Toggles**，以小型矩形按钮的形式呈现，用于控制各种显示选项，包括显示或隐藏 Stripe 上的项目信息、调暗颜色，以及管理 List 中的预览条。如需了解更多相关选项，请参阅文档中的 <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> 页面。
+
+Quick Toggles 右侧是 **Option Buttons**，点击后可展开面板的子区域，用于自定义主题颜色、Stripe 高度以及 Pick 控件。
+
+Option Buttons 的外观样式共有三种设置，可在 RNGNeeds <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 中进行全局配置：
+
+- **Full** - 默认设置，按钮完整显示各区域名称。
+- **Compact** - 适合 Inspector 空间有限的情况，仅展开的区域会显示完整名称。
+- **Informative** - 在此设置下，Option Buttons 会直接在按钮内显示该区域的当前设置值。
+
+<ImageX className="w-full h-auto" src={headerBarCompact} alt="Header Bar - Compact Option Buttons" width="1000"/>
+
+<ImageX className="w-full h-auto" src={headerBarInformative} alt="Header Bar - Informative Option Buttons" width="1000"/>
+
+启用 Informative Option Buttons 后，颜色方案、Stripe 高度以及 Pick 设置均会直接显示在按钮内。
+
+<ImageX className="w-full h-auto" src={headerBarInformativePick} alt="Header Bar - Informative Pick Section Button" width="1000"/>
+
+**Pick** 按钮以简洁的方式概览列表的选取逻辑，无需展开 **Pick** 区域即可清晰了解当前设置：
+
+- 字母 **M** 表示该列表的 **Maintain Pick Count** 选项已启用。
+- 数字 **2 - 5** 表示 **Pick Count** 的最小值和最大值。
+- 方括号中的数字 **[8 - 13]** 显示 Depletable List 的可用 Units 和最大 Units。
+- 最后显示的是当前使用的 **Repeat Prevention** 方式，此处为 **Spread**。
+
+---
+
+## The Stripe
+
+Stripe 是一款强大的可视化工具，让您能够直观地设计和调整概率分布。Probability List 中的每个项目在 Stripe 上以彩色色块表示，色块宽度与对应的概率成比例，所有色块合并填满整个 Stripe，代表总概率值为 1。
+
+<ImageX className="w-full h-auto" src={adjustingProbabilities} alt="添加项目" width="1000"/>
+
+通过拖动色块之间的边界或色块本身，您可以调整各项目的概率。如需精细调整，可在滚动鼠标滚轮的同时按住 Ctrl 键，以 0.1% 的精度调整概率；按住 Ctrl+Shift 则可达到 0.01% 的精度。色块的颜色与 List 中对应项目的颜色一致，在整个界面中提供统一的视觉参考。
+
+<Note>
+    如果滚动方向感觉不直观（例如在 Mac OS 上启用了"自然"滚动方向），您可以将其反转。请访问 <a href={PreferencesPage.Link}>Preferences Section</a> 了解更多附加选项和高级设置。
+</Note>
+
+---
+
+## The List
+
+The List 是整齐呈现所有项目的区域。每个项目从左到右依次显示以下属性：启用/禁用开关、索引、直观展示概率的预览条、精确概率值、颜色代码，以及移除项目的按钮。
+
+颜色代码方块不仅提供项目颜色的视觉参考，还充当锁定功能，防止项目概率被意外修改或重新计算。点击颜色代码方块可切换锁定或解锁状态。项目条目的剩余空间为值字段，您可以在此直接操作项目的值，无论是基本类型还是复杂的 Unity 对象类型。
+
+以上就是 RNGNeeds Inspector 面板三大区域的基本介绍。深入探索这些功能，充分发挥 RNGNeeds 的全部潜力吧。
+
+---

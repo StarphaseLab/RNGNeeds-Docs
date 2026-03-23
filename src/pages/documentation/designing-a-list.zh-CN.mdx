@@ -1,0 +1,148 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import {CustomizingListsPage, GettingStartedPage, SelectingValuesPage} from "@/components/PageLinks";
+import addingItems from '@/images/screenshots/adding-items.png';
+import assigningValuesObjects from '@/images/screenshots/assigning-values-objects.png';
+import assigningValuesCustom from '@/images/screenshots/assigning-values-custom.png';
+import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
+import pickCounts from '@/images/screenshots/pick-counts.png';
+import {ImageX} from "@/components/ImageX";
+
+export const translationStatus = 'auto'
+
+export const description =
+    '了解如何创建和管理 Probability List——RNGNeeds 功能的核心。'
+
+<HeroPattern />
+
+# 设计 Probability List
+本指南将带您了解使用 RNGNeeds 插件创建和自定义 Probability List 的完整流程。{{ className: 'lead' }}
+
+<Note>
+    如果您是 RNGNeeds 的新用户，希望了解如何将 ProbabilityList 添加到您的类中，建议参阅
+    <a href={GettingStartedPage.Link + '#quick-start'}>{GettingStartedPage.Title}</a>
+    页面。该页面提供了逐步操作说明，帮助您将 Probability List 集成到项目中。
+</Note>
+
+---
+
+## 添加与删除条目
+
+要向 Probability List 中添加条目，只需点击"Add"按钮。每个添加的条目代表一个值及其对应的概率。如需删除某个条目，请点击该条目旁边的"X"按钮。
+
+<ImageX className="w-full h-auto" src={addingItems} alt="Adding Items" width="1000"/>
+
+当您添加或删除条目时，系统会按比例自动重新计算各条目的概率，以维持原有的比值关系。通过 Inspector 添加条目时，新条目将获得等于 `1 / number of items` 的概率份额。当您通过代码添加条目且未指定概率时，同样适用此规则。
+
+```csharp {{ title: 'Adding / Removing Items in code'}}
+// Manually add ProbabilityItems
+myProbabilityList.AddItem(new ProbabilityItem<string>("One", .5f));
+myProbabilityList.AddItem(new ProbabilityItem<string>("Two", .1f));
+myProbabilityList.AddItem(someProbabilityItem);
+myProbabilityList.NormalizeProbabilities();
+
+// Alternatively, let ProbabilityItems be created automatically
+myProbabilityList.AddItem("One", .5f);
+myProbabilityList.AddItem("Two", .1f);
+myProbabilityList.AddItem("Three", .3f);
+myProbabilityList.NormalizeProbabilities();
+
+// If you don't specify a probability, the list will be normalized automatically
+// to ensure the new item gets some share of the total probability
+myProbabilityList.AddItem("Four");
+
+// AddItem method and overloads return the newly created ProbabilityItem
+var newItem = myProbabilityList.AddItem("Five");
+newItem.Value = "New Value";
+newItem.BaseProbability = 0.2f;
+newItem.Enabled = false;
+// etc.
+
+// Removing items
+myProbabilityList.RemoveItem("One");
+myProbabilityList.RemoveItem(someProbabilityItem);
+myProbabilityList.RemoveItemAtIndex(1);
+```
+
+---
+
+## 为条目赋值
+
+ProbabilityList 中的值与标准泛型 `List` 中的值功能类似。对于值类型，您可以直接在条目中按其对应类型设置值。
+
+对于 Unity 对象的引用类型（例如 MonoBehaviour 或 ScriptableObject），您可以将对象拖放到条目的对象字段中。
+
+<ImageX className="w-full h-auto" src={assigningValuesObjects} alt="Assigning Objects" width="1000"/>
+
+如果您使用的是自定义类型，其内容将直接显示在条目中。您可以通过折叠箭头展开或折叠它们。
+
+<ImageX className="w-full h-auto" src={assigningValuesCustom} alt="Assigning Custom Types" width="1000"/>
+
+```csharp {{ title: 'Assigning values in code'}}
+myProbabilityList.GetProbabilityItem(1).Value = "New Value";
+```
+
+<Note>
+    **显示名称与值**
+
+    为了直观展示对象/类名称或值类型的值，色条会以彩色方块的形式显示它们。此功能便于在 Probability List 中快速识别和区分各个条目。
+</Note>
+
+---
+
+## 设置条目属性
+
+要调整 Probability List 中条目的概率，您可以通过拖拽色条中方块的边缘或方块本身来进行交互操作。
+
+<ImageX className="w-full h-auto" src={adjustingProbabilities} alt="Adding Items" width="1000"/>
+
+通过点击条目左侧的开关，可以切换条目的启用状态。
+
+如果您希望防止某个条目的概率发生变化（例如在归一化过程中），可以点击百分比值旁边的彩色方块来锁定其概率。
+
+<Note>
+- **Control 与 Shift 键**：这两个键为色条交互提供了额外功能。按住 Control 键并左键点击方块之间的边缘，将均匀分配相邻方块的概率。按住 Control 键并悬停在某个方块上，可以使用滚轮调整概率。同时按住 Shift 和 Control 键并使用滚轮，可进行更精细的调整。
+- **直接输入概率**：点击条目中的百分比值，将显示一个输入框，允许您直接指定概率。确认概率后，其他条目的概率将相应重新计算。
+- **选取数量与禁用条目**：禁用的条目在选择过程中不会被选中。但是，如果某次选取本应选中一个禁用条目，则该次选取结果为空。您可以在
+    <a href={SelectingValuesPage.Link + '#disabled-items'}>{SelectingValuesPage.Title}</a> 页面了解更多关于禁用条目行为的信息。
+</Note>
+
+```csharp {{ title: 'Setting Item Properties in code'}}
+myProbabilityList.SetItemEnabled(1, false);
+myProbabilityList.SetItemLocked(2, true);
+myProbabilityList.SetItemBaseProbability(0, .3f);   // will normalize the list after change
+```
+
+---
+
+## 选取数量
+
+选取数量功能允许您控制单次选择过程中从列表中选取的条目数量。默认情况下，每次选择只会从列表中选取一个值。如果需要选取多个值或随机数量的值，可以在抽屉的 **PICK** 部分自定义相关设置。
+
+<ImageX className="w-full h-auto" src={pickCounts} alt="Pick Counts" width="1000"/>
+
+默认情况下，最小和最大选取数量是关联的，即选取数量固定为某个特定值。要取消最小和最大选取数量的关联，请点击输入框之间的**链接图标**。取消关联后，您可以独立设置最小和最大选取数量，此时选取数量将是指定最小值和最大值之间的随机数。
+
+您还可以使用**曲线字段**来偏置随机选取数量。通过调整曲线，您可以影响选取数量的概率分布。使用自定义选取数量和曲线功能，为您的 RNG 需求增添了额外的控制层和变化空间。它能让您通过影响每次选取中选中的条目数量，创造出更加动态多样的游戏体验。
+
+```csharp {{ title: 'Setting Pick Counts in code'}}
+// Setting a random pick count range between 2 and 5
+myProbabilityList.LinkPickCounts = false;
+myProbabilityList.PickCountMin = 2;
+myProbabilityList.PickCountMax = 5;
+myProbabilityList.PickCountCurve = myCustomCurve;
+
+// From this point, the selection will pick 2 values
+myProbabilityList.LinkPickCounts = true;
+```
+
+---
+
+## 自定义列表
+
+如果您希望进一步自定义 Probability List，包括添加自定义信息和颜色，可以通过在自定义类中实现特殊接口 `IProbabilityItemInfoProvider` 和 `IProbabilityItemColorProvider` 来实现。有关如何自定义列表的更多详细信息，请参阅文档中的
+<a href={CustomizingListsPage.Link + '#advanced-customization'}>{CustomizingListsPage.Title}</a> 页面。
+
+遵循以上指南，您现在已准备好使用 RNGNeeds 开始设计您的 Probability List 了。释放您的创造力，在游戏机制中充分发挥概率分布的强大力量！
+
+---

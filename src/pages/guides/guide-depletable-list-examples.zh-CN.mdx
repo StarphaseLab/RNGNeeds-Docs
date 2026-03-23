@@ -1,0 +1,107 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import {DepletableListsPage} from "@/components/PageLinks";
+import depListExamplesIronVeinA from '@/images/screenshots/dep-list-examples-iron-vein-a.png';
+import depListExamplesIronVeinB from '@/images/screenshots/dep-list-examples-iron-vein-b.png';
+import {Note} from "@/components/mdx";
+import {DISCORD_LINK} from "@/components/RLinks";
+
+export const translationStatus = 'auto'
+
+export const description =
+    '探索使用 Depletable Lists 在游戏机制中实现独特结果的实用示例。';
+
+<HeroPattern />
+
+# Depletable List 示例
+
+在本页面中，我们将探索使用 Depletable Lists 在常见游戏机制中实现独特结果的实用示例。有限的物品可用性是游戏设计中的强大工具，能够帮助您创造多样且引人入胜的游戏体验。{{ className: 'lead' }}
+
+<Note>
+    想进一步了解 Depletable Lists 及其工作原理？请查看 <a href={DepletableListsPage.Link}>{DepletableListsPage.Title}</a> 页面以获取深入指南。
+</Note>
+
+---
+
+## 资源采集
+
+在许多游戏中，资源矿点被设计为产出少量常见资源，同时有一定概率产出数量有限的稀有资源。这种场景可以通过 Depletable Lists 有效模拟，从而对每种资源类型的可用性实现精确控制。
+
+以游戏世界中常见的铁矿脉为例——这是玩家的主要资源，偶尔也会给他们带来宝贵的宝石。
+
+<ImageX className="w-full h-auto" src={depListExamplesIronVeinA} alt="Depletable List Examples - Iron Vein A" width="1000"/>
+
+这处特定的铁矿脉设计为频繁提供无限量的 **Iron Ore** 和 **Heavy Stone**，同时也有较小概率产出最多三个 **Gold Nuggets** 和一个 **Opal**。两种主要资源被设置为不可耗尽，意味着它们始终可持续采集。相比之下，稀有宝石是可耗尽的，其可用数量上限分别为 3 和 1。
+
+每次采矿尝试允许玩家提取 1 至 3 个物品，由 **Pick Count** 设置决定。采集可耗尽物品会消耗其数量直至耗尽，而不可耗尽物品则始终保持可采集状态。
+
+### 按采矿次数耗尽矿点
+
+通常，限制资源矿点并引入耗尽逻辑是有益的。一种有效方法是为矿点指定固定的采矿次数上限，达到上限后即视为矿点耗尽。
+
+```csharp {{ title: 'Depleted by Mining Attempts'}}
+using System.Collections.Generic;
+using RNGNeeds;
+using UnityEngine;
+
+public class ResourceDeposit : MonoBehaviour
+{
+    public ProbabilityList<Resource> resourceDeposit;
+    
+    public int miningAttempts = 0;
+    public int maxMiningAttempts = 5;
+    
+    public List<Resource> MineDeposit()
+    {
+        miningAttempts++;
+    
+        if (miningAttempts >= maxMiningAttempts)
+        {
+            // Here, we would typically disable the depleted resource deposit
+            // For example, disable this GameObject or make it non-interactable
+        }
+    
+        return resourceDeposit.PickValues();
+    }
+}
+```
+
+在此代码中，每次采矿时我们都会递增 `miningAttempts` 计数器。一旦 `miningAttempts` 达到或超过 `maxMiningAttempts`，矿点将被视为耗尽，并因此无法进行进一步采矿。
+
+### 按资源可用性耗尽矿点
+
+另一种方法是监测矿点中特定资源是否耗尽。请看以下资源矿点设置：
+
+<ImageX className="w-full h-auto" src={depListExamplesIronVeinB} alt="Depletable List Examples - Iron Vein B" width="1000"/>
+
+我们引入了 **Check For Depleted Resource** 变量，并将 **Iron Ore** 物品改为可耗尽，设有 5 个可用单位。以下逻辑检查指定资源是否耗尽，并据此禁用矿点。
+
+```csharp {{ title: 'Depleted by Resource Check'}}
+public Resource checkForDepletedResource;
+public ProbabilityList<Resource> resourceDeposit;
+
+public List<Resource> MineDeposit()
+{
+    var minedResources = resourceDeposit.PickValues();
+    if (resourceDeposit.TryGetProbabilityItem(checkForDepletedResource, out var depositResource))
+    {
+        if(depositResource.IsDepleted)
+        {
+            // disable the depleted resource deposit
+        }
+    }
+
+    return minedResources;
+}
+```
+
+此矿点将允许采矿直到 **Iron Ore** 耗尽，届时矿点将被禁用。
+
+这种方法的优点在于游戏设计师可以完全控制哪种资源将触发矿点的耗尽。通过将各个物品设置为可耗尽并分配其数量，每个资源矿点都可以根据游戏的独特机制或需求进行定制。
+
+---
+
+<Note>
+    您是否有希望我们在此页面探索的使用案例？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">加入我们的 Discord 社区</a>并分享您的想法。
+</Note>

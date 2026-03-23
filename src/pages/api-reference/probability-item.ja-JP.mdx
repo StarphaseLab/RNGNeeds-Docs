@@ -1,0 +1,150 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { ProbabilityInfluencePage } from '@/components/PageLinks'
+
+export const description =
+  'ProbabilityItem<T>のリファレンスです。基本確率、評価済み確率、アイテム状態、Influence、ウェイト、消耗について説明します。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# ProbabilityItem&lt;T&gt;
+
+`ProbabilityItem<T>`は`ProbabilityList<T>`内の単一エントリーを表します。値そのものと、選択時の動作を制御する状態およびメタデータを保持します。 {{ className: 'lead' }}
+
+## この型が担う責務
+
+`ProbabilityItem<T>`は以下を保持できます。
+
+- 値そのもの
+- 基本確率
+- 有効化 / ロック状態
+- ウェイト
+- Influenceプロバイダー設定
+- 消耗状態とユニット数
+- 値の型から検出されたプロバイダーインターフェース機能
+
+---
+
+## コアアイテムデータ
+
+<MemberGroup title="Core properties" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="Value" signature="T">
+    このアイテムが保持する値です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="BaseProbability" signature="float">
+    0から1の間にクランプされた、保存されているベースライン確率です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Probability" signature="float">
+    選択時に実際に使用される有効確率です。アイテムにInfluenceが適用されている場合、この値は<code>BaseProbability</code>、スプレッド設定、および現在のInfluenceから導出されます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Enabled" signature="bool">
+    アイテムが選択対象かどうかを決定します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Locked" signature="bool">
+    リストレベルの確率操作によってこのアイテムの基本確率が変更されるのを防ぎます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Weight" signature="int">
+    ウェイトベースのリストヘルパーで使用されるウェイト表現です。
+  </Member>
+</MemberGroup>
+
+<Note>
+  <p><strong><code>BaseProbability</code>は最終的な値ではありません。</strong></p>
+  <p>アイテムにInfluenceが適用されている場合、選択時に実際に重要なのは<code>Probability</code>の値です。</p>
+</Note>
+
+---
+
+## Influenceサポート
+
+<MemberGroup title="Influence properties" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="InfluenceSpread" signature="Vector2">
+    Influenceが適用された際に許容される確率の低値/高値の範囲です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="InvertInfluence" signature="bool">
+    受け取ったInfluence値の効果を反転させます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="InfluenceProvider" signature="IProbabilityInfluenceProvider">
+    このアイテムへのInfluenceに使用される外部プロバイダーです（値自体がInfluenceプロバイダーインターフェースを実装していない場合）。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ValueIsInfluenceProvider" signature="bool">
+    保存されている値自体が<code>IProbabilityInfluenceProvider</code>を実装している場合にtrueを返します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsInfluencedItem" signature="bool">
+    外部プロバイダーまたは値自体によって現在Influenceが適用されている場合にtrueを返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetInfluencedProbability" signature="float GetInfluencedProbability(float influence)">
+    特定のInfluence値に対する結果確率を計算します。
+  </Member>
+</MemberGroup>
+
+### 重要な動作
+
+保存されている値が`IProbabilityInfluenceProvider`を実装している場合、RNGNeedsは外部から割り当てられたプロバイダーよりもそのプロバイダーを優先します。これにより、値オブジェクト自身が直接Influenceを提供することが可能になります。
+
+概念的なガイドと使用例については、<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>を参照してください。
+
+---
+
+## 消耗と選択可能性
+
+<MemberGroup title="Depletable item properties" tone="emerald">
+  <Member kind="PROPERTY" color="sky" name="IsDepletable" signature="bool">
+    trueの場合、親リストが消耗可能な間、選択のたびにこのアイテムのユニットが消費されます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Units" signature="int">
+    現在残っているユニット数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="MaxUnits" signature="int">
+    補充後に使用可能な最大ユニット数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsDepleted" signature="bool">
+    アイテムが消耗可能でユニットが残っていない場合にtrueを返します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsSelectable" signature="bool">
+    有効化状態と消耗状態を考慮した上で、アイテムが現在選択可能な場合にtrueを返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="Refill" signature="void Refill()">
+    <code>Units</code>を<code>MaxUnits</code>にリセットします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetDepletable" signature="void SetDepletable(bool depletable = true, int units = 1, int maxUnits = 1)">
+    消耗状態とユニット数をまとめて設定します。
+  </Member>
+</MemberGroup>
+
+---
+
+## プロバイダー機能の検出
+
+<MemberGroup title="Provider-interface helpers" tone="violet">
+  <Member kind="METHOD" color="emerald" name="GetProviderTypes" signature="ItemProviderType GetProviderTypes()">
+    値を検査し、実装しているプロバイダーインターフェースを報告します。
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityInfluenceProvider">
+    値または外部オブジェクトがアイテムの有効確率を変化させるライブInfluence値を提供できるようにします。
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityItemInfoProvider">
+    値がエディターUI向けの追加アイテム情報を提供できるようにします。
+  </Member>
+  <Member kind="INTERFACE" color="amber" name="IProbabilityItemColorProvider">
+    値がエディターUI向けのカスタムカラーリングを提供できるようにします。
+  </Member>
+</MemberGroup>
+
+---
+
+## 典型的なセットアップ
+
+```csharp
+var item = new ProbabilityItem<string>("Rare Gem", 0.2f);
+item.Enabled = true;
+item.Locked = false;
+item.SetDepletable(true, units: 3, maxUnits: 3);
+```
+
+---
+
+## 関連ページ
+
+- <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a>

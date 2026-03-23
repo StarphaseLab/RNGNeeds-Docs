@@ -1,0 +1,209 @@
+import {HeroPattern} from "@/components/HeroPattern";
+export const description =
+  '随时了解 RNGNeeds 的最新变更与改进。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# 更新日志
+
+欢迎来到 RNGNeeds 更新日志页面。在这里，您可以找到插件所有更新与改进的详细历史记录。
+我们的文档目前与 Asset Store 上可用的最新版本保持同步。
+一旦新版本通过 Asset Store 审核，我们将及时更新文档以反映相关变更。{{ className: 'lead' }}
+
+---
+
+## v1.0.0 Released 02 December 2025
+
+### 新功能
+
+- **[NEW] IEnumerable 实现** - 此功能允许您直接在 ProbabilityList 实例上使用 `foreach` 循环，使遍历列表中的项目更加便捷。
+- **[NEW] 批量添加项目的方法** - 使用这些新方法，可从提供的值中创建并批量添加项目到 ProbabilityList：
+
+    - `void AddItems(IEnumerable<T> values, bool enabled = true, bool locked = false)` - 从可枚举集合的值中添加多个项目
+    - `void AddItems(bool enabled, bool locked, params T[] values)` - 从提供的值中添加多个项目
+
+- **新色彩主题 - Fireworks & Champagne** - 让我们用两款全新的主题色板来庆祝此次发布。Fireworks 主题带来充满活力的动感色彩，而 Champagne 渐变则提供更优雅精致的色板。
+
+### Inspector 改进
+
+- **[NEW]** 新增将显示选项按钮折叠为紧凑下拉菜单的选项，大幅优化了抽屉标题栏的横向空间。专为窄 Inspector 设计！这是一个全局设置，可在 RNGNeeds Preferences 中找到。
+- **[NEW]** 新增通过拖拽调整数值的功能。请注意数值字段左侧的小视觉提示，它表示该值为数字类型。
+- **视觉优化** - 优化了字体大小和 Inspector 元素，使整体外观更加紧凑。此更改提升了 ProbabilityList Inspector 的整体可读性。
+- **条纹改进** - 在权重优先模式下，百分比与权重值的显示顺序已调换，以突出重要数值。此外，当百分比被隐藏时，会为数值添加权重图标。这些更改大幅提升了使用权重时条纹的可读性。
+- 改进了色彩主题的导入逻辑。现在，导入自定义色板时，您可以选择将新色板追加到现有色板或完全替换现有色板。
+
+### 其他变更与修复
+
+- 修复了在某些版本的 Unity 编辑器中，自定义对象的 ProbabilityList 类折叠面板对齐错误的问题。
+- 已从默认日志级别中移除警告信息。默认情况下，日志级别现在设置为 Info & Hints。
+
+### 破坏性变更
+
+- 移除了 `PLCollection.PickFromAll` 方法。此方法已被标记为过时，并在 v0.9.6 中由 `PLCollection.PickValuesFromAll` 取代。
+
+*感谢我们的 Discord 用户 **Jake Pine** 和 **Krptck** 提供了本次发布中实现的功能建议！*
+
+---
+
+## 0.9.9 (Beta) Released 20 November 2024
+
+### 重大新功能 - 权重分布
+
+除默认的百分比工作流外，您现在可以使用权重来设计概率。权重分布是一个被高度请求的功能——这正是我们插件旨在满足的常见 RNG 需求。使用权重让您能够应用经过验证的概率设计方法，大幅扩展您的游戏设计选项。
+
+### 错误修复
+
+- 修复了在某些情况下，点击 Inspector 中的 Reset All Probabilities 按钮会导致大量错误信息的问题
+- 修复了当某项目的传入概率影响值为 NaN 或 Infinity 时，选择失败的问题
+
+---
+
+## 0.9.8 (Beta) Released 30 September 2024
+
+### Inspector 改进
+
+- **[NEW] 隐藏列表条目** - 引入了在 Inspector 中隐藏列表条目的选项。隐藏后，按钮将显示列表中的条目数量。此功能有助于在列表设置完毕后保持 Inspector 简洁易读。
+- **[NEW] 可变条纹高度滑块** - 在 Inspector 的 Theme 区域新增了可变条纹高度滑块。固定高度选项已被移除，改为可变高度，允许更灵活地自定义各个抽屉。
+- **[NEW] 通过滚轮切换色板** - 启用了通过滚轮切换色板的功能。将鼠标悬停在色板下拉按钮上时，使用 Shift + 滚轮即可轻松浏览色板选项，使找到合适的色板变得更加便捷。
+- **[NEW] 反转色板选项** - 引入了反转色板的选项。色板颜色预览旁边的新按钮可在正常和反转颜色顺序之间切换，提升了色板的可用性，尤其是在使用渐变进行逻辑值展示时。
+- **改进的标题栏按钮** - 通过将所有选项按钮从文字改为图标，增强了标题栏中的按钮，统一了视觉效果，使界面更简洁一致。
+
+### 错误修复
+
+- **PLCollection Inspector 视觉问题** - 修复了在使用编辑器亮色皮肤时 PLCollection Inspector 的视觉问题。
+- **Probability Lists 多对象编辑问题** - 解决了在多对象编辑 ScriptableObject 时，Probability Lists 中的项目会被禁用的问题。
+
+---
+
+## 0.9.7 (Beta) Released 12 June 2024
+
+### 重大新功能 - 可耗尽列表
+
+可耗尽列表是一项强大的功能，允许项目具有有限的可用次数。
+通过为每个项目设置最大数量和可用数量，您可以为游戏机制解锁大量可能性。
+可耗尽项目可以以多种方式使用，例如确保游戏奖励的唯一选择，或管理同一项目的多个实例，如卡组或战利品表。
+
+### Inspector 改进
+
+- **[NEW]** 为特定功能引入了**带文档链接的选项按钮**。按住 Shift 点击这些按钮将打开该功能的在线文档或指南。
+- **[NEW]** 引入了**操作菜单**，可一次性修改列表中的所有项目。
+- 从标题栏移除了条纹区域按钮。条纹高度选项现在可在 Theme 区域中找到。
+- 改进了 **TEST** 按钮 - Control 点击（macOS 上为 Command 点击）将在运行测试前重新填充可耗尽项目的数量。
+
+### 示例改进
+
+- **DeckBuilder** 已更新以支持可耗尽项目。
+- **CardDeck** 抽牌方法已更新为耗尽数量，而非移除已抽出的牌。
+
+### 错误修复
+
+- 修复了在某些版本的 Unity 中，通过滚轮调整概率方向相反的问题。
+- 修复了欢迎窗口中的损坏链接。
+
+---
+
+## 0.9.6 (Beta) Released 13 May 2024
+
+### PLCollection 改进
+
+- **[New]** 新增了为集合中的 Probability Lists 命名的功能。名称在 Inspector 中可见并可编辑。列表名称可用于检索列表或选取值。
+- **[New]** 新增了在集合中对 Probability Lists 重新排序的功能。
+- **[New]** 新增了多个便捷方法，用于从单个列表或整个集合中选取值。
+
+### 更新的 PLCollection 方法
+
+AddList 方法已更改，新增了一个可选参数用于设置所添加列表的名称
+- `void AddList(string name = "")`
+- `void AddList(ProbabilityList<T> list, string name = "")`
+
+RemoveList 方法新增了布尔返回值，用于指示是否找到并移除了列表
+- `bool RemoveList(int index)`
+
+GetList 方法的返回类型已更改，现在直接返回 `ProbabilityList<T>`，而非 `IProbabilityList` 接口
+- `ProbabilityList<T> GetList(int index)`
+
+**破坏性变更**
+
+- 更改了 `PLCollection.IsListEmpty` 方法的签名，使调用更加明确和详细。该方法现在返回一个包含两个布尔值的元组，指示是否找到列表以及列表是否为空。
+
+    - **old** `public bool IsListEmpty(int index)`
+    - **new** `public (bool ListFound, bool IsEmpty) IsListEmpty(int index)`
+
+- 将 `PLCollection.PickFromAll()` 标记为过时。此方法将在 v1.0 版本中移除。请改用新的 `PickValuesFromAll()`。
+
+---
+
+## 0.9.5 (Beta) Released 28 Mar 2024
+
+- **[New]** 新增了对单个项目**反转影响**的功能。此功能增强了对传入影响的控制，为游戏设计师提供了更多基于外部因素动态调整概率的选项。
+- **[New]** ProbabilityItem 属性：
+    - `public bool InvertInfluence` - 决定传入的概率影响是否应被反转。设置为 true 时，影响对该项目概率的作用将被反转。
+- **[New]** ProbabilityList 便捷方法：
+    - `.SetItemInfluenceSpread(int index, Vector2 spread)` - 为列表中由索引标识的项目指定影响扩散范围。此扩散范围定义了由于影响，项目概率可调整的范围。
+    - `.SetItemInvertInfluence(int index, bool invertInfluence)` - 决定特定项目概率的影响效果是否应被反转。反转意味着正面影响会降低该项目的概率，而负面影响会提高它。
+
+**错误修复：**
+
+- 解决了受影响概率的图形表示与未受影响项目错位的问题。
+- 修复了与概率预览条和扩散滑块相关的多个对齐问题。
+
+---
+
+## 0.9.4 (Beta) Released 23 Feb 2024
+
+- **[NEW]** 抽屉中的种子设置：现在可以直接在抽屉中指定种子。激活 Keep Seed 按钮以启用种子输入字段。
+- **[NEW]** ProbabilityList 便捷属性：
+    - **.UnlockedItemsCount** - 获取列表中已解锁项目的数量。
+    - **.EnabledItemsCount** - 获取列表中已启用项目的数量。
+
+**错误修复：**
+
+- 解决了在编辑器中删除列表项目有时会导致 NullReferenceException 的问题。
+- 修复了关于选择过程过长的故障安全警告在不必要的情况下停止选择的问题。
+- 修复了选择操作从不选取概率极低的项目的问题。
+- 修复了 Struct 类型未被抽屉识别为 Influence Provider 的问题。
+
+---
+
+## 0.9.3 (Beta) Released 12 Sept 2023
+
+- **[NEW]** 信息化区域按钮：为抽屉区域按钮引入了一种新模式，可直接在按钮内显示所选主题、条纹选项和选取计数信息。此改进提升了 Probability List 设置的可读性，无需展开各个区域。
+- "Maintain Pick Count" 切换按钮已被移至 Basic 抽屉选项级别。因此，此按钮现在无需切换到 Advanced 级别即可看到。
+- **[New]** ProbabilityList 便捷方法：
+    - `.SetAllItemsEnabled(bool enabled)` - 此方法允许您一次性设置 ProbabilityList 中所有项目的启用状态。
+    - `.SetAllItemsLocked(bool locked)` - 使用此方法可同时设置 ProbabilityList 中所有项目的锁定状态。
+
+---
+
+## 0.9.2 (Beta) Released 23 Aug 2023
+
+- **欢迎窗口 -** 我们添加了一个在安装后弹出的欢迎窗口。它提供了指向我们文档的便捷链接、入门指南、导入示例的说明，以及 RNGNeeds 首选项窗口的直接快捷方式。
+- **方法摘要 -** 增强了 \`PickValues\` 方法及其重载的摘要说明。现在可以清楚地看出这些方法返回的是对共享列表的引用。
+
+**错误修复：**
+
+- 修复了"Keep Seed"功能在可变选取计数下无法正常工作的问题。
+- 修复了向大型列表添加项目时导致项目概率为 0% 的问题。
+
+---
+
+## 0.9.1 (Beta) Released 07 Aug 2023
+
+- **AddItem** 方法及其重载现在会返回新创建的 **ProbabilityItem**。这允许在将项目添加到列表后立即修改其属性，无需手动检索。
+- 默认编辑器日志级别现在也会显示警告信息。这将是 Beta 阶段的默认行为，之后将恢复为 Info & Hints。此更改仅适用于默认设置。您可以随时在首选项中更改当前日志级别。
+- 引入了当检查处理不可序列化自定义类型的 ProbabilityList 时显示编辑器警告信息的功能。
+- 更新了重复防止方法的方法摘要。
+
+**破坏性变更**
+
+- 更新了 **ProbabilityItem** 构造函数 - 我们对 ProbabilityItem 构造函数进行了一些改进，以增强清晰度并使创建项目的过程更加明确。参数 **T value** 和 **float baseProbability** 不再是可选参数，确保每个项目都以值和基础概率显式初始化。通过移除创建空项目或概率为 0% 的项目的选项，我们旨在提高 ProbabilityList 的透明度并减少与其行为相关的歧义。此更改使开发人员能够更清晰地理解其概率分布，在使用 ProbabilityList 时促进更可预测和有组织的方法。
+- 方法 **SetItemProbability** 和 **AdjustItemProbability** 分别重命名为 **SetItemBaseProbability** 和 **AdjustItemBaseProbability**。此更改澄清了未更改的"基础"概率与调整后概率之间的区别，确保在设计列表时为用户提供更直观、准确的表达。
+
+---
+
+## 0.9.0 (Beta)
+
+RNGNeeds 的初始发布版本。
+
+---

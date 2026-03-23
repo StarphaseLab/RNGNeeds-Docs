@@ -1,0 +1,42 @@
+import {Col, Properties, Property, Row} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+export const description =
+  'RNGNeedsで使用される用語とコンセプトを学びましょう。これらをしっかり理解することで、ドキュメント全体やプラグイン自体のナビゲートがスムーズになります。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+# 用語集
+RNGNeedsを最大限に活用するには、プラグイン内で使用されるキーワードとコンセプトを理解することが重要です。
+このページでは、よく使われる主要な用語の定義を提供します。{{ className: 'lead' }}
+
+---
+<Row>
+    <Col>
+        <Properties>
+            <Property name="Probability List">Probability Listは、選択される可能性のある値をそれぞれ表す `Probability Item` のコレクションです。このリストは、それぞれ独自の確率が関連付けられた一連の選択肢を定義します。</Property>
+            <Property name="Probability Item">Probability Itemは、`Probability List` 内の個々のエントリです。ユーザー定義の値（値型または参照型）をカプセル化し、特定のBase Probabilityと関連付けます。また、有効・無効状態やロック状態などの追加情報も保持します。</Property>
+            <Property name="Base Probability">Base Probabilityは、`Probability Item` に割り当てられた初期確率を指します。この値は手動で調整できますが、選択プロセスに直接影響を与えるものではありません。さらなる調整や計算のための基準点として機能します。</Property>
+            <Property name="Probability">Probabilityは、`Probability Item` が選択される調整後の可能性を指します。Base Probabilityと影響や調整から算出された計算値です。この確率は選択プロセス中に使用されます。</Property>
+            <Property name="Enabled Probability">Enabled Probabilityは、リスト内のすべての有効な `Probability Item` の確率の合計を指します。無効なアイテムはこの計算に含まれません。Enabled Probabilityの値は選択プロセス中に使用されます。</Property>
+            <Property name="Unlocked Probability">Unlocked Probabilityは、リスト内のすべてのロックされていない `Probability Item` の確率の合計を指します。ロックされていない確率は、他のアイテムの確率が調整されるにつれて変化します。この値はリストの設計時に確率の正規化や再計算の際に考慮されます。</Property>
+
+            <Property name="Depletable List">Depletable Listは、Depletable Itemが選択時にユニットを消費できるようにする Probability List です。消費しきったアイテムは選択不可になり、ユニットが補充されるまで無効アイテムと同様に扱われます。</Property>
+            <Property name="Depletable Item">Depletable List に含まれている場合、選択のたびにユニットが消費される Probability Item です。ユニットが枯渇すると、補充されるまでそのアイテムは選択できなくなります。</Property>
+            <Property name="Units">Depletable Item におけるユニットとは、そのアイテムが選択できる回数を指します。選択のたびに1ユニットが消費されます。</Property>
+            <Property name="Max Units">Depletable Item における最大ユニットとは、アイテムが持てるユニットの上限を指します。アイテムが補充されると、ユニットはこの最大値にリセットされます。</Property>
+            <Property name="Refill">Depletable Item のユニットを定義された最大値にリセットするプロセスを表す用語です。</Property>
+            <Property name="Selectable Item">Probability Item は、有効であり、かつ消費不可（無制限）であるか、Depletable Item の場合は少なくとも1ユニットが利用可能な場合に「選択可能」とみなされます。</Property>
+        </Properties>
+    </Col>
+    <Col>
+        <Properties>
+            <Property name="Selection Method">Selection Methodは、`Probability List` からアイテムを選択するために使用されるアルゴリズムまたはプロセスを指します。異なる選択方法はほぼ同一の結果をもたらすことがありますが、リストのサイズや `Pick Count` によってパフォーマンスが異なる場合があります。</Property>
+            <Property name="Pick Count">Pick Countは、1回の操作で `Probability List` から選択されるアイテムの数です。`Pick Count` は固定値または範囲として設定でき、さまざまなシナリオへの柔軟な対応を可能にします。</Property>
+            <Property name="Repeat Prevention">Repeat Preventionは、同じ `Probability Item` が連続して選択されることを避けるための機能です。この機能は選択のバリエーションを高め、繰り返しの結果が望ましくないシナリオで特に有効です。</Property>
+            <Property name="Influence Provider">`IProbabilityInfluenceProvider` インターフェースを継承するスクリプトで、アイテムの確率に適用される影響を定義します。</Property>
+            <Property name="Influenced List">いずれかのアイテムに `Influence Provider` が割り当てられているか、またはアイテム自体がプロバイダーである場合、そのリストは「influenced（影響を受けた）」とみなされます。</Property>
+            <Property name="Influenced Probability">Influenced Probabilityは、`Probability Influence Provider` を介して外部の影響が設定されている場合、その影響を適用した後の `Probability Item` のBase Probabilityを指します。</Property>
+        </Properties>
+    </Col>
+</Row>
+---

@@ -1,0 +1,228 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeedsが各Listの過去のアイテムピックをどのように追跡するか、またHistoryを使って確定的な確率の動作を再現する方法を理解しましょう。'
+
+<HeroPattern />
+
+# Pick History
+
+Pick Historyは、ユーザーが最近の選択を確認したり、特定のシナリオを再現したり、アイテムを事前に選択してゲームプレイを効率化するための強力なツールです。
+包括的な記録を提供することで、ユーザーは選択内容を監視したり、ゲーム内でデータを活用したり、ゲームプレイの動的な向上のためにプレイヤーと情報を共有することができます。{{ className: 'lead' }}
+
+---
+
+## Historyの構造
+
+まず、Pick Historyの基本的な概念を理解することから始めましょう。
+記録のアーカイブ方法、選択がHistoryを通じてどのように処理されるか、そしてHistoryの容量のメカニズムについて説明します。
+
+**各ListはそれぞれのHistoryを持つ** — すべての Probability List は固有のHistoryを持ち、このHistoryは選択メカニズムにおいて重要な役割を果たします。
+値を選択すると、システムはまず設定された確率に基づいて結果を決定します。
+この結果はHistoryに記録されます。最後に、システムはHistoryから最近ピックされたインデックスをマッピングして、実際に受け取る値を生成します。
+
+**Historyはインデックスを記録する** — History構造は、パフォーマンスと明確さのために最適化されています。アイテムの実際の値を記録するのではなく、インデックスを記録することで、メモリのフットプリントを最小限に抑えています。
+各インデックスとともに、ピックの正確な日時が保存され、選択プロセスの時系列的な洞察を提供します。
+
+<Note>
+    Historyはインデックスのみを追跡するため、Listからアイテムを削除するとHistoryが自動的にクリアされることに注意してください。
+    これは、List内のインデックスが元の順序や以前に表していた値と対応しなくなるためです。
+</Note>
+
+**最新のインデックスが先頭に** — ユーザーフレンドリーな設計として、Historyは最新のピックを先頭に保存します。Listの最初のエントリは常に最新の選択を表します。
+
+**History容量** — すべてのHistoryには保存できるアイテム数に上限があり、これを容量と呼びます。この容量は要件に応じて増減できます。
+
+**PickHistoryオブジェクト** — `ProbabilityList` の不可欠な部分であり、ListのHistoryのストレージとしても、履歴データおよび設定へのメインアクセスポイントとしても機能します。
+Probability Listから値をリクエストするたびに、結果はまずインデックスとしてHistoryに記録されてから、実際の値としてリレーされます。
+
+**HistoryEntryオブジェクト** — これはピックのインデックスと時刻の両方をキャプチャする*プールされたオブジェクト*です。
+Pick Historyは、最近の選択の時系列ログとして機能するこれらのHistoryEntryオブジェクトのリストを保持します。
+
+<Note>
+    **PicksとEntries**
+
+    History内では、**Entries** という用語が履歴レコードを表し、ピックのインデックスとタイムスタンプの両方を含みます。これらの各レコードは `HistoryEntry` オブジェクト内に格納されています。
+
+    一方、**Picks** は選択されたインデックスのみを指します。History取得メソッドの命名規則は、返されるデータの性質を明確に示すように設計されています。
+</Note>
+
+---
+
+## Historyの容量
+
+デフォルトでは、各ListのHistoryは最大1000件のエントリを格納できます。つまり、この容量を拡大しない限り、一度に最大1000個の値をピックできます。
+選択を重ねるにつれて、古いエントリは下に押し下げられ、設定された容量を超えると削除されます。
+例えば、最初に1000アイテムを選択し、次に500個の選択を行うと、Historyには500件の最近のピックと、最初の1000アイテム選択の後半部分が表示されます。
+
+```csharp {{ title: 'Setting the History Capacity'}}
+// Setting the history capacity directly via the PickHistory property
+myProbabilityList.PickHistory.Capacity = 100;
+
+// Using a dedicated method to set the history capacity
+myProbabilityList.SetHistoryCapacity(100);
+```
+
+ListのHistory容量を調整することで、Listのメモリ使用量を微調整できます。
+Historyが優先事項でない場合は、この値をかなり低く設定できます。
+ただし、容量は一度に選択できる値の数も制限することを覚えておいてください。
+例えば、History容量が5のListで `SelectValues(10)` を呼び出すと、5個の値しか返されません。
+
+---
+
+## Historyの取得
+
+
+```csharp {{ title: 'Accessing the Pick History'}}
+// Access the PickHistory object
+PickHistory pickHistory = myProbabilityList.PickHistory;
+
+// The History property contains the List of HistoryEntries
+List<HistoryEntry> historyEntries = pickHistory.History;
+
+HistoryEntry latestEntry = historyEntries[0];
+Debug.Log($"Last Picked Index was {latestEntry.Index}, picked at {latestEntry.Time}");
+```
+
+<Note>
+    **日時の保存方法**
+
+    HistoryEntryは、カスタムの `SerializableDateTime` オブジェクトを使用してピックの時刻をキャプチャします。この設計は、DateTimeクラスの利便性とUnityのシリアライゼーション機能を組み合わせています。
+    タイムスタンプはDateTimeの `Now` プロパティを活用して正確な `long Ticks` 値を取得し、正確な時刻管理を保証します。また、おなじみのDateTime形式でこの情報を取得する便利なメソッドも提供しています。
+
+    例えば、`Debug.Log(historyEntry.Time)` を実行すると、DateTimeを直接使用する場合と同様に `26.08.2023 12:03:57` のような出力が得られます。
+</Note>
+
+### 便利なメソッド
+
+また、Historyの便利なメソッドやプロパティを使ってレコードにアクセスすることもできます。
+リストを返すメソッドは、内部リストへの参照を提供することで効率を優先し、新しいリストへの追加のメモリ割り当てを防ぎます。
+このアプローチは、パフォーマンスが重要な頻繁な操作に特に有益です。
+
+```csharp {{ title: 'Retrieving history'}}
+int latestIndex = myProbabilityList.PickHistory.LatestIndex;
+List<int> latestIndices = myProbabilityList.PickHistory.GetLatestPicks(5);
+
+// The same data can also be accessed directly from the Probability List
+int latestIndexDirect = myProbabilityList.LastPickedIndex;
+List<int> latestIndicesDirect = myProbabilityList.LastPickedIndices;
+
+// The Probability List further simplifies the process by mapping indices to values automatically
+string latestValue = myProbabilityList.LastPickedValue;
+List<string> latestValues = myProbabilityList.LastPickedValues;
+```
+
+<Note>
+    **LastとLatest**
+
+    最新のピックについて話すとき、異なる用語を使っていることに気づくかもしれません。Probability Listでは **Last**、Pick Historyでは **Latest** を使います。
+    この選択は、適切な表現について社内で多くの議論を経た結果です。
+    Probability Listに*最後の選択*を尋ねる場合、**Last** という用語は理にかなっています。
+    しかし、Historyの文脈では、「last」は「Historyの最初」や「Historyの始まり」と誤解される可能性があります。
+    この混乱を避けるため、Historyには **Latest** を使用して、最新のレコードを明確に示しています。
+</Note>
+
+より細かい制御を求める方や結果を保持したい方のために、リストを引数として受け取り、指定されたレコードを格納するメソッドも用意されています。
+最新のエントリを取得するには、必要なレコード数を指定するだけです。
+
+```csharp {{ title: 'Retrieving history'}}
+// Methods that return a reference to a private list
+HistoryEntry latestEntryRef = myProbabilityList.PickHistory.LatestEntry;
+List<HistoryEntry> latestEntriesRef = myProbabilityList.PickHistory.GetLatestEntries(5);
+
+// Methods designed to fill a provided list
+List<int> latestPicksFill = new List<int>();
+myProbabilityList.PickHistory.GetLatestPicks(latestPicksFill, 5);
+
+List<HistoryEntry> latestEntriesFill = new List<HistoryEntry>();
+myProbabilityList.PickHistory.GetLatestEntries(latestEntriesFill, 5);
+```
+
+---
+
+## HistoryEntryプール
+
+HistoryEntryは、各ピックのインデックスと時刻を効率的に保存するための**プールされたオブジェクト**です。
+選択プロセス中、これらのオブジェクトは動的に作成され、使用されなくなると（例えば、Historyがクリアされたり容量を超えたりした場合）、
+再利用のためにプールに返されます。
+
+このプーリングメカニズムはすべてのHistoryで共有されており、メモリ使用量が最適化され、すぐに使用できるHistoryEntryオブジェクトの安定した供給が確保されます。
+最初、プールは空の状態で始まります。個別のListが容量を超え始めると、プールはリリースされたHistoryEntryオブジェクトで徐々に満たされていきます。
+この時点までは、選択されたアイテムごとに軽微なメモリ割り当てが発生します。
+ただし、プールに十分な数の未使用オブジェクトが蓄積されてHistoryに再利用されるようになると、これらの割り当ては停止します。
+
+プールの効率をすぐに活用するために、プールを事前に用意（「ウォームアップ」）することができます。
+使用する Probability List の数と設定された容量に応じて、最適なプールサイズを見積もることができます。
+これにより、初期化時にメモリが割り当てられ、その後の選択はこの事前用意されたオブジェクトプールから取得されます。
+
+```csharp {{ title: 'Warming-up the HistoryEntry Pool'}}
+RNGNeedsCore.WarmupHistoryEntries(10000);
+```
+
+---
+
+## Historyからの取得
+
+特定のシナリオでは、リアルタイムにピックするよりも、Historyから直接値を取得する方が効率的または適切な場合があります。このアプローチは独自の利点を提供します。つまり、値のセットを事前に選択してHistoryに保存することで、選択プロセスの計算オーバーヘッドなしに、事前決定された結果の範囲に素早くアクセスできます。これは特に以下のような状況で有益です。
+
+- **パフォーマンスが最優先の場合** — 毎ミリ秒が重要なゲームプレイの高強度な場面で、Historyからの取得はスムーズなパフォーマンスを確保できます。
+- **一貫性が求められる場合** — 事前に選択された値を使用することで、複数のセッションやユーザー間で一貫したエクスペリエンスを保証できます。
+- **予測分析** — 固定されたランダム値セットに基づいて潜在的な結果を分析したいシミュレーションやシナリオで活用できます。
+
+以下に実装のアイデアの一例を示します。
+
+```csharp {{ title: 'Iterating over History - Example'}}
+public ProbabilityList<string> myProbabilityList;
+
+// First, pick values to populate the history
+myProbabilityList.PickValues(1000);
+
+private int historyDrawIndex = 0; // Counter to keep track of where we left off
+
+// A method to draw a specified range of values from the history
+public List<string> DrawFromHistory(int countToDraw)
+{
+    List<string> drawnValues = new List<string>();
+
+    int remainingHistory = myProbabilityList.PickHistory.History.Count - historyDrawIndex;
+    countToDraw = Mathf.Min(countToDraw, remainingHistory);
+
+    for (int i = 0; i < countToDraw; i++)
+    {
+        var drawnIndex = myProbabilityList.PickHistory.History[historyDrawIndex + i].Index;
+        drawnValues.Add(myProbabilityList.GetProbabilityItem(drawnIndex).Value);
+    }
+
+    historyDrawIndex += countToDraw;
+
+    return drawnValues;
+}
+```
+
+上記のコードでは、`string` 型の `ProbabilityList` である `myProbabilityList` を使用しています。
+
+1. **Historyの生成**：
+Historyから取得する前に、まず `PickValues` メソッドを使って1000個の値をピックし、Historyを生成します。これにより、Historyに最近の選択の記録が確保されます。
+
+2. **取得位置の追跡**：
+`historyDrawIndex` というカウンターを導入して、History内の現在の位置を追跡します。これにより、Historyから取得するたびに前回の続きから開始し、値の重複を防ぎます。
+
+3. **Historyからの取得**：
+`DrawFromHistory` メソッドは、Historyから指定された数の値を取得するように設計されています。
+- まず、`remainingHistory` 変数を使って、まだ取得していないHistoryのエントリ数を判定します。
+- 次に、Historyに残っている以上の値を取得しようとしないよう、取得する値の数を決定します。
+- **ループ内の各イテレーションでは：**
+- Historyからアイテムのインデックスを取得します。
+- 次に、`GetProbabilityItem` メソッドを使って `ProbabilityList` から実際の値を取得し、`drawnValues` リストに追加します。
+- 最後に、次の取得が正しい位置から開始されるよう、`historyDrawIndex` を更新します。
+
+<Note>
+    **パフォーマンスに関する考慮事項**：
+
+    さまざまな機能と速度の利点を強調してきましたが、`SelectValues` メソッドのような RNGNeeds のコア機能は、一般的な使用向けにすでに最適化されていることを理解しておくことが重要です。確率分布の計算、繰り返し防止、History書き込みなどの複雑なプロセスは、効率的に設計されています。
+
+    ほとんどのユーザーやシナリオにおいて、パフォーマンスは問題にならないはずです。ただし、システムの限界に達してパフォーマンスの問題に気づいた場合は、ここで説明したワークフローと最適化がそれらのボトルネックの解消に役立ちます。RNGNeeds はシンプルさとパフォーマンスの両方を念頭に構築されていることを忘れないでください。
+</Note>
+
+---

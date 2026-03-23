@@ -1,0 +1,245 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import {PreferencesPage, SamplesTreasureChestPage, PickHistoryPage, DepletableListsPage} from "@/components/PageLinks";
+import diceRoll2d6 from '@/images/screenshots/dice-roll-2d6.png';
+import disabledItemEffect from '@/images/screenshots/disabled-item-effect.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeeds で使用できるさまざまな選択方法と、それらを効果的に使う方法を理解しましょう。'
+
+<HeroPattern />
+
+# 値の選択
+
+このページでは、アイテムの Probability List から値を選択する方法を学びます。ゲームデザイナーであっても、コーダーであっても、あるいはその両方であっても、
+このガイドはあなたとチームが RNGNeeds による値の返し方を決定するのに役立ちます。 {{ className: 'lead' }}
+
+---
+
+## 値の選択
+
+Probability List を Inspector でデザインする場合でも、コードで値・確率・その他のプロパティを設定する場合でも、値の選択は
+シンプルなプロセスです。
+
+```csharp {{ title: 'Selecting values'}}
+public ProbabilityList<string> myProbabilityList;
+
+List<string> results = myProbabilityList.PickValues();
+```
+
+これにより**選択プロセス**が開始され、ピック数・選択方法・繰り返し防止などを含むリストの現在の設定に基づいて値が返されます。
+
+**次の例を考えてみましょう：** プレイヤーのアクションの成功がダイスロールで決まるゲームを想像してください。このシナリオでは、ゲームデザイナーが Inspector 上でダイスロールのメカニクスを直接定義できます。
+
+<ImageX className="w-full h-auto" src={diceRoll2d6} alt="Dice Roll 2D6" width="1000"/>
+
+デザイナーはリスト内のアイテム数（ダイスの面を表す）と希望するピック数（振るダイスの数を表す）を設定できます。
+この柔軟性により、デザイナーはゲームの RNG 要素を簡単に調整し、自分のビジョンに合わせてゲームプレイ体験を調整できます。
+
+それではコードを見てみましょう：
+
+```csharp {{ title: 'Dice Rolls set up by the designer'}}
+public ProbabilityList<int> dice;
+
+int sumOfRolls = dice.PickValues().Sum();
+```
+
+コードはロールの合計値のみを考慮します。こうすることで、デザイナーはダイスロールを 1D6、2D10、あるいは任意のものにするかを決められます。たとえば、
+デザイナーがリストに 1、2、3 の値を持つ 3 つのアイテムを追加し、ピック数を 2 に設定すれば、実質的に 2D3 のダイスロールが作成されます。
+
+<Note>
+    **このプロセスは RNGNeeds の主要な利点の一つを示しています**
+
+    デザイナーが Inspector でリストを設定し、ゲームの RNG 要素を制御できます。
+    このアプローチにより、選択プロセスを開始するだけでよいコーダーの作業が簡略化されるだけでなく、ゲームの確率的メカニクスを直接制御できるようになることでデザイナーも力を発揮できます。
+    これはゲーム開発において RNGNeeds をシンプルで効率的なツールにする、双方にとってメリットのある状況です。
+</Note>
+
+あるいは、コーダーがリストの設定を上書きしてダイスを制御することもできます：
+
+```csharp {{ title: 'Dice Rolls set by the coder'}}
+public ProbabilityList<int> dice;
+
+// This will pick only one value
+int sumOfRolls = dice.PickValues(1).Sum();
+
+// and is equivalent to this
+int result = dice.PickValue();
+
+// This will configure the list to randomly select 2 to 4 values
+dice.LinkPickCounts = false;
+dice.PickCountMin = 2;
+dice.PickCountMax = 4;
+int sumOfRolls = dice.PickValues().Sum();
+
+// and is equivalent to this, without the need to configure pick counts manually
+int sumOfRolls = dice.PickValues(2, 4).Sum();
+```
+
+---
+
+## 戻り値について
+
+RNGNeeds の当初からの主要な目標の一つはパフォーマンスでした。これを達成するために、可能な限り GC アロケーションを最小化するようにシステムを設計しました。その結果、一部の選択メソッドは新しい List を作成するのではなく、内部リストへの参照として値のセットを返します。
+
+内部的には、値のランダム選択が完了した後、結果はまずリストのピック履歴に書き込まれます。選択プロセスの開始からこの時点まで、システムはインデックスのみを扱います。実際の結果は、使用されるメソッドに応じて `LastPickedValue` または `LastPickedValues` プロパティを返すことで生成されます。これらのプロパティは、選択されたインデックスの履歴から結果を取得し、リスト内に格納された実際の値にマッピングします。
+
+本質的に、すべての値の選択は履歴を通じて行われます。
+
+<Note>
+    デフォルトの履歴容量は 1000 エントリに制限されています。つまり、容量を増やさない限り、デフォルトで返されるアイテムの最大数は 1000 です。履歴の機能について詳しくは
+    <a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a>
+    ページをご覧ください。
+</Note>
+
+### 単一の値を返すメソッド
+
+これらのメソッドは単一の結果を生成します：
+
+- `T PickValue()`
+- `bool TryPickValue(out T value)`
+- `(T Value, int Index) PickValueWithIndex()`
+- `bool TryPickValueWithIndex(out T Value, out int Index)`
+
+これらは単純明快で、選択直後に `LastPickedValue` プロパティを介して `T value` を直接返します。唯一の例外は、リストから無効化されたアイテムを選択することで選択が失敗した場合で、その場合これらのメソッドはその型の `default` 値を返します。ピックの成功を確認するには、**TryPick** バージョンを使用できます。無効化されたアイテムの動作については、このページの後半で詳しく説明します。
+
+### 共有リストの値を返すメソッド
+
+これらのメソッドは Probability List が所有するリストへの参照を返します：
+
+- `List<T> PickValues()`
+- `List<T> PickValues(int pickCount)`
+- `List<T> PickValues(int pickCountMin, int pickCountMax)`
+
+これらのメソッドは新しい List を作成しません。代わりに、Probability List が所有する `private List<T>` への参照を返します。
+
+ただし、リストはピック間で共有されており、参照のみを受け取っているため、次のピックでその内容が変更されます。次の例を考えてみましょう：
+
+```csharp {{ title: 'Results in a shared list'}}
+public ProbabilityList<int> myProbabilityList;
+
+var firstResult = myProbabilityList.PickValues(3);
+            
+// firstResult now contains a set of picked values, let's say 3, 5, 7
+
+Debug.Log(firstResult[0]);  // outputs '3'
+
+var secondResult = myProbabilityList.PickValues(3);
+
+// secondResult contains new values, let's say 1, 2, 5
+
+// However, firstResult is still a reference to the same list as secondResult
+// so the values 3, 5, 7 are overwritten
+
+Debug.Log(firstResult[0]);  // outputs '1'
+```
+
+### リストに値を追加するメソッド
+
+値をリストに保持したい場合は、共有リストを返す代わりに指定したリストに値を追加するメソッドを使用できます。
+
+- `bool PickValues(List<T> listToFill)`
+- `bool PickValues(List<T> listToFill, int pickCount)`
+- `bool PickValues(List<T> listToFill, int pickCountMin, int pickCountMax)`
+
+これらのメソッドは同様に動作しますが、共有リストを返す代わりに、指定したリストに値を追加します。
+リストをクリアせず、`listToFill.AddRange(LastPickedValues)` を介して値を追加します。
+このアプローチは、複数セットの結果を選択する必要がある場合に便利で、リストの作成を自分で管理できます。
+
+```csharp {{ title: 'Adding results to your list'}}
+public ProbabilityList<int> myProbabilityList;
+
+List<int> myResults = new List<int>();
+
+myProbabilityList.PickValues(myResults, 3);     // will add three values to your list
+myProbabilityList.PickValues(myResults, 2, 5);  // will add an additional two to five values
+```
+
+---
+
+## 無効化されたアイテム
+
+リスト内のアイテムを無効化することは、選択プロセス中に特定の値が選ばれないようにするための便利な方法です。これは、アイテムをリストからまだ削除する準備ができていないが無効にしたい場合（たとえば、さまざまな結果をテストする設計フェーズ中など）に役立ちます。ただし、無効化されたアイテムを扱う際に理解しておくべき重要な概念がいくつかあります。
+
+<Note>
+    **（1）無効化されたアイテムは確率分布を変える可能性があります** - 無効化されたアイテムは依然として確率リスト内に存在します。つまり、選択によって無効化されたアイテムがランダムに選ばれる可能性があります。ただし、選択が無効化されたアイテムを選ぶ結果になった場合、そのピックは無視されます。
+
+    **（2）無効化されたアイテムはピック数を下げる可能性があります** - 最初の概念の続きとして、ピックが無視された場合、結果のピック数が希望より低くなる可能性があります。
+</Note>
+
+**次の例を考えてみましょう：** リストに 3 つのアイテムがあり、それぞれ 33.3% の確率を持っています。そのうちの 1 つが無効化されています。
+
+<ImageX className="w-full h-auto" src={disabledItemEffect} alt="Dsabled Item Effect" width="1000"/>
+
+- このリストから 100 個の値を選択する場合、選択が無効化されたアイテムを選ぶたびに無視されるため、結果のピック数が低くなる可能性があります。おそらく約 66 個のアイテムが選ばれますが、有効な 2 つのアイテムの確率はそれぞれ約 33% と正しいように見えるでしょう。
+
+- 希望するピック数を維持するには、`Maintain Pick Count` 機能を有効にできます。これにより、選択プロセスは希望するピック数に達するまで続きます。結果は 100 個のアイテムになりますが、有効な 2 つのアイテムの確率はそれぞれ約 50% に近くなります。
+
+<Note>
+    **「Maintain Pick Count」機能の有効化：**
+
+    - ドロワーの **PICK** セクションを開き、ピック数設定のすぐ下にある Maintain Pick Count ボタンをオンに切り替えます。
+    - あるいは、コードで `MaintainPickCountIfDisabled` を true に設定することもできます。
+    
+    *このオプションは各 Probability List ごとに個別に設定されることに注意してください。*
+</Note>
+
+### Depletable Lists でのピック数
+
+標準的な Probability Lists ではピック数の維持は簡単です。アイテムは常に利用可能だからです。ただし、**Depletable Lists** では、消耗によりアイテムが利用不可能になる場合があります。このような状況では、意図したピック数の維持は、リスト内に少なくとも1つの非消耗型（無限型）アイテムがある場合にのみ可能です。
+
+Depletable Lists の機能とゲームダイナミクスへの影響について詳しくは、
+<a href={DepletableListsPage.Link}>こちらのページ</a>をご覧ください。
+
+### ピックの成功判定
+
+無効化されたアイテムを含むリストから複数の値を選択する場合、結果の `List<T>` には正常に選択された値のみが含まれるため、管理は比較的簡単です。
+
+```csharp {{ title: 'Selecting multiple values from a list with disabled items'}}
+public ProbabilityList<string> myProbabilityList;
+
+myProbabilityList.AddItem("Enabled Item 1", .33f);
+myProbabilityList.AddItem("Enabled Item 2", .33f);
+myProbabilityList.AddItem("Disabled Item", .33f, enabled: false);
+myProbabilityList.NormalizeProbabilities();
+
+// This will return a List<string> with about 66 values
+var results = myProbabilityList.PickValues(100);
+
+// This will return a List<string> with 100 values
+myProbabilityList.MaintainPickCountIfDisabled = true;
+var results = myProbabilityList.PickValues(100);
+```
+
+ただし、`.PickValue()` のような単一の値を返すメソッドを使用する場合、結果は ProbabilityList が保持する `Type` に依存する場合があります。これは、`.PickValue()` が何らかの値を返さなければならないためです。`参照型` の ProbabilityList から無効化されたアイテムが選ばれた場合、結果は `null` になり、null チェックでピックの成功を判定できます。
+
+一方、`値型` を使用している場合、選択が失敗した結果はその型の `default` 値になります。場合によっては、失敗した選択から返された値が本物と区別できないことがあります。例えば、`string`、`boolean`、`int` などの値型では、それぞれ空の文字列、`false`、または `0` が返されます。
+
+単一の値のピックの成功を判定する必要がある場合は、`.TryPickValue(out T value)` を使用できます。
+
+```csharp {{ title: 'Selecting a single value from a list with disabled items'}}
+if(myProbabilityList.TryPickValue(out var selectedValue))
+{
+    // do something with selectedValue
+}
+
+// Alternatively, you can also force the selection to pick an enabled item
+myProbabilityList.MaintainPickCountIfDisabled = true;
+var result = myProbabilityList.PickValue();
+```
+
+アイテムの無効化は、モジュラーな選択に柔軟性をもたらす強力なデザイン上の選択肢でもあります。モジュラーで保守しやすい選択システムの作り方のアイデアについては、
+<a href={SamplesTreasureChestPage.Link}>{SamplesTreasureChestPage.Title}</a> サンプルをぜひご覧ください。
+
+### 無効化されたアイテムとピック数の維持に関するエッジケース
+
+無効化されたアイテムを扱う際に留意すべき2つの状況があります。
+
+1. **リスト内に有効なアイテムが1つだけの場合** - リスト内に有効なアイテムが1つだけで、Maintain Pick Counts が有効になっている場合、選択プロセスはスキップされ、同じ値を持つアイテムの手動作成リストが返されます。
+
+2. **有効確率が非常に小さい場合** - リスト内のすべての有効なアイテムが非常に小さい確率（たとえば 0.0001%）を持つ場合、Maintain Pick Count は事実上、ピック数に達するまで選択プロセスを続行するよう命令します。
+これにより、選択プロセスが非常に長くなったり、ハングしたり（プロセスが終了しない）する可能性があります。RNGNeeds は有効確率の合計と選択すべきアイテム数に基づいて係数を計算します。
+しきい値に達すると、選択はスキップされ、値は返されません。このような場合、コンソールにこのエッジケースを通知する警告が表示されます。
+
+---

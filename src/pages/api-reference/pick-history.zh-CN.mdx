@@ -1,0 +1,83 @@
+import { HeroPattern } from '@/components/HeroPattern'
+
+export const translationStatus = 'auto'
+
+export const description =
+  'PickHistory 的参考文档——这是 ProbabilityList<T> 用于存储和公开最近抽取记录的辅助类型。'
+
+<HeroPattern />
+
+# PickHistory
+
+`PickHistory` 存储 `ProbabilityList<T>` 所做的最近抽取记录。它是列表本身上 `LastPickedIndex`、`LastPickedValues` 等便捷属性以及其他历史相关 API 背后的小型辅助类型。{{ className: 'lead' }}
+
+每条历史记录包含：
+
+- 被抽取条目的索引
+- 抽取发生的时间
+
+---
+
+## 核心成员
+
+<MemberGroup title="History access" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="History" signature="List<HistoryEntry>">
+    历史条目的底层列表。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Capacity" signature="int">
+    最多保留的条目数量。最小值为 1。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LatestIndex" signature="int">
+    最近一次抽取的条目索引；若历史记录为空，则返回 <code>-1</code>。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LatestEntry" signature="HistoryEntry">
+    最近的历史条目；若历史记录为空，则返回 <code>null</code>。
+  </Member>
+</MemberGroup>
+
+---
+
+## 检索辅助方法
+
+<MemberGroup title="Retrieval methods" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="GetLatestEntries" signature="List<HistoryEntry> GetLatestEntries(int count)">
+    返回一个包含最新历史条目的共享列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestEntries" signature="void GetLatestEntries(List<HistoryEntry> list, int count)">
+    将最新条目填充到你自己的列表中。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestPicks" signature="List<int> GetLatestPicks(int count)">
+    返回一个包含最新被抽取条目索引的共享列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLatestPicks" signature="void GetLatestPicks(List<int> list, int count)">
+    将最新被抽取的索引填充到你自己的列表中。
+  </Member>
+</MemberGroup>
+
+---
+
+## 修改辅助方法
+
+<MemberGroup title="Mutation methods" tone="amber">
+  <Member kind="METHOD" color="emerald" name="ClearHistory" signature="void ClearHistory()">
+    移除所有历史条目并将其归还到对象池。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddEntry" signature="void AddEntry(int index)">
+    向历史记录中添加一个被抽取的索引。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddEntries" signature="void AddEntries(NativeList<int> picks)">
+    一次性将多个抽取结果添加到历史记录中。
+  </Member>
+</MemberGroup>
+
+---
+
+<Note>
+  <p><strong>部分检索辅助方法返回共享列表。</strong></p>
+  <p>这样可以避免额外的内存分配。如果你需要稳定的副本，请传入你自己的列表并填充它。</p>
+</Note>
+
+<Note>
+  <p><strong>历史条目使用对象池管理。</strong></p>
+  <p>RNGNeeds 复用 <code>HistoryEntry</code> 对象以减少垃圾回收压力。如有需要，你可以通过 <code>RNGNeedsCore.WarmupHistoryEntries(...)</code> 预热对象池。</p>
+</Note>

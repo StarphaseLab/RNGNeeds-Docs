@@ -1,0 +1,247 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {CustomizingListsPage, PreferencesPage, ProbabilityInfluencePage} from "@/components/PageLinks";
+import probabilityInfluenceEnabling from '@/images/screenshots/probability-influence-enabling.png';
+import probabilityInfluenceQuickSetupGuide from '@/images/screenshots/probability-influence-quick-setup-guide.gif';
+import probabilityInfluenceCodeGuideWeaponComponentSetup from '@/images/screenshots/probability-influence-code-guide-weapon-component-setup.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeedsのProbability Influenceガイドで、ゲームの確率を動的に調整する方法をマスターしましょう。リアルタイムでゲームプレイ体験をカスタマイズするための複数の戦略をご紹介します。'
+
+<HeroPattern />
+
+# Probability Influence ガイド
+
+このガイド集は、動的確率の概念を活用することを目的としています。この概念についてさらに詳しく知るには、ドキュメントの
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> ページをご覧ください。 {{ className: 'lead' }}
+
+<Note>
+    このページで取り上げてほしいユースケースをお持ちですか？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord コミュニティに参加して</a>、ご意見をお聞かせください。
+</Note>
+
+---
+
+## クイックセットアップガイド
+
+動的確率を素早く始めるために、`ProbabilityList<bool>` を例として使ってみましょう。まずスクリプト内でリストを宣言します：
+
+```csharp
+public ProbabilityList<bool> hackingSuccess;
+```
+
+次に、**True** と **False** の2つのアイテムを追加し、True の確率を40%に設定します。
+これがハッキングの試みに成功するプレイヤーの基本確率となります。
+
+動的確率の設定は、初心者向けにインターフェースをシンプルに保つためデフォルトで非表示になっています。では、これらの設定を有効にしてみましょう。
+
+### Influence オプションの有効化
+
+Probability Influence は Advanced Features の中に含まれており、デフォルトでは表示されません。この機能にアクセスするには、以下の手順に従ってください：
+
+1. **Advanced Drawer Options Level を有効にする**：
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a>
+ウィンドウを開き、Drawer Options Level を **Advanced** に切り替えます。このグローバル設定を有効にすると、すべての Probability List Inspector で高度な機能が表示されるようになります。
+
+2. **Additional Drawer Options にアクセスする**：Probability List Inspector の左上隅にある RNGNeeds のシンボルをクリックして、
+<a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a> を開きます。
+
+3. **Influence Display を有効にする**：**Show Influence Toggle** ボタンをオンに切り替えます。これにより、リストアイテム内の確率プレビューバーの横に **link** ボタンが表示されます。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceEnabling} alt="Enabling Probability Influence Options" width="1000"/>
+
+4. **Influence Provider を割り当てる**：link ボタンをクリックすると、各アイテムの Influence オプションを展開または折りたたむことができ、オブジェクトフィールドが表示されます。ここに Influence Provider オブジェクトをドラッグ＆ドロップすることで、外部要因に基づいてアイテムの確率を動的に調整できます。
+
+### Influence Provider の作成
+
+ゲーム内で起きていることに基づいてアイテムのチャンスを調整するものが必要です。プレイヤーのステータスを追跡する `ScriptableObject` を作成しましょう。
+このオブジェクトが Influence の提供者として機能します。
+
+プレイヤーステータスのマネージャーを作成するシンプルな方法は以下の通りです：
+
+```csharp {{ title: 'Simple Player Manager'}}
+using RNGNeeds;
+using StarphaseTools.Core;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "Player Manager", menuName = "RNGNeeds/Probability Influence Guides/Player Manager")]
+public class PlayerManager : ScriptableObject, IProbabilityInfluenceProvider
+{
+    [Range(1, 30)]
+    public int hackingSkillLevel;
+
+    public float ProbabilityInfluence => ((float)hackingSkillLevel).Remap(1, 30, -1, 1);
+    public string InfluenceInfo => $"Increase by Hacking Skill Level\nCurrent: {hackingSkillLevel} LVL = {ProbabilityInfluence:F2} Influence";
+}
+```
+
+Player Manager は `IProbabilityInfluenceProvider` インターフェースを実装しており、2つの重要なプロパティがあります：
+
+- `float ProbabilityInfluence` — このプロパティが Probability List に Influence を提供します。ここでは、ハッキングスキルレベルを `1〜30` のスケールから `-1〜1` の範囲に変換しています。
+- `string InfluenceInfo` — このプロパティはロジックと現在の値をゲームデザイナーに説明します。この情報は、プロバイダーがアイテムにリンクされると Inspector に表示されます。
+
+Player Manager ScriptableObject を作成したら、True アイテムの **Influence Provider Object Field** にドラッグするだけです。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceQuickSetupGuide} alt="Probability Influence - Quick Setup Guide" width="1000"/>
+
+プロバイダーをアイテムに割り当てると、元の確率プレビューバーが調整可能なハンドル付きの新しいスライダーに置き換わります。
+これらのハンドルで **Spread** を設定できます — プレイヤーのスキルがハッキング成功率にどれだけ影響するかの上限と下限、つまり Influence の影響度を制御します。
+
+Spread を設定して、**最大のネガティブ Influence** で成功率が25%まで下がり、**最大のポジティブ Influence** で50%まで上がるようにしました。
+
+プレイヤーのハッキング試行の結果を判定するのは簡単です。`.PickValue()` メソッドを使うだけです。
+
+```csharp
+if(hackingSuccess.PickValue())
+{
+    // Successful system breach
+}
+```
+
+このメソッド呼び出しは、動的に影響された確率に基づいてプレイヤーのハッキング成功を評価し、各試行の結果がプレイヤーの現在のスキルレベルを反映するようにします。
+
+これだけです！プレイヤーがハッキングスキルを上げるにつれて、ゲーム内の進捗を直接反映した成功率の段階的な向上が見られます。
+
+<Note>
+    Influence を適用する原則は、さまざまな創造的なシナリオに拡張できます。例えば、音楽の音量に基づいてモンスターのスポーン率を上げたい場合を想像してみてください — 音楽が大きくなるほどバトルが激しくなるメカニクスです。設定方法は以下の通りです：
+
+    1. スクリプトで <code>public ProbabilityList&lt;bool&gt; shouldSpawnMonster;</code> を宣言し、**True** と **False** を値として追加します。**True** の確率を30%に設定します。
+    2. Audio Manager に `IProbabilityInfluenceProvider` インターフェースを実装します。
+    3. `ProbabilityInfluence` プロパティで音楽音量を Influence の範囲にマッピングします。例えば、`public float ProbabilityInfluence => musicVolume.Remap(.5f, 1f, 0f, 1f);` とすると、音楽音量が50%から100%に増加するにつれて Influence が0から1に調整されます。
+    4. リスト内の **True** 値の Influence Provider として Audio Manager をリンクします。
+    5. 毎秒モンスターのスポーンを試みるメソッドを設定します。基本スポーン率30%では、約3秒ごとにモンスターがスポーンします。しかし、プレイヤーが音楽音量を50%以上に上げると、スポーン率が相応に増加します。
+
+    ```csharp
+    private void Start()
+    {
+        InvokeRepeating(nameof(SpawnMonster), 1f, 1f);
+    }
+
+    public void SpawnMonster()
+    {
+        if (shouldSpawnMonster.PickValue())
+        {
+            // Code to spawn the monster
+        }
+    }
+    ```
+
+    この例は、動的確率を使ってゲーム環境、プレイヤーの行動、またはシステム設定に反応するユニークで魅力的なゲームメカニクスを作成する方法を示しています。
+</Note>
+
+---
+
+## コードでの Probability Influence の使用
+
+このガイドでは、コードを通じて動的確率を実装・管理する方法を探ります。RNGNeeds は、Probability List に対してコーダーとゲームデザイナーの両方が同等のコントロールを持てるようにし、協力的なワークフローを実現します。
+
+ここでは **Weapon MonoBehaviour Component** の作成に焦点を当てます。
+このコンポーネントは、武器の属性に基づくクリティカルストライク確率のロジックを管理するだけでなく、その Probability List の **Influence Provider** としても機能します。
+
+### Weapon Component のセットアップ
+
+まず、`MonoBehaviour` を継承し `IProbabilityInfluenceProvider` インターフェースを実装した **Weapon.cs** スクリプトを作成します。
+
+```csharp {{ title: 'Weapon Component - Fields & Properties' }}
+using RNGNeeds;
+using StarphaseTools.Core;
+using UnityEngine;
+
+public class Weapon : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    [Header("Weapon Setup")]
+    public float damage;
+    public float criticalMultiplier;
+    [Range(0f, 1f)] public float baseCriticalStrikeChance;
+    public Vector2 baseInfluenceSpread;
+    
+    [Header("Weapon Stats")]
+    [Range(0f, 1f)] public float durability = 1f;
+    [Range(0f, 1f)] public float weaponProficiency;
+    public ProbabilityList<bool> criticalStrike;
+
+    private float Effectiveness => weaponProficiency * durability;
+    
+    // Interface Implementation
+    public string InfluenceInfo => $"Effectiveness = Proficiency {weaponProficiency:F4} x Durability {durability:F3}\n=> Current: {Effectiveness:F2} = {ProbabilityInfluence:F2} Influence.";
+    public float ProbabilityInfluence => Effectiveness.Remap(0f, 1f, -1f, 1f);
+}
+```
+
+**Weapon Setup** セクションは、ゲームデザイナーが武器の基本的な特性を定義するために設計されています。
+このコンポーネントを GameObject にアタッチすることで、`damage`、`criticalMultiplier`、そして Influence なしでのクリティカルヒットの確率を表す `baseCriticalStrikeChance` などの基本ステータスを設定できます。
+
+`baseInfluenceSpread` Vector2 の値は、クリティカルストライク確率への Influence の最小値と最大値の範囲を設定し、武器のゲームプレイ目的に合わせた動的確率をカスタマイズします。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceCodeGuideWeaponComponentSetup} alt="Probability Influence - Code Guide - Weapon Component Setup" width="1000"/>
+
+**Weapon Setup** セクションには、武器の `Effectiveness` プロパティに基づいてクリティカルストライクのオッズを調整するためにゲームプレイ中に動的に計算される属性が含まれています。
+この例では、`Effectiveness` は武器の熟練度と耐久度を掛け合わせることで決まります。
+使用によって熟練度が上がる一方、耐久度の低下が Influence のバランス調整要素として機能し、プレイヤーに武器のコンディション維持を促します。
+
+最後に、Interface Implementation の部分で、Effectiveness（0〜1）を `-1〜1` の Influence 範囲にマッピングすることで Influence が決定されます。
+
+### 初期化
+
+次に、Probability List を初期化し、その Influence 設定を構成しましょう。**Weapon** Component に以下の `Start()` メソッドを追加します：
+
+```csharp {{ title: 'Weapon Component - Initialization' }}
+private void Start()
+{
+    criticalStrike.ClearList();
+    var trueItem = criticalStrike.AddItem(true, baseCriticalStrikeChance);
+    var falseItem = criticalStrike.AddItem(false);
+    
+    trueItem.InfluenceProvider = this;
+    trueItem.InfluenceSpread = baseInfluenceSpread;
+    
+    falseItem.InfluenceProvider = this;
+    falseItem.InfluenceSpread = new Vector2(1f - baseInfluenceSpread.y, 1f - baseInfluenceSpread.x);
+    falseItem.InvertInfluence = true;
+}
+```
+
+最初に Probability List をクリアし、**True** と **False** の2つのアイテムを追加します。True アイテムには、ゲームデザイナーが定義した基本クリティカルストライク確率がその確率として設定されます。
+
+続いて、Weapon コンポーネントが **True** アイテムの Influence Provider として指定され、指定された Spread が適用されます。
+
+**False** アイテムには、同じ Influence Provider を割り当てますが Influence を反転させ、Spread もそれに応じて調整します。
+
+<Note>
+    **Influence の反転**の意味とその効果についての詳細は、ドキュメントの
+    <a href={ProbabilityInfluencePage.Link + "#inverting-influence"}>{ProbabilityInfluencePage.Title}</a> ページをご覧ください。
+</Note>
+
+### 攻撃ロジックの追加
+
+最後のステップは、武器のロジックを実装することです。以下のコードで `Attack()` メソッドを作成しましょう：
+
+```csharp {{ title: 'Weapon Component - Attack Logic' }}
+public (float damage, bool critical) Attack()
+{
+    if (criticalStrike.PickValue())
+    {
+        weaponProficiency += 0.001f; // Slightly increase proficiency with each attack
+        durability -= 0.005f; // Decrease durability with each critical hit
+        return (damage * criticalMultiplier, true); // Return increased damage for critical hits
+    }
+
+    weaponProficiency += 0.0001f; // Minimal proficiency increase for normal hits
+    return (damage, false); // Return normal damage for non-critical hits
+}
+```
+
+このメソッドは武器による攻撃をシミュレートし、攻撃がクリティカルかどうかに基づいて武器の **熟練度** と **耐久度** を調整します。
+各攻撃は武器の熟練度をわずかに増加させ、継続的な使用を促します。
+クリティカルヒットはより強力ですが、武器の耐久度も減少させるため、武器の使用に戦略的な側面を加えます。
+
+このメソッドは与えたダメージと攻撃がクリティカルだったかを示すブール値を返し、より広いゲームメカニクスへの統合を容易にします。
+
+---
+
+<Note>
+    このページで取り上げてほしいユースケースをお持ちですか？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord コミュニティに参加して</a>、ご意見をお聞かせください。
+</Note>

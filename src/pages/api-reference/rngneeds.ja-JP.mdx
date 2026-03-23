@@ -1,0 +1,135 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_SeedProvider, API_SelectionMethods, SupportPage } from '@/components/PageLinks'
+
+export const description =
+  'RNGNeedsCore のリファレンスです。選択メソッドの登録、シードプロバイダーの制御、RNGNeeds のグローバルな動作の確認に使用する静的な統合ハブです。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# RNGNeedsCore
+
+`RNGNeedsCore` は、RNGNeeds の静的な統合・拡張エントリーポイントです。選択メソッドの登録、シードプロバイダーの設定、ログ出力など、パッケージ全体の動作をカスタマイズする際に使用します。日常的なリストの作成やアイテムの抽選には、まず <a href="/api-reference/probability-list">ProbabilityList&lt;T&gt;</a> から始めてください。 {{ className: 'lead' }}
+
+## このタイプを使う場面
+
+`RNGNeedsCore` を使用するのは、以下のことを行いたい場合です。
+
+- カスタムの `ISelectionMethod` を登録する
+- 利用可能な選択メソッドの一覧を確認する
+- グローバルシードプロバイダーを差し替える
+- シードプロバイダーをデフォルトの動作に戻す
+- アロケーションに敏感なシナリオ向けに履歴エントリーのプールを事前ウォームアップする
+- デバッグ中に RNGNeeds のログの詳細度を制御する
+
+---
+
+## 選択メソッド
+
+`RNGNeedsCore` のこのセクションでは、選択メソッドの検索・登録・解決について説明します。
+
+<MemberGroup title="Selection method members" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="RegisteredSelectionMethods" signature="List<(string Identifier, string Name)>">
+    現在登録されている選択メソッドを識別子と名前のペアとして返します。実行時に利用可能なメソッドを確認したい場合や、独自のメソッドピッカー UI を構築したい場合に便利です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="DefaultSelectionMethodID" signature="string">
+    有効なメソッドが見つからない場合に使用されるフォールバック選択メソッドの識別子を返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RegisterSelectionMethod" signature="void RegisterSelectionMethod(ISelectionMethod selectionMethod)">
+    カスタム選択メソッドを登録します。メソッドは空でない一意の <code>Identifier</code> を持つ必要があります。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetSelectionMethod" signature="ISelectionMethod GetSelectionMethod(string identifier)">
+    識別子で登録済みの選択メソッドを取得します。識別子が不明な場合、RNGNeeds はデフォルトの選択メソッドにフォールバックします。
+  </Member>
+</MemberGroup>
+
+### `Identifier` が重要な理由
+
+選択メソッドの識別子は、RNGNeeds がメソッドを検索するための安定した文字列キーです。
+
+そのため、以下の場面で重要になります。
+
+- カスタムメソッドを登録するとき
+- `ProbabilityList<T>.SelectionMethodID` が選択されたメソッドを保存するとき
+- シリアライズされたデータが後から正しいメソッドを解決する必要があるとき
+- 識別子が無効または登録が解除されて RNGNeeds がフォールバックするとき
+
+```csharp
+public class MySelectionMethod : SelectionMethodBase
+{
+    public override string Identifier => "MyCustomMethod";
+    public override string Name => "My Custom Method";
+
+    protected override bool SelectItem(out int selectedIndex)
+    {
+        // Your custom selection logic here.
+    }
+}
+
+RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
+```
+
+---
+
+## シードプロバイダー
+
+このセクションでは、RNGNeeds がグローバルレベルで新しいシードを生成する方法を制御します。
+
+<MemberGroup title="Seed provider members" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="NewSeed" signature="uint">
+    現在アクティブなグローバルシードプロバイダーを使用して新しいシードを生成します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetSeedProvider" signature="void SetSeedProvider(ISeedProvider seedProvider)">
+    RNGNeeds が使用するグローバルシードプロバイダーを差し替えます。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetSeedProvider" signature="void ResetSeedProvider()">
+    デフォルトのシードプロバイダーに戻します。
+  </Member>
+</MemberGroup>
+
+決定論的な実行、再現可能なテスト、またはカスタムのゲーム全体のシード戦略が必要な場合は、<a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a> を参照してください。
+
+---
+
+## ログと診断
+
+このセクションでは、デバッグやアロケーションに敏感なシナリオで使用するグローバルなヘルパーについて説明します。
+
+<MemberGroup title="Diagnostics helpers" tone="violet">
+  <Member kind="METHOD" color="emerald" name="SetLogLevel" signature="void SetLogLevel(LogMessageType logMessageLevel)">
+    RNGNeeds のログ出力の詳細度を変更します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetLogAllowColors" signature="void SetLogAllowColors(bool allowColors)">
+    カラーログ出力を有効または無効にします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="WarmupHistoryEntries" signature="void WarmupHistoryEntries(int count)">
+    抽選中の実行時アロケーションを削減するために、プール済みの <code>HistoryEntry</code> インスタンスを事前確保します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 動作に関する注意事項
+
+<Note>
+  <p><strong>フォールバック動作は意図的なものです。</strong></p>
+  <p>要求された選択メソッドの識別子が解決できない場合、<code>GetSelectionMethod(...)</code> は例外をスローする代わりにフォールバックメソッドを返します。これにより、カスタムメソッドが見つからない場合や名前が変更された場合でも、シリアライズされたアセットを引き続き使用できます。</p>
+</Note>
+
+<Note>
+  <p><strong>カスタムメソッドは一意の識別子を使用する必要があります。</strong></p>
+  <p>同じ識別子を持つ 2 番目のメソッドを登録しようとすると、RNGNeeds は警告をログに出力し、既存のものを保持します。</p>
+</Note>
+
+---
+
+## 関連ページ
+
+- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
+- <a href={API_SeedProvider.Link}>{API_SeedProvider.Title}</a>
+
+<Note>
+  <p><strong>サポートやガイダンスが必要ですか？</strong></p>
+  <p>カスタム拡張の設計、アプローチの選択、またはセットアップのトラブルシューティングについてサポートが必要な場合は、<a href={SupportPage.Link}>{SupportPage.Title}</a> ページをご覧いただき、そこから Discord にご参加ください。</p>
+</Note>

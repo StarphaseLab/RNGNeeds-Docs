@@ -1,0 +1,96 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import { SupportPage, SamplesDicePlaygroundPage, SamplesRandomAudioPage, SamplesMonsterSpawnerPage } from "@/components/PageLinks";
+import installingSamplesPackageManager from '@/images/screenshots/installing-samples-manager.png';
+import installingSamplesAssetsFolder from '@/images/screenshots/installing-samples-assets-folder.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import {Note} from "@/components/mdx";
+export const description =
+    'Learn how to import and explore RNGNeeds samples in Unity. From dice rolls to loot tables, these examples guide you in leveraging probability distribution in your projects.'
+
+<HeroPattern />
+
+# Samples Overview
+
+RNGNeeds comes with a variety of samples to help you get started and explore the many possibilities of the plugin. 
+These samples range from simple dice rolls to complex loot tables and more. In this section, we'll guide you through the process of importing these samples into your Unity project. {{ className: 'lead' }}
+
+---
+
+## Importing Samples
+
+Since RNGNeeds is distributed as a package, it doesn't appear in the Assets folder but inside the Packages folder. 
+This design keeps your project clean and organized. However, the samples need to be brought in separately. Here's how you can do it:
+
+**Step 1: Open Package Manager**
+
+Navigate to **Window &raquo; Package Manager** in Unity. This will open the Package Manager window, a tool that allows you to manage and install various Unity packages in your project.
+
+<ImageX className="w-full h-auto" src={installingSamplesPackageManager} alt="Package Manager Window" width="1000"/>
+
+**Step 2: Find RNGNeeds**
+
+In the Package Manager window, locate RNGNeeds under the "In Project" section.
+
+**Step 3: Import Samples**
+
+Click on the arrow next to RNGNeeds to expand the details. You'll find an "Import Samples" button. Clicking this button will bring the samples into your project.
+
+**Step 4: Locate Samples in Assets Folder**
+
+Once the samples are imported, you'll find them in the Assets folder of your project. You can now explore and experiment with them as you wish.
+
+<ImageX className="w-full h-auto" src={installingSamplesAssetsFolder} alt="Samples in Assets Folder" width="1000"/>
+
+<Note>
+    **Upgrading Materials**
+
+    When importing Samples into a URP or HDRP project, materials might appear pink and will require conversion. This is because RNGNeeds is distributed using the built-in render pipeline.
+
+    **Upgrading to URP** - Use the *Render Pipeline Converter* following
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/features/rp-converter.html" target="_blank" rel="noopener noreferrer">this guide.</a>
+
+    **Upgrading to HDRP** - Follow the guide provided 
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@16.0/manual/Upgrading-To-HDRP.html" target="_blank" rel="noopener noreferrer">here.</a>
+
+</Note>
+
+---
+
+## Exploring the Samples
+
+The samples provided with RNGNeeds cover various use cases and scenarios. Feel free to dive into the code, tweak settings, and see how everything works. 
+These samples are designed to be both educational and inspirational, giving you a solid foundation to build upon.
+
+Here's a brief overview of some of the samples you'll find:
+
+- <a href={SamplesDicePlaygroundPage.Link}>{SamplesDicePlaygroundPage.Title}</a> - Simulate various dice rolls and combinations.
+- <a href={SamplesRandomAudioPage.Link}>{SamplesRandomAudioPage.Title}</a> - Design character responses with varying probability.
+- <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> - Control the spawning of different monsters based on probabilities.
+- **Treasure Chest** - Create modular loot tables with different rarity levels.
+- **Card Deck Builder** - Manage a deck of cards with draw, shuffle, and other operations.
+
+Feel free to modify these samples and integrate them into your own projects. They're here to help you understand the power and flexibility of RNGNeeds.
+
+Your feedback on these samples is valuable to us! If you have suggestions or ideas for additional examples, please share them with our community.
+
+---
+
+## On the Roadmap: Exciting Samples for Inspiration and Exploration
+
+We're committed to providing hands-on examples to inspire and guide your use of RNGNeeds. 
+These samples are designed to showcase the creative possibilities and practical applications of our plugin in Unity game development. 
+Here's a look at two exciting samples we're working on, with more to come:
+
+- **The Improbable Lab:** An adventure mini-game designed to highlight the principles of RNG in game design. Through this sample, you'll explore how RNGNeeds can be used to create engaging and unpredictable gameplay elements. It's a playful demonstration of how probabilities can shape unique and thrilling gaming experiences.
+
+- **Battlefield of Odds:** Enter a battlefield where probability rules! This action-packed mini-game demonstrates how every aspect of a fight against hordes of monsters can be driven by RNG. Whether it's loot drops, enemy behaviors, or attack outcomes, this sample lets you experience the dynamic and responsive world that RNG can create.
+
+Stay tuned as we continue to develop and release more samples, each offering a unique glimpse into the world of innovative probability distribution within game development. Whether you're just starting out or looking for fresh ideas, our samples are here to spark your creativity and enhance your understanding of what RNGNeeds can do!
+
+**Need Help?**
+
+If you encounter any issues or have questions about the samples, don't hesitate to reach out through our 
+<a href={SupportPage.Link}>{SupportPage.Title}</a> or join our <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord Community</a>. We're here to help!
+
+---

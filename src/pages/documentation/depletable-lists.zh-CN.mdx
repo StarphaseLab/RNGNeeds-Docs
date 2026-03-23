@@ -1,0 +1,211 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import depListsEnable from '@/images/screenshots/dep-lists-enable.png';
+import depListsMixingItems from '@/images/screenshots/dep-lists-mixing-items.png';
+import depListsOldListReset from '@/images/screenshots/dep-lists-old-list-reset.png';
+import depListsPreferences from '@/images/screenshots/dep-lists-preferences.png';
+import depListsActionMenuDropdown from '@/images/screenshots/dep-lists-action-menu-dropdown.png';
+import headerBarInformativePick from '@/images/screenshots/header-bar-options-informative-pick.png';
+import {
+    GuideDepletableList,
+    GuideSelectingDistinctValues,
+    PreferencesPage,
+    SelectingValuesPage,
+    UserInterfacePage
+} from "@/components/PageLinks";
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    '探索 RNGNeeds 中 Depletable List 的强大功能，专为实现有限数量条目的游戏机制而设计。';
+
+<HeroPattern />
+
+# Depletable Lists
+
+Depletable Lists 是一项强大功能，允许条目拥有有限的可用数量。通过为每个条目设置最大单位数和可用单位数，您可以为游戏机制解锁丰富的可能性。Depletable 条目可以以多种方式加以利用，例如确保游戏奖励的唯一选取，或管理同一条目的多个实例，如卡牌牌组或战利品表。{{ className: 'lead' }}
+
+---
+
+## 什么是 Depletable List？
+
+简而言之，Depletable List 可实现**对有限可用数量条目的管理**。
+
+设想这样一个场景：您有一副可能包含同一张牌多个副本的卡牌牌组。在标准 RNGNeeds 用法中，相同的牌需要用多个相同的条目来表示。而使用 Depletable Lists，一张牌只需用一个拥有**多个单位**的条目来表示。
+
+当从该列表中取值（抽牌）时，单位数会随每次取值**逐一消耗**。一旦所有单位用尽，该条目即变为**耗尽**状态，即不再可选。本质上，这张牌看起来已不再存在于牌组中。
+
+另一个常见场景是选取不重复的值，例如从奖励池中抽取唯一的游戏奖励。使用 Depletable Lists，实现这一目标非常简单：只需将列表设为 Depletable，并为每个条目分配一个单位（`1`）即可。
+
+<Note>
+    本页介绍有限条目可用性的基本概念，并提供在 Inspector 和代码中管理单位数的指导。如需实际应用示例，请参阅以下页面：
+    - <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a> - 了解如何使用 Depletable Lists 选取唯一奖励。
+    - <a href={GuideDepletableList.Link}>{GuideDepletableList.Title}</a> - 探索 Depletable Lists 的实际使用示例。
+</Note>
+
+---
+
+## 快速入门
+
+默认情况下，Probability List 创建时为**非耗尽**状态，即可以将其视为拥有*无限单位*。虽然这是 RNGNeeds 的标准行为，但在耗尽和无限之间切换列表状态非常简单。
+
+1. **激活 Advanced Drawer Options Level**：导航至 <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 窗口，将 Drawer Options Level 切换为 **Advanced**。激活此全局设置将在所有 Probability List Inspector 中显示高级功能。
+
+2. 打开 Drawer 的 **PICK** 部分，点击 **Depletable** 按钮以切换其状态。
+
+或者，也可以在代码中启用 Depletable Lists：
+
+```csharp {{ title: 'Enabling Depletable Lists in code'}}
+myDepletableList.IsDepletable = true;
+```
+
+<ImageX className="w-full h-auto" src={depListsEnable} alt="Depletable Lists - Enable" width="1000"/>
+
+将 `ProbabilityList` 设为 **depletable** 后，前提是列表中的条目也被设为 **depletable**，列表才会消耗各条目的单位数。本质上，列表可以混合包含 depletable 和非 depletable 条目，但只有 depletable 条目的单位数会被消耗。
+
+### Depletable Items
+
+虽然列表默认创建为无限状态，但 **Probability Items 初始化时为 depletable 状态**，每个条目的可用单位数和最大单位数均为 `1`。由于这些设置仅在列表本身被标记为 depletable 时才生效，这使得游戏设计师无需调整设置即可轻松切换列表的 depletable 状态。同样，将列表切换为非 depletable 状态也不会影响各条目的 depletable 设置。
+
+此外，由于每个条目的 depletable 状态可以单独设置，因此可以在同一列表中混合使用 depletable 和无限条目，从而在资源管理方式上提供更大的灵活性。
+
+<Note>
+    请注意，在引入 Depletable Lists 功能（版本 0.9.7）之前创建的任何 `ProbabilityItem` 默认为无限状态，其单位数和最大单位数均设为 `0`。这些条目需要手动设置，但 Probability List Drawer 和 API 均提供了便捷方法，可以为列表中的所有条目调整这些属性。
+
+    **在 Inspector 中** - 点击 **Action Menu** 并选择 **Reset**，然后点击 **Execute Action Button**（橙色箭头）。
+
+    <ImageX className="w-full h-auto" src={depListsOldListReset} alt="Depletable Lists - Reset Units in Old list" width="1000"/>
+
+    **在代码中** - 使用 `myDepletableList.SetAllItemsDepletableProperties(true, 1, 1);` 将所有条目设为 depletable，并将可用单位数和最大单位数均设为 1。
+</Note>
+
+要管理 `ProbabilityItem` 的 depletable 状态，您可以使用以下属性：
+- `IsDepletable` - 获取或设置条目是否为 depletable。
+- `IsDepleted` - 如果条目已耗尽，返回 `true`；如果仍有可用单位或为无限状态，则返回 `false`。
+- `IsSelectable` - 确定条目是否可被选取。条目可被选取的条件为：已启用，且为非 depletable（无限），或对于 depletable 条目，至少有一个可用单位。
+
+---
+
+## 单位数与最大单位数
+
+`ProbabilityList` 中的每个条目都可以设置可用单位数和最大单位数，通过 `ProbabilityItem` 类的以下属性进行管理：
+
+- `Units` - 当前可用单位数，即条目可被选取的次数。**每次选取消耗一个单位。**
+- `MaxUnits` - 条目可拥有的最大单位数。此值在**补充**条目或整个列表时使用。
+
+补充条目或整个列表意味着将可用单位数重置为最大值。可以对单个条目或整个列表执行此操作。
+
+此外，`ProbabilityList` 类提供了跟踪列表中条目整体可用性的方法。这些方法仅统计已启用的 depletable 条目的单位数：
+
+- `GetTotalUnits()` - 返回列表中所有可用单位数的总和，表示当前总可用单位数。
+- `GetTotalMaxUnits()` - 返回列表所有最大单位数的总和，代表所有 depletable 条目理论上可达到的最大值。
+
+<ImageX className="w-full h-auto" src={headerBarInformativePick} alt="Header Bar - Informative Pick Section Button" width="1000"/>
+
+在列表为 depletable 的前提下，Total Units 和 Total Max Units 也会显示在 **PICK** 部分按钮的*信息版本*中。有关 Informative Section Buttons 的更多详情，请访问 <a href={UserInterfacePage.Link + "#header-bar"}>{UserInterfacePage.Title}</a> 页面。
+
+### 使用快捷键调整单位数
+
+Probability List Inspector 专为便捷调整单个条目或整个列表的单位数而设计。要调整单个条目的单位数，请**将鼠标指针悬停在单位数值上**，然后使用以下快捷键：
+
+- **鼠标滚轮**：增加或减少单位数。
+- **WASD** 或 **方向键**：增加、减少、补充或耗尽单位数。
+
+此外，您可以在调整单位数时使用修饰键来增强功能：
+- **Shift**：将变化量乘以 `10`（此默认乘数可在 RNGNeeds Preferences 中自定义）。
+- **Control**（macOS 上为 **Command**）：忽略数值对最大值的限制。
+
+这些快捷键可在 RNGNeeds <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title} Window</a> 中自定义。
+
+<ImageX className="w-full h-auto" src={depListsPreferences} alt="Depletable Lists - Preferences" width="1000" />
+
+### 在代码中调整单位数
+
+您也可以通过编程方式调整单个条目或整个列表的单位数。
+
+```csharp {{ title: 'Adjusting Units in Code'}}
+// Set Units of a single item
+var item = myDepletableList.GetProbabilityItem(1);
+item.Units = 15;
+item.MaxUnits = 20;
+
+// Refill a single item
+item.Refill();
+
+// Set all items in the list to have 3 units and 5 max units
+myDepletableList.SetAllItemsUnits(3);
+myDepletableList.SetAllItemsMaxUnits(5);
+
+// Refill all items in the list
+myDepletableList.RefillItems();
+```
+
+---
+
+## 使用操作菜单
+
+**Action Menu** 通过提供一套用于调整所有条目单位数和最大单位数的操作，简化了列表中 depletable 条目的管理。
+
+<ImageX className="w-full h-auto" src={depListsActionMenuDropdown} alt="Depletable Lists - Action Menu Dropdown" width="1000" />
+
+点击 **Action Menu** 将显示以下选项的下拉菜单：
+
+- **Refill Items** - 将所有 depletable 条目的单位数重置为最大值。
+- **Set Depletable** - 将所有条目的 depletable 状态切换为指定设置（默认为 `On`）。
+- **Set Units** - 为所有 depletable 条目分配指定数量的单位数（默认为 `1`）。
+- **Set Max Units** - 为所有 depletable 条目分配指定的最大单位数（默认为 `1`）。
+- **Reset** - 将所有设置重置为 Drawer 的默认配置。
+
+选择操作后，您可以修改其对应的值——depletable 状态的 On/Off，以及单位数和最大单位数的整数值。
+
+<Note>
+    更改这些设置实际上会改变 Drawer 的默认设置。例如，如果您选择 **Set Max Units** 操作并将值调整为 `5`，则 **Reset** 操作随后会将所有条目的最大单位数设为 `5`。
+
+    此功能允许您为每个 Drawer 自定义其管理 depletable 条目的默认设置。
+</Note>
+
+---
+
+## 选择逻辑
+
+Depletable List 的功能与标准 Probability List 类似，但包含一个 depletable 标志。**关键区别**在于管理条目的有限可用性，以及理解其对选择过程的影响。
+
+当一个 depletable 条目被选中时，其单位数递减 `1`，直到达到零。一旦条目的可用单位数降为零，它即被视为**已耗尽**，在单位数被**补充**之前不可再被选取。
+
+这一特性意味着 **depletable 列表的状态可以在选择过程中发生变化。**
+
+相比之下，对于标准（无限）列表，选择过程基于所有条目始终可用的假设运行，这意味着列表的状态在选择前后保持一致。
+
+然而在 depletable 列表中，**某些条目可能在特定选择后变为不可用**，从而改变选中已耗尽条目的可能性，并影响选择过程的动态行为。
+
+### 已耗尽条目与选取数量
+
+已耗尽条目的行为类似于已禁用条目——如果被选中，它们不会被包含在最终结果中。然而，选中已禁用（或已耗尽）条目可能会减少总选取数量。这种方式确保概率分布与预期设计保持一致。
+
+<Note>
+    要了解更多关于已禁用条目的逻辑及其对选择过程的影响，请访问
+    <a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a> 页面。
+</Note>
+
+**Maintain Pick Count** 功能在处理 depletable 列表时特别有用。启用后，只要有足够的总单位数可用，选择过程将尝试维持指定的选取数量。
+
+启用 **Maintain Pick Count** 时需要考虑以下几个要点：
+
+- **标准列表**：始终维持选取数量，因为所有条目都是无限的。
+- **所有条目均为 depletable 的 Depletable List**：只要有足够的总单位数，就能维持选取数量。例如，如果列表总共有 10 个可用单位，选取数量设为 15，则只会选取 10 个条目。一旦所有单位用尽，列表的行为就像所有条目都被禁用一样。
+- **混合条目的 Depletable List**：如果至少有一个条目是无限的，剩余的数量将从这些无限条目中选取。一旦所有 depletable 单位被消耗，列表的功能就像只有无限条目可用一样。
+
+### 混合 Depletable 和无限条目
+
+请考虑以下混合条目的 Depletable List 示例：
+
+- 两个**已启用的无限**条目
+- 两个**已启用的 depletable** 条目
+- 一个**已禁用**条目
+
+选取数量设为 `10`。列表中的总可用单位数为 `2`，每个 depletable 条目各一个。测试这些设置很可能会消耗两个可用单位，而无限条目将为剩余的选择提供无限可用性。
+
+<ImageX className="w-full h-auto" src={depListsMixingItems} alt="Depletable Lists - Mixing Items" width="1000"/>
+
+关键要点是：一旦 depletable 条目用尽，选择过程将仅使用无限条目继续进行，实际上忽略了所有**已禁用**或**已耗尽**的条目。
+
+---

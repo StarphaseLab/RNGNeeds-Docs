@@ -1,0 +1,207 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import drawerButtonsInfo from '@/images/screenshots/drawer-buttons-info.png';
+import drawerButtonsBars from '@/images/screenshots/drawer-buttons-bars.png';
+import drawerButtonsTheme from '@/images/screenshots/drawer-buttons-theme.png';
+import drawerButtonsThemeMonochrome from '@/images/screenshots/drawer-buttons-theme-monochrome.png';
+import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
+import providerInterfacesNoProvider from '@/images/screenshots/provider-interfaces-no-provider.png';
+import providerInterfacesInfoProvider from '@/images/screenshots/provider-interfaces-info-provider.png';
+import providerInterfacesInfoProviderAlt from '@/images/screenshots/provider-interfaces-info-provider-alt.png';
+import providerInterfacesColorProvider from '@/images/screenshots/provider-interfaces-color-provider.png';
+import {PreferencesPage} from "@/components/PageLinks";
+import {ImageX} from "@/components/ImageX";
+export const description =
+    'RNGNeeds で Probability List の外観と機能をカスタマイズする方法を探ります。直感的なカラーパレットからプロバイダーインターフェースまで、高度なカスタマイズオプションを活用し、Unity Inspector を改善してスムーズなゲームデザイン体験を実現しましょう。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# リストのカスタマイズ
+
+ゲーム開発者として、Unity の Inspector に長時間向き合うことはよくあることです。
+それを踏まえ、RNGNeeds の Probability List 専用ドロワーは、直感的で機能豊富になるよう丁寧に設計されており、ワークフローを向上させるための豊富なカスタマイズオプションを提供しています。 {{ className: 'lead' }}
+
+---
+
+## 外観とカラー
+
+ドロワーは表示情報とカラースキームの両方に対して多彩なカスタマイズオプションを提供しており、すべてのデザイナーに合わせたエクスペリエンスを実現します。
+
+### ストライプ
+
+ドロワーの際立った機能の一つが **Stripe**（ストライプ）です。この視覚的要素は確率を直感的に表す色付きブロックで構成されています。**STRIPE** ボタンをクリックしてアクセスできる Stripe Options サブメニューからストライプの高さを調整できます。また、これらのブロックには追加のアイテム情報を表示できます。ドロワーの左側にある3つのボタンで切り替えが可能です。
+
+<ImageX className="w-full h-auto" src={drawerButtonsInfo} alt="Drawer Buttons - Info" width="1000"/>
+
+<Note>
+    ストライプ上の狭いブロックでは情報が非表示になる場合があります。ただし、マウスオーバーハイライトにより、リストアイテムとそのストライプ表現の視覚的なリンクは維持されます。ブロックまたはアイテムにカーソルを合わせると、両方がハイライト表示されます。
+</Note>
+
+### プレビューバー
+
+リスト内の各アイテム行には **Preview Bar**（プレビューバー）が表示されます。これは確率を比例した水平バーとして視覚的に表現するものです。この可視化により、確率の分布を別の視点から確認できます。ドロワーヘッダーの次の3つのボタンでさらなるカスタマイズオプションが提供されます。
+
+<ImageX className="w-full h-auto" src={drawerButtonsBars} alt="Drawer Buttons - Bars" width="1000"/>
+
+- **Color Dimming** - デフォルトでは、個々の色は確率に応じて暗くなり、確率が高いアイテムほど明るく表示されます。この機能はオン・オフを切り替えることができます。
+- **Colorize Preview Bars** - プレビューバーの色付けを切り替えます。オフにすると、バーはニュートラルな色合いになります。
+- **Normalize Preview Bars** - 最も確率が高いアイテムのバーが全体の長さいっぱいになるようにバーを伸ばし、他のバーも比例して調整します。
+
+### カラーパレット
+
+デザイナーが何百ものオブジェクトを管理することもあるため、カラーパレットは様々なオブジェクトタイプを分類・色分けするための整理ツールとして機能します。カスタムパレットは設定ウィンドウでも作成できます。異なるカテゴリに整理された多数のパレットから選択できます。
+
+特定のドロワーのパレットを選択するには、**THEME** ボタンをクリックし、ドロップダウンからお好みのパレットを選択してください。
+
+<ImageX className="w-full h-auto" src={drawerButtonsTheme} alt="Drawer Buttons - Theme" width="1000"/>
+
+パレットカテゴリ：
+
+- **DimeTone** - 10色の異なるカラーを備え、多数のアイテムを簡単に区別するのに最適です。
+- **Gradients** - 値の増減に適しています。
+- **Duality** - 二値（例：true/false）や四値システム（例：north, east, south, west）に最適です。
+- **Item Rarity** - 有名ゲームの人気レアリティカラースキームを取り入れています。
+- その他多数のテーマパレット。
+
+パレットドロップダウンの最後にある **Monochrome** オプションは特に注目に値します。デフォルトカラーは設定ウィンドウで設定できますが、各ドロワーに固有のモノクロシェードを持たせることができます。Color Dimming と組み合わせると、モノクロパレットは微妙な違いを効果的に強調できます。
+
+<ImageX className="w-full h-auto" src={drawerButtonsThemeMonochrome} alt="Drawer Buttons - Theme Monochrome" width="1000"/>
+
+---
+
+## 追加のドロワーオプション
+
+ドロワーの Additional Options サブメニューで、さらなるカスタマイズに踏み込みましょう。ドロワーの左上にある RNGNeeds シンボルをクリックしてアクセスできます。
+
+<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
+
+<Note>
+    デフォルトでは、ドロワーは基本的なオプションのみを表示します。
+    スクリーンショットに表示されているオプションの一部が見つからない場合は、<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> ウィンドウで Drawer Options Level を Advanced に切り替えてください。
+</Note>
+
+### 基本ドロワーオプション
+
+- **Reset Probabilities**：リスト内のすべてのロックされていないアイテムの確率を均等にします。
+- **Reset Settings to Default**：ドロワーの設定を Preferences で設定されたデフォルト値に戻します。
+- **Get New Drawer ID**：ドロワー設定を共有する可能性があるオブジェクトを複製する際に便利です。このアクションにより、現在のドロワーが一意で独立した設定を持つことが保証されます。
+- **Set as Default Settings (!)**：現在のドロワーの設定を Preferences のデフォルトとして設定します。新しいドロワーはこれらのデフォルトを継承しますが、以前に初期化されたドロワーは変更されません。
+
+### 高度なドロワーオプション
+
+- **Stripe % Digits**：ストライプに表示される桁数を調整します。
+- **Item % Digits**：リスト内の個々のアイテムに表示される桁数を設定します。
+- **Test % Digits**：テスト結果の桁数を決定します。
+- **Test Color Bias**：テスト結果の色付けの強度を変更します。
+- **Item Utility Space**：アイテムデータと値に予約されるリスト要素の幅を指定します。
+
+### Probability Influence 使用時のオプション
+
+- **Spread % Digits**：Influence Spread に表示される桁数を設定します。
+- **Spread Color Bias**：Spread の色付けの強度を調整します。
+- **Show Spread on Bars**：プレビューバーを分割して Spread を視覚的に表現します。
+
+---
+
+## 高度なカスタマイズ
+
+シンプルなコーディングに抵抗がない方のために、RNGNeeds はカスタマイズの領域をさらに広げています。Provider Interface を通じて、ユーザーはオブジェクトや参照値がカスタマイズされた情報やカラーを Probability List に提供できるようになります。
+
+### Probability Item Info Provider
+
+`IProbabilityItemInfoProvider` インターフェースを使用すると、Probability Item にカスタム情報を提供できます。この情報は、ストライプ上のそれぞれの色付きブロック内に表示されます。これは、型名のみが表示されるカスタムシリアライザブル型を扱う際に特に便利です。
+
+<ImageX className="w-full h-auto" src={providerInterfacesNoProvider} alt="Provider Interfaces - No Provider" width="1000"/>
+
+以下は、インターフェースの実装方法を示すコードスニペットです：
+
+```csharp {{ title: 'Implementing IProbabilityItemInfoProvider interface'}}
+[Serializable]
+public class MyCustomType : IProbabilityItemInfoProvider
+{
+    public string ItemInfo => customInfo;
+
+    public string customInfo;
+    public Vector3 somePosition;
+    public bool someBool;
+}
+```
+
+インターフェースを実装することで、`string customInfo` をインターフェースプロパティ `string ItemInfo` に連携させることができます。これにより、Probability List ドロワーが希望する情報を表示し、ユーザーがカスタム型のインスタンスを簡単に識別できるようになります。
+
+<ImageX className="w-full h-auto" src={providerInterfacesInfoProvider} alt="Provider Interfaces - Info Provider" width="1000"/>
+
+もちろん、カスタム情報の背後にあるロジックは完全にユーザー次第です。以下の例では、`customInfo` フィールドを省略し、代わりに `Vector3 somePosition` をインターフェースプロパティに中継しています。
+
+```csharp {{ title: 'Alternative Implementation'}}
+[Serializable]
+public class MyCustomType : IProbabilityItemInfoProvider
+{
+    public string ItemInfo => somePosition.ToString();
+
+    public Vector3 somePosition;
+    public bool someBool;
+}
+```
+
+この設定により、ドロワーは `Vector3` の文字列出力のみを表示します。
+
+<ImageX className="w-full h-auto" src={providerInterfacesInfoProviderAlt} alt="Provider Interfaces - Info Provider Alt" width="1000"/>
+
+<Note>
+    `MonoBehaviour` や `ScriptableObject` を扱う場合も同じ原則が適用されます。Provider Interface はあらゆる参照型に統合できます。Unity のオブジェクトを使用する場合の唯一の違いは、リストアイテムがオブジェクト参照フィールドを表示し、カスタム情報はストライプ上に表示されることです。
+</Note>
+
+---
+
+### Probability Item Color Provider
+
+`IProbabilityItemColorProvider` インターフェースを使用すると、Probability List にカスタムカラーを適用でき、アイテムの視覚的表現をさらに細かく制御できます。これは、特定のアイテムを目立たせたい場合や、特定のカラーコーディングが必要なテーマで作業している場合に特に便利です。
+
+以下は、**Treasure Chest** サンプルから取得した例です。ここでは、`ItemRarity` ScriptableObject が両方の Provider Interface を実装しています。
+
+```csharp {{ title: 'Implementing IProbabilityItemColorProvider interface'}}
+[CreateAssetMenu(fileName = "New Item Rarity", menuName = "RNGNeeds/Treasure Chest/Item Rarity")]
+public class ItemRarity : ScriptableObject, IProbabilityItemColorProvider, IProbabilityItemInfoProvider
+{
+    public string title;
+    public Color rarityColor;
+    public Color ItemColor => rarityColor;
+    public string ItemInfo => title;
+}
+```
+
+インターフェースを実装することで、`customColor` フィールドがインターフェースプロパティ `Color ItemColor` に反映されます。
+これにより、Probability List ドロワーは指定したカラーでアイテムを表示し、異なるタイプやカテゴリを視覚的に簡単に識別できるようになります。
+以下のスクリーンショットでは、ドロワーは Monochrome テーマを使用していますが、指定されたアイテムレアリティが固有のカラーを導入しています。Color Provider は任意のパレットと組み合わせることができます。
+
+<ImageX className="w-full h-auto" src={providerInterfacesColorProvider} alt="Provider Interfaces - Color Provider" width="1000"/>
+
+`IProbabilityItemInfoProvider` と同様に、カスタムカラーの背後にあるロジックは完全にユーザー次第です。たとえば、特定の条件や属性に基づいてアイテムを色分けしたい場合があるかもしれません。
+また、カラープロバイダーを活用してアイテムレアリティカラーを簡単に区別する **Deck Builder** および **Treasure Chest** サンプルもぜひご覧ください。
+
+<Note>
+    Info および Color の Provider Interface は、RNGNeeds の Editor 機能を補完するために設計されています。ランタイムでも有益に活用できますが、ランタイムでの情報が不要な場合は、
+    ビルドから除外することができます。
+</Note>
+
+```csharp {{ title: 'Excluding Provider Interfaces from Build'}}
+public class MyComponent : MonoBehaviour
+    #if UNITY_EDITOR
+    , IProbabilityItemColorProvider, IProbabilityItemInfoProvider
+    #endif
+{
+    #if UNITY_EDITOR
+    public Color ItemColor => customColor;
+    public string ItemInfo => customInfo;
+
+    public string customInfo;
+    public Color customColor;
+    #endif
+    
+    // runtime relevant code
+}
+```
+
+---

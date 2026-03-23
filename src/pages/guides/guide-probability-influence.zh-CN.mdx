@@ -1,0 +1,247 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {CustomizingListsPage, PreferencesPage, ProbabilityInfluencePage} from "@/components/PageLinks";
+import probabilityInfluenceEnabling from '@/images/screenshots/probability-influence-enabling.png';
+import probabilityInfluenceQuickSetupGuide from '@/images/screenshots/probability-influence-quick-setup-guide.gif';
+import probabilityInfluenceCodeGuideWeaponComponentSetup from '@/images/screenshots/probability-influence-code-guide-weapon-component-setup.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    '深入了解 RNGNeeds 的概率影响指南，掌握游戏概率的动态调整方法。探索多种策略，实时定制游戏体验。'
+
+<HeroPattern />
+
+# 概率影响指南
+
+本系列指南专注于动态概率概念的应用。若要深入了解该概念，请访问文档中的
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> 页面。 {{ className: 'lead' }}
+
+<Note>
+    您有希望我们在本页面探讨的使用场景吗？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">加入我们的 Discord 社区</a>，分享您的想法。
+</Note>
+
+---
+
+## 快速设置指南
+
+为了快速上手动态概率，我们以 `ProbabilityList<bool>` 为例。在您的脚本中声明该列表：
+
+```csharp
+public ProbabilityList<bool> hackingSuccess;
+```
+
+然后，添加两个条目：**True** 和 **False**，并将 True 值的概率设置为 40%。
+这将作为玩家成功执行黑客攻击的基础概率。
+
+动态概率设置默认隐藏，以保持界面对新手的简洁性。现在，我们来启用这些设置。
+
+### 启用影响选项
+
+概率影响嵌套于高级功能中，默认不可见。请按照以下步骤访问这些功能：
+
+1. **激活高级抽屉选项级别**：导航至
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a>
+窗口，将 Drawer Options Level 切换为 **Advanced**。激活此全局设置后，所有 Probability List Inspector 中的高级功能将被显示。
+
+2. **访问额外的抽屉选项**：点击 Probability List Inspector 左上角的 RNGNeeds 图标，展开
+<a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>。
+
+3. **启用影响显示**：切换 **Show Influence Toggle** 按钮至开启状态。此操作将在列表条目的概率预览条旁边添加一个 **link** 按钮。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceEnabling} alt="Enabling Probability Influence Options" width="1000"/>
+
+4. **分配影响提供者**：点击 link 按钮可展开或折叠每个条目的影响选项，其中包含一个对象字段。您可以将影响提供者对象拖放至此处，以开始根据外部因素动态调整条目概率。
+
+### 创建影响提供者
+
+我们需要一个能根据游戏中发生的事件来调整条目概率的对象。让我们创建一个 `ScriptableObject` 来追踪玩家的属性。
+该对象将作为影响的提供者。
+
+以下是创建玩家属性管理器的简单方法：
+
+```csharp {{ title: 'Simple Player Manager'}}
+using RNGNeeds;
+using StarphaseTools.Core;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "Player Manager", menuName = "RNGNeeds/Probability Influence Guides/Player Manager")]
+public class PlayerManager : ScriptableObject, IProbabilityInfluenceProvider
+{
+    [Range(1, 30)]
+    public int hackingSkillLevel;
+
+    public float ProbabilityInfluence => ((float)hackingSkillLevel).Remap(1, 30, -1, 1);
+    public string InfluenceInfo => $"Increase by Hacking Skill Level\nCurrent: {hackingSkillLevel} LVL = {ProbabilityInfluence:F2} Influence";
+}
+```
+
+Player Manager 实现了 `IProbabilityInfluenceProvider` 接口，包含两个关键属性：
+
+- `float ProbabilityInfluence` — 此属性为 Probability List 提供影响值。这里，我们将黑客技能等级从 `1 到 30` 的范围映射至 `-1 到 1`。
+- `string InfluenceInfo` — 此属性向游戏设计师说明逻辑及当前数值。将提供者关联至条目后，该信息将显示在 Inspector 中。
+
+创建 Player Manager Scriptable Object 后，只需将其拖入 True 条目的 **Influence Provider Object Field** 即可。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceQuickSetupGuide} alt="Probability Influence - Quick Setup Guide" width="1000"/>
+
+将提供者分配给条目后，您会注意到原来的概率预览条被一个带有可调节手柄的新滑块取代。
+这些手柄用于设置 **Spread**，即玩家技能对黑客攻击成功率影响的范围上下限，从而控制影响的作用程度。
+
+我们已配置好 Spread，确保**最大负向影响**将成功率降至 25%，而**最大正向影响**将其提升至 50%。
+
+现在，确定玩家黑客攻击结果非常简单，只需使用 `.PickValue()` 方法即可。
+
+```csharp
+if(hackingSuccess.PickValue())
+{
+    // Successful system breach
+}
+```
+
+此方法调用会根据动态影响后的概率评估玩家的黑客攻击结果，使每次尝试的结果都能反映玩家当前的技能水平。
+
+就是这些！随着玩家不断提升黑客技能，您将看到其成功率逐步提高，直接体现玩家在游戏中的成长。
+
+<Note>
+    应用影响的原则可以扩展到各种创意场景。例如，假设您希望根据音乐音量来提高怪物的刷新率——一种音乐越响、战斗越激烈的机制。以下是设置方法：
+
+    1. 在脚本中声明 <code>public ProbabilityList&lt;bool&gt; shouldSpawnMonster;</code>，并添加 **True** 和 **False** 作为值，将 **True** 的概率设置为 30%。
+    2. 让您的 Audio Manager 实现 `IProbabilityInfluenceProvider` 接口。
+    3. 使用 `ProbabilityInfluence` 属性将音乐音量映射到影响范围。例如，`public float ProbabilityInfluence => musicVolume.Remap(.5f, 1f, 0f, 1f);` 将在音乐音量从 50% 增加到 100% 时，将影响从 0 调整至 1。
+    4. 将 Audio Manager 链接为列表中 **True** 值的影响提供者。
+    5. 设置一个每秒尝试刷新怪物的方法。基础刷新概率为 30%，预计大约每三秒刷新一只怪物。然而，当玩家将音乐音量调高至 50% 以上时，刷新率将相应增加。
+
+    ```csharp
+    private void Start()
+    {
+        InvokeRepeating(nameof(SpawnMonster), 1f, 1f);
+    }
+
+    public void SpawnMonster()
+    {
+        if (shouldSpawnMonster.PickValue())
+        {
+            // Code to spawn the monster
+        }
+    }
+    ```
+
+    此示例说明了如何利用动态概率创造能响应游戏环境、玩家行为乃至系统设置的独特而引人入胜的游戏机制。
+</Note>
+
+---
+
+## 在代码中使用概率影响
+
+在本指南中，我们将探讨如何通过代码实现和管理动态概率。RNGNeeds 为编程人员和游戏设计师提供了对 Probability List 同等程度的控制，确保协作工作流程顺畅。
+
+我们将重点创建一个**武器 MonoBehaviour 组件**。
+该组件不仅负责管理基于武器属性的暴击概率逻辑，还将作为其 Probability List 的**影响提供者**。
+
+### 设置武器组件
+
+首先创建一个 **Weapon.cs** 脚本，使其继承 `MonoBehaviour` 并实现 `IProbabilityInfluenceProvider` 接口。
+
+```csharp {{ title: 'Weapon Component - Fields & Properties' }}
+using RNGNeeds;
+using StarphaseTools.Core;
+using UnityEngine;
+
+public class Weapon : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    [Header("Weapon Setup")]
+    public float damage;
+    public float criticalMultiplier;
+    [Range(0f, 1f)] public float baseCriticalStrikeChance;
+    public Vector2 baseInfluenceSpread;
+    
+    [Header("Weapon Stats")]
+    [Range(0f, 1f)] public float durability = 1f;
+    [Range(0f, 1f)] public float weaponProficiency;
+    public ProbabilityList<bool> criticalStrike;
+
+    private float Effectiveness => weaponProficiency * durability;
+    
+    // Interface Implementation
+    public string InfluenceInfo => $"Effectiveness = Proficiency {weaponProficiency:F4} x Durability {durability:F3}\n=> Current: {Effectiveness:F2} = {ProbabilityInfluence:F2} Influence.";
+    public float ProbabilityInfluence => Effectiveness.Remap(0f, 1f, -1f, 1f);
+}
+```
+
+**Weapon Setup** 部分供游戏设计师定义武器的基本特性。
+将此组件挂载到 GameObject 后，设计师可以配置 `damage`、`criticalMultiplier` 以及 `baseCriticalStrikeChance`（即无任何影响时的暴击概率）等基本属性。
+
+`baseInfluenceSpread` 的 Vector2 值设置了暴击概率的最小和最大影响范围，用于自定义适合武器游戏用途的动态概率。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceCodeGuideWeaponComponentSetup} alt="Probability Influence - Code Guide - Weapon Component Setup" width="1000"/>
+
+**Weapon Stats** 部分包含在游戏过程中动态计算的属性，用于根据武器的 `Effectiveness` 属性调整暴击概率。
+在本示例中，`Effectiveness` 由武器熟练度乘以耐久度得出。
+随着熟练度因使用而提升，耐久度的降低将作为影响的平衡因素，激励玩家保持武器状态。
+
+最后，在接口实现部分，影响值通过将 Effectiveness（0 到 1）映射至影响范围（`-1 到 1`）来确定。
+
+### 初始化
+
+现在，让我们初始化 Probability List 并配置其影响设置。在 **Weapon** 组件中添加以下 `Start()` 方法：
+
+```csharp {{ title: 'Weapon Component - Initialization' }}
+private void Start()
+{
+    criticalStrike.ClearList();
+    var trueItem = criticalStrike.AddItem(true, baseCriticalStrikeChance);
+    var falseItem = criticalStrike.AddItem(false);
+    
+    trueItem.InfluenceProvider = this;
+    trueItem.InfluenceSpread = baseInfluenceSpread;
+    
+    falseItem.InfluenceProvider = this;
+    falseItem.InfluenceSpread = new Vector2(1f - baseInfluenceSpread.y, 1f - baseInfluenceSpread.x);
+    falseItem.InvertInfluence = true;
+}
+```
+
+首先，我们清空 Probability List 并添加两个条目：**True** 和 **False**。True 条目的概率设置为游戏设计师定义的基础暴击概率。
+
+随后，武器组件被指定为 **True** 条目的影响提供者，并应用指定的 Spread。
+
+对于 **False** 条目，我们分配相同的影响提供者，但使用反转影响，并相应调整其 Spread。
+
+<Note>
+    有关**反转影响**的意义及其效果的详细信息，请参阅文档中的
+    <a href={ProbabilityInfluencePage.Link + "#inverting-influence"}>{ProbabilityInfluencePage.Title}</a> 页面。
+</Note>
+
+### 添加攻击逻辑
+
+最后一步是为武器实现一些逻辑。使用以下代码创建 `Attack()` 方法：
+
+```csharp {{ title: 'Weapon Component - Attack Logic' }}
+public (float damage, bool critical) Attack()
+{
+    if (criticalStrike.PickValue())
+    {
+        weaponProficiency += 0.001f; // Slightly increase proficiency with each attack
+        durability -= 0.005f; // Decrease durability with each critical hit
+        return (damage * criticalMultiplier, true); // Return increased damage for critical hits
+    }
+
+    weaponProficiency += 0.0001f; // Minimal proficiency increase for normal hits
+    return (damage, false); // Return normal damage for non-critical hits
+}
+```
+
+此方法模拟武器的一次攻击，根据攻击是否为暴击来调整武器的**熟练度**和**耐久度**。
+每次攻击都会略微提升武器熟练度，鼓励持续使用。
+暴击虽然威力更强，但也会降低武器耐久度，为武器使用增添了策略层面的考量。
+
+该方法返回造成的伤害以及表示攻击是否为暴击的布尔值，便于集成到更广泛的游戏机制中。
+
+---
+
+<Note>
+    您有希望我们在本页面探讨的使用场景吗？
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">加入我们的 Discord 社区</a>，分享您的想法。
+</Note>

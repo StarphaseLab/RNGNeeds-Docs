@@ -1,0 +1,82 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+
+import samplesDiceRoller from '@/images/screenshots/samples-dice-roller.png';
+import samplesBiasedDie from '@/images/screenshots/samples-biased-die.png';
+import samplesDicePlaygroundScene from '@/images/screenshots/samples-dice-playground-scene.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import { SelectingValuesPage, DesigningAListPage } from "@/components/PageLinks";
+
+export const translationStatus = 'auto'
+
+export const description =
+    'RNGNeeds の Dice Playground サンプルを探索し、さまざまなダイスロールや組み合わせをシミュレートしましょう。カスタムダイスの作成、偏ったロール、その他の機能について学べます。'
+
+<HeroPattern />
+
+# Dice Playground
+
+RNGNeeds の Dice Playground で、バーチャルダイスロールの世界を探求しましょう。このサンプルでは、シンプルな6面ダイスから複雑な偏ったロールまで、さまざまなダイスロールや組み合わせをシミュレートする方法を紹介します。
+テーブルトップゲームを作りたい方も、確率を試してみたい方も、Dice Playground はランダム性の仕組みに楽しくインタラクティブに触れることができます。{{ className: 'lead' }}
+
+---
+
+## Die（ScriptableObject）
+
+**/Dice** フォルダ内には、1D6、2D4 などいくつかの `Die` ScriptableObject が用意されています。
+これらを編集して特定の動作を持つダイスを作成したり、**Create » RNGNeeds » Dice Playground » Die** から独自のダイスを作成したりすることができます。
+
+<ImageX className="w-full h-auto" src={samplesBiasedDie} alt="Samples Biased Die" width="1000"/>
+
+## Dice Roller（ScriptableObject）
+
+同フォルダには `Dice Roller` ScriptableObject も見つかります。この便利なツールには専用の Inspector が搭載されており、作成したダイスをドラッグしてロールすることができます。
+Dice Roller は各ダイスのロール結果を表示し、合計値も計算します。このシステムを自分のプロジェクトに組み込んでそのまま使用できます。
+DiceRoller に `.RollDice()` を呼び出すだけで、ロール結果の合計を `int` 型で返します。
+
+<ImageX className="w-full h-auto" src={samplesDiceRoller} alt="Samples Dice Roller" width="1000"/>
+
+<Note>
+    **結果テーブル** — ロール結果は以下の列を持つテーブルに表示されます：
+
+    - **Die** — 各 Die ScriptableObject の名前
+    - **Total** — 各ダイスのロール合計値
+    - **Min & Max** — 各ダイスに設定されたピック数の最小値と最大値
+    - **Picks** — 実際のピック数（Min と Max の間のランダム値に基づく）
+    - **Rolled Values** — 各ロール（ピック）の個別の値。ピック数が多すぎる場合、この統計は省略されます。
+</Note>
+
+## Dice Playground（シーン）
+
+最後に、**DicePlayground シーン**があります。これは Die オブジェクトと連携するよう設計された決定論的なダイスローラーシミュレーターです。
+Play Mode に入り、「Roll Dice」ボタンをクリックしてください。ダイスは事前に決定された結果とともに物理的に転がります。フレームに入る前に結果を確認できます。
+
+<ImageX className="w-full h-auto" src={samplesDicePlaygroundScene} alt="Samples Dice Playground Scene" width="1000"/>
+
+これは、ロールの物理シミュレーションを行い、シミュレートされたダイスがどの面で止まるかを決定し、リアルタイムのロール時に結果の面が上を向くようマテリアルを回転させることで実現されています。
+このシミュレーションサンプルは RNGNeeds の範囲を超えていますが（私たちのプラグインは RNG の部分、つまりロールのみを担当しています）、決定論的なダイスローラーの例は楽しく魅力的な追加要素になると考えました。
+
+<Note>
+    決定論的シミュレーションを使用して偏った6面ダイスを試したい場合は、DicePlayground シーン内の **DICE THROWER** GameObject に移動してください。
+    アタッチされている `DiceSimulator` スクリプトを見つけ、カスタムの6面ダイスを割り当ててください。
+</Note>
+
+**ピック数と無効なアイテム** — デフォルトでは、割り当てられた `1D6` ダイスはリスト内に有効なアイテムが1つだけあります。それが **one**（1の面）です。つまり、確率が合致した場合にのみその値がピックされます。
+ランダムピックで無効なアイテム（例：6の面）が選ばれた場合、ピックは失敗し何も返されません。ここで `Maintain Pick Count` 機能が役立ちます。
+
+シーン内では、スライダーを使ってロールするダイスの数を制御できます。また、**Maintain Pick Count** トグルを有効・無効にすることで、選択が希望のピック数を維持するかどうかも制御できます。
+無効にした場合、実際にロールされるダイスの数は少なくなり、選択を通過したものだけになります。
+
+ピック数の詳細については
+<a href={DesigningAListPage.Link + "#pick-counts"}>{DesigningAListPage.Title}</a> ページを、無効なアイテムの動作については
+<a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> ページをご覧ください。
+
+<Note>
+    ***ご注意：*** ダイスシミュレーターは現在6面ダイスのみに対応しています。ただし、拡張可能な設計になっています。
+    10面ダイスなど他のダイスタイプに対応させるには、カスタムの `Die Face Data` ScriptableObject を設定する必要があります。
+    これは RNGNeeds とそのサンプルの範囲を大きく超えますが、シミュレーターの拡張方法についてのヒントが必要な場合は、
+    <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord サーバー</a>にお越しいただき、遠慮なくご質問ください。
+</Note>
+
+---

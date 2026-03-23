@@ -1,0 +1,57 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { Button } from "@/components/Button"
+import { ImageX } from "@/components/ImageX"
+import overviewInspectors from '@/images/screenshots/overview_inspectors_med.png';
+import rngnShape from '@/images/rngn-shape.png';
+import {Col, Row} from "@/components/mdx";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {AssetStoreLink} from "@/components/AssetStoreLink";
+import {GettingStartedPage} from "@/components/PageLinks";
+export const translationStatus = 'auto'
+export const description = '借助 RNGNeeds，释放概率的力量。RNGNeeds 是一款功能多样的 Unity 插件，专为管理概率分布而设计，非常适合游戏开发中的骰子投掷、怪物生成、道具掉落等场景。体验 RNGNeeds 带来的动态、易用且闪电般高效的性能。'
+
+<HeroPattern />
+
+# 简介
+
+欢迎使用 RNGNeeds——开启 Unity 无限可能的钥匙。
+我们很高兴向您介绍这款工具，它旨在彻底革新您在项目中处理随机性的方式。
+欢迎深入了解，亲自体验 RNGNeeds 为何能成为您 Unity 项目的完美选择。{{ className: 'lead' }}
+
+<div className="mb-1 mt-6 flex gap-3 flex-wrap">
+    <AssetStoreLink as={Button} arrow="right">从 Asset Store 获取插件</AssetStoreLink>
+    <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
+    <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="加入我们的 Discord" />
+</div>
+
+<ImageX className="w-full h-auto" src={overviewInspectors} priority={true} alt="RNGNeeds Inspector 面板" width={1000} />
+
+---
+
+<Row>
+    <Col>
+        ## 前言
+        每款游戏都离不开惊喜元素——那种令玩家欲罢不能的不可预测性。然而，管理这种随机性，这些"RNG 需求"，往往更像是一门艺术，而非科学。有了 RNGNeeds，您将拥有一款重新定义随机性的 Unity 插件，将随机从难以捉摸的变量转变为精心调校的创意利器。{{ className: 'lead' }}
+
+        RNGNeeds 的潜力远不止于骰子投掷和道具掉落。想象一下：随着玩家推进剧情，动态调整游戏内风暴的频率；根据一天中的时间段调控 NPC 行为；或是在音乐音量较大时让战斗变得更加激烈。{{ className: 'lead' }}
+
+        RNGNeeds 让您坐上导演的位置，自由打造能够响应并适应游戏世界的独特沉浸式体验。因为 RNG 不只是关于运气——它是关于创造充满生机、万物皆有可能的活世界。{{ className: 'lead' }}
+    </Col>
+    <Col>
+        <ImageX src={rngnShape} alt="RNGNeeds" width="256"/>
+    </Col>
+</Row>
+
+
+## RNGNeeds 是什么？
+RNGNeeds 是一款功能强大的插件，让您能够直接在 Unity Inspector 中为任意值、类型或自定义对象设计和管理概率列表。借助这款插件，您可以轻松掌控骰子投掷、怪物生成、卡牌牌组、道具掉落、伤害修正，甚至有机动画——以概率分布为基础，兼具无与伦比的简洁性与易用性。无论您是想直接在 Inspector 中设计列表、可变抽取数量和种子，还是希望通过强大的 API 以代码全面掌控一切，RNGNeeds 都能满足您的需求。
+
+RNGNeeds 不仅是一款强大的工具，更是一套易于上手、灵活可扩展的解决方案。它兼顾程序员与设计师的需求，所有功能均可通过 Inspector 访问，同时提供简洁易用的 API。该插件支持所有 Unity LTS 版本，并提供一系列强大特性：您可以使用多种概率方法一次抽取多个项目，包括纯随机选取；轻松保留偏好种子、设置自定义种子，或实现您自己的 Seed Provider；此外，还可以方便地实现并注册自定义 Selection Methods 或种子选项。
+
+RNGNeeds 还能帮助您打造更高效、更灵活的工作流。您可以设计 Influence Providers，根据外部因素动态调整概率；选择固定的抽取数量，或通过可调曲线在随机范围内控制偏向；利用多种重复防止技术避免连续选中同一项目；并为每个列表单独追踪历史抽取记录，以模拟确定性概率行为。
+
+我们对 RNGNeeds 的承诺不止于当前版本。我们很高兴地告诉您，路线图上已有一系列新功能正在积极开发中，包括概率的动态修改、卡牌牌组扩展，以及为列表中的项目分配数量并允许抽取消耗等功能。
+
+再次感谢您选择 RNGNeeds。我们迫不及待地想看到您用这款插件创作出的精彩作品。您的信任是我们持续开发和打磨 RNGNeeds 的动力，我们将努力确保它始终——或许也是概率最高的——成为满足您所有随机需求的最佳解决方案！
+
+---

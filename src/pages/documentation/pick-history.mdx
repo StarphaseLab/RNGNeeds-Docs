@@ -1,0 +1,227 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+export const description =
+    'Understand how RNGNeeds tracks previous item picks for each list and how to use history to mimic deterministic probability behavior.'
+
+<HeroPattern />
+
+# Pick History
+
+Pick History serves as a powerful tool for users to explore their recent selections, recreate specific scenarios, or even pre-select items to streamline gameplay.
+It provides a comprehensive record, enabling users to monitor selections, utilize the data in-game, or share insights with players for enhanced gameplay dynamics. {{ className: 'lead' }}
+
+---
+
+## History Structure
+
+Let's begin by understanding the fundamental concepts of Pick History. 
+We'll explore how it archives records, the way selections are channeled through history, and the mechanics of history capacity.
+
+**Each List has its own History** - Every Probability List features its unique history, and this history plays an integral role in the selection mechanism.
+When you select values, the system first determines the outcome based on the set probabilities.
+This result is then logged into the history. Finally, the system maps the most recently picked indices from the history to produce the actual values you receive.
+
+**History records Indices** - The history structure is optimized for performance and clarity. Instead of logging the actual values of items, it records their indices, ensuring a minimal memory footprint. 
+Alongside each index, the exact date and time of the pick are stored, offering a chronological insight into the selection process.
+
+<Note>
+    It's important to note that since the history solely tracks indices, any removal of items from the list will automatically clear the history.
+    This is because the indices within the list would no longer correspond to their original order or the values they once represented.
+</Note>
+
+**Latest indices on top** - Designed for user-friendliness, the history stores the most recent picks at the top. The first entry in the list will always represent the latest selection.
+
+**History Capacity** - Every history has a set limit on the number of items it can store, known as its capacity. You can adjust this capacity up or down based on your requirements.
+
+**PickHistory Object** - An integral part of the `ProbabilityList`, functions as both the storage for the list's history and the primary access point to historical data and settings. 
+Every time you request values from your Probability List, the results are first recorded in its history as indices before being relayed as the actual values.
+
+**HistoryEntry Object** - This is a *pooled object* that captures both the index and the time of a pick. 
+The Pick History maintains a list of these HistoryEntry objects, serving as a chronological log of recent selections.
+
+<Note>
+    **Picks vs Entries**
+
+    Within the history, the term **Entries** denotes the historical record, which encompasses both the index and the timestamp of the pick. Each of these records is housed within a `HistoryEntry` object.
+
+    Conversely, **Picks** strictly refer to the selected indices. The naming convention of history retrieval methods is crafted to clearly indicate the nature of the returned data.
+</Note>
+
+---
+
+## History Capacity
+
+By default, each List's History can accommodate up to 1000 entries. This means that, unless you expand this capacity, you can pick a maximum of 1000 values in one go. 
+As you make more selections, older entries are pushed downwards, and once they exceed the set capacity, they're removed. 
+For instance, if you first select 1000 items and then make another selection of 500, the history will showcase the 500 recent picks, followed by the latter half of the initial 1000-item selection.
+
+```csharp {{ title: 'Setting the History Capacity'}}
+// Setting the history capacity directly via the PickHistory property
+myProbabilityList.PickHistory.Capacity = 100;
+
+// Using a dedicated method to set the history capacity
+myProbabilityList.SetHistoryCapacity(100);
+```
+
+Adjusting the List's History capacity lets you fine-tune the memory usage of the list. 
+If history isn't a priority for you, you can set this value quite low. 
+However, remember that the capacity also limits the number of values you can select in one go. 
+For instance, calling `SelectValues(10)` on a list with a history capacity of 5 will yield only 5 values.
+
+---
+
+## Retrieving History
+
+
+```csharp {{ title: 'Accessing the Pick History'}}
+// Access the PickHistory object
+PickHistory pickHistory = myProbabilityList.PickHistory;
+
+// The History property contains the List of HistoryEntries
+List<HistoryEntry> historyEntries = pickHistory.History;
+
+HistoryEntry latestEntry = historyEntries[0];
+Debug.Log($"Last Picked Index was {latestEntry.Index}, picked at {latestEntry.Time}");
+```
+
+<Note>
+    **How Date & Time is stored**
+
+    The HistoryEntry captures the time of the pick using a custom `SerializableDateTime` object. This design choice marries the convenience of the DateTime class with Unity's serialization capabilities.
+    The timestamp leverages the `Now` property of DateTime to obtain precise `long Ticks` values, ensuring accurate timekeeping. Additionally, it provides a handy method to fetch this information in the familiar DateTime format.
+
+    For instance, executing `Debug.Log(historyEntry.Time)` would yield an output like `26.08.2023 12:03:57`, mirroring the experience of working directly with DateTime.
+</Note>
+
+### Convenience Methods
+
+Alternatively, you can utilize the history's convenience methods or properties to access the records.
+Methods that return a list prioritize efficiency by providing a reference to an internal list, ensuring no additional memory allocation for a new list.
+This approach is especially beneficial for frequent operations where performance is crucial.
+
+```csharp {{ title: 'Retrieving history'}}
+int latestIndex = myProbabilityList.PickHistory.LatestIndex;
+List<int> latestIndices = myProbabilityList.PickHistory.GetLatestPicks(5);
+
+// The same data can also be accessed directly from the Probability List
+int latestIndexDirect = myProbabilityList.LastPickedIndex;
+List<int> latestIndicesDirect = myProbabilityList.LastPickedIndices;
+
+// The Probability List further simplifies the process by mapping indices to values automatically
+string latestValue = myProbabilityList.LastPickedValue;
+List<string> latestValues = myProbabilityList.LastPickedValues;
+```
+
+<Note>
+    **Last vs Latest**
+
+    You might notice that we use different terms when talking about the most recent picks: **Last** in the Probability List and **Latest** in Pick History.
+    This choice came after much internal debate about the right wording.
+    When you're asking the Probability List about its *last selection*, the term **Last** makes sense.
+    But in the context of history, "last" might be mistaken as the 'first in history' or 'beginning of history'.
+    To avoid this confusion, we use **Latest** for history to clearly indicate the most recent record.
+</Note>
+
+For those seeking more control or wishing to preserve the results, methods are available that take a list as an argument and populate it with the specified records.
+To obtain the latest entries, just indicate the number of records you want.
+
+```csharp {{ title: 'Retrieving history'}}
+// Methods that return a reference to a private list
+HistoryEntry latestEntryRef = myProbabilityList.PickHistory.LatestEntry;
+List<HistoryEntry> latestEntriesRef = myProbabilityList.PickHistory.GetLatestEntries(5);
+
+// Methods designed to fill a provided list
+List<int> latestPicksFill = new List<int>();
+myProbabilityList.PickHistory.GetLatestPicks(latestPicksFill, 5);
+
+List<HistoryEntry> latestEntriesFill = new List<HistoryEntry>();
+myProbabilityList.PickHistory.GetLatestEntries(latestEntriesFill, 5);
+```
+
+---
+
+## HistoryEntry Pool
+
+HistoryEntry is a **pooled object** designed to efficiently store the index and time of each pick.
+During the selection process, these objects are dynamically created and, once they're no longer in use (e.g., when history is cleared or exceeds its capacity), 
+they're returned to the pool for reuse.
+
+This pooling mechanism is shared across all histories, ensuring that memory usage is optimized and that there's a consistent supply of ready-to-use HistoryEntry objects.
+Initially, the pool starts empty. As individual lists begin to exceed their capacity, the pool gradually fills up with HistoryEntry objects that have been released.
+Up to this point, minor memory allocations occur for each selected item. 
+However, these allocations cease once the pool accumulates a sufficient number of unused objects, which are then reclaimed by the histories.
+
+To immediately benefit from the pool's efficiency, you can pre-populate or "warm-up" the pool. 
+Depending on the number of Probability Lists you employ and their set capacities, you can gauge the optimal pool size. 
+This ensures that memory is allocated during initialization, and subsequent selections will pull from this pool of pre-existing objects.
+
+```csharp {{ title: 'Warming-up the HistoryEntry Pool'}}
+RNGNeedsCore.WarmupHistoryEntries(10000);
+```
+
+---
+
+## Drawing From History
+
+In certain scenarios, it might be more efficient or suitable to draw values directly from the history rather than picking them in real-time. This approach offers a unique advantage: by pre-selecting a set of values and storing them in the history, you can rapidly access a range of predetermined results without the computational overhead of the selection process. This can be particularly beneficial in situations where:
+
+- **Performance is paramount** - In high-intensity moments of gameplay, where every millisecond counts, drawing from history can ensure smooth performance.
+- **Consistency is desired** - By using pre-selected values, you can guarantee a consistent experience across multiple sessions or users.
+- **Predictive Analysis** - For simulations or scenarios where you want to analyze potential outcomes based on a fixed set of random values.
+
+Here's one idea how to implement this:
+
+```csharp {{ title: 'Iterating over History - Example'}}
+public ProbabilityList<string> myProbabilityList;
+
+// First, pick values to populate the history
+myProbabilityList.PickValues(1000);
+
+private int historyDrawIndex = 0; // Counter to keep track of where we left off
+
+// A method to draw a specified range of values from the history
+public List<string> DrawFromHistory(int countToDraw)
+{
+    List<string> drawnValues = new List<string>();
+
+    int remainingHistory = myProbabilityList.PickHistory.History.Count - historyDrawIndex;
+    countToDraw = Mathf.Min(countToDraw, remainingHistory);
+
+    for (int i = 0; i < countToDraw; i++)
+    {
+        var drawnIndex = myProbabilityList.PickHistory.History[historyDrawIndex + i].Index;
+        drawnValues.Add(myProbabilityList.GetProbabilityItem(drawnIndex).Value);
+    }
+
+    historyDrawIndex += countToDraw;
+
+    return drawnValues;
+}
+```
+
+In the provided code, we're working with a `ProbabilityList` of type `string` named `myProbabilityList`.
+
+1. **Populating the History**:
+Before drawing from the history, we first populate it by picking 1000 values using the `PickValues` method. This ensures that our history has a record of recent selections.
+
+2. **Tracking the Draw Position**:
+We introduce a counter named `historyDrawIndex` to keep track of our position in the history. This ensures that each time we draw from the history, we continue from where we left off, preventing repetition of values.
+
+3. **Drawing from History**:
+The `DrawFromHistory` method is designed to retrieve a specified number of values from the history.
+- We first determine how many entries are left in the history that we haven't drawn yet using the `remainingHistory` variable.
+- We then decide how many values to draw, ensuring we don't attempt to draw more than what's left in the history.
+- **Within the loop, for each iteration:**
+- We retrieve the index of the item from the history.
+- We then fetch the actual value from the `ProbabilityList` using the `GetProbabilityItem` method and add it to our `drawnValues` list.
+- Finally, we update the `historyDrawIndex` to ensure the next draw starts from the correct position.
+
+<Note>
+    **Performance Considerations**:
+
+    While we've highlighted various features and speed benefits, it's essential to understand that the core functionality of RNGNeeds, like the `SelectValues` method, is already optimized for general use. The intricate processes of accounting for probability distribution, repeat prevention, and history writing are designed to be efficient.
+
+    For most users and scenarios, performance should not be a concern. However, if you're pushing the system to its limits and notice any performance hitches, the workflows and optimizations we've discussed can help alleviate those bottlenecks. Always remember, we've built RNGNeeds with both simplicity and performance in mind.
+</Note>
+
+---

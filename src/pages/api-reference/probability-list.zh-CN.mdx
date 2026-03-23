@@ -1,0 +1,326 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import {
+  API_PickHistory,
+  API_ProbabilityItem,
+  API_RNGNeeds,
+  API_SelectionMethods,
+  GuidePLCollection,
+  ProbabilityInfluencePage,
+} from '@/components/PageLinks'
+
+export const translationStatus = 'auto'
+
+export const description =
+  'ProbabilityList<T> 的参考文档，这是 RNGNeeds 的核心类型，用于创建列表、管理概率和选取值。'
+
+<HeroPattern />
+
+# ProbabilityList&lt;T&gt;
+
+如果你正在从头学习 RNGNeeds，建议先阅读<a href={GuidePLCollection.Link}>指南</a>和概念文档，然后在需要了解主列表类型的确切运行时结构时再回到本页。{{ className: 'lead' }}
+
+`ProbabilityList<T>` 是 RNGNeeds 中的核心运行时类型。
+
+它存储一组 `ProbabilityItem<T>` 条目，并提供以下功能的 API：
+
+- 添加和移除项目
+- 管理概率和权重
+- 选取单个或多个值
+- 防止重复选取
+- 使用种子和选取历史
+- 支持可耗尽列表
+- 连接影响提供者
+
+---
+
+## 重要概念
+
+<Note>
+  <p><strong>基础概率与计算概率。</strong></p>
+  <p><code>GetItemBaseProbability(...)</code> 返回存储的基准值。<code>GetItemProbability(...)</code> 返回当前选取时实际使用的有效概率，包含影响因素。</p>
+</Note>
+
+<Note>
+  <p><strong>锁定与禁用不同。</strong></p>
+  <p>禁用的项目在选取时会被忽略。锁定的项目仍可被选中，但某些列表操作不会重新分配其概率。</p>
+</Note>
+
+<Note>
+  <p><strong>部分选取方法返回共享列表。</strong></p>
+  <p><code>LastPickedValues</code> 等属性以及返回共享列表的方法经过优化，避免额外内存分配。如果需要稳定的数据所有权，请将数据复制到你自己的列表中。</p>
+</Note>
+
+---
+
+## 常见用法
+
+```csharp
+var lootTable = new ProbabilityList<string>();
+
+lootTable.AddItem("Potion", 0.5f);
+lootTable.AddItem("Gold", 0.3f);
+lootTable.AddItem("Rare Gem", 0.2f);
+
+string reward = lootTable.PickValue();
+```
+
+---
+
+## 核心属性
+
+<MemberGroup title="Core properties" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="ListName" signature="string">
+    列表的可选显示名称。当列表用于 <code>PLCollection&lt;T&gt;</code> 内部时，此属性尤为有用，集合可通过名称查找和管理列表。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
+    列表中的项目数量。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="UnlockedItemsCount" signature="int">
+    未被锁定的项目数量。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EnabledItemsCount" signature="int">
+    已启用的项目数量。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsListInfluenced" signature="bool">
+    当至少有一个项目受影响提供者影响时，返回 <code>true</code>。
+  </Member>
+</MemberGroup>
+
+---
+
+## 选取行为
+
+<MemberGroup title="Selection settings" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="SelectionMethodID" signature="string">
+    此列表使用的选取方法标识符。该标识符通过 <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> 解析。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PreventRepeat" signature="PreventRepeatMethod">
+    控制重复选取的处理方式。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ShuffleIterations" signature="int">
+    <code>PreventRepeatMethod.Shuffle</code> 使用的洗牌次数。取值范围限制在 1 到 5 之间。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountMin" signature="int">
+    多选方法选取值的最小数量。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountMax" signature="int">
+    多选方法选取值的最大数量。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LinkPickCounts" signature="bool">
+    为 true 时，实际选取数量固定为 <code>PickCountMin</code>。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="MaintainPickCountIfDisabled" signature="bool">
+    即使禁用项目干扰，也会持续尝试达到目标选取数量。这可能改变最终分布，并内置了针对极端情况的故障安全检查。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountCurve" signature="AnimationCurve">
+    控制在最小值和最大值之间随机选取数量时所用的偏差曲线。
+  </Member>
+</MemberGroup>
+
+---
+
+## 选取值
+
+<MemberGroup title="Pick methods" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="PickValue" signature="T PickValue()">
+    选取一个值并返回。若选取失败，则返回 <code>T</code> 的默认值。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValue" signature="bool TryPickValue(out T value)">
+    当需要区分失败与有效默认值时，最安全的单次选取方法。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValues" signature="List<T> PickValues() / overloads">
+    选取多个值并返回包含结果的共享列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValueWithIndex" signature="(T Value, int Index) PickValueWithIndex()">
+    选取一个值，同时返回所选项目的索引。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValueWithIndex" signature="bool TryPickValueWithIndex(out T value, out int index)">
+    <code>PickValueWithIndex()</code> 的更安全版本，可明确获知成功或失败。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RunTest" signature="TestResults RunTest()">
+    使用当前配置运行选取测试，并返回诊断结果。
+  </Member>
+</MemberGroup>
+
+---
+
+## 操作项目
+
+<MemberGroup title="Item management" tone="sky">
+  <Member kind="METHOD" color="emerald" name="AddItem" signature="ProbabilityItem<T> AddItem(...) / overloads">
+    通过值、显式概率、显式权重或已创建的 <code>ProbabilityItem&lt;T&gt;</code> 添加项目。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddItems" signature="void AddItems(...) / overloads">
+    一次性添加多个值。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveItem" signature="bool RemoveItem(...) / overloads">
+    通过值或项目引用移除项目。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveItemAtIndex" signature="bool RemoveItemAtIndex(int index, bool normalize = true)">
+    通过索引移除项目。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearList" signature="void ClearList()">
+    移除所有项目并清空历史记录。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetProbabilityItem" signature="ProbabilityItem<T> GetProbabilityItem(int index)">
+    获取指定索引处的项目。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryGetProbabilityItem" signature="bool TryGetProbabilityItem(...) / overloads">
+    通过索引或值安全地获取项目。
+  </Member>
+</MemberGroup>
+
+---
+
+## 概率操作
+
+<MemberGroup title="Probability operations" tone="violet">
+  <Member kind="METHOD" color="emerald" name="GetItemProbability" signature="float GetItemProbability(int index)">
+    返回当前选取时实际使用的有效概率。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetItemBaseProbability" signature="float GetItemBaseProbability(int index)">
+    返回原始存储的基础概率。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AdjustItemBaseProbability" signature="void AdjustItemBaseProbability(int index, float amount)">
+    为项目的基础概率添加一个值。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemBaseProbability" signature="bool SetItemBaseProbability(int index, float baseProbability, bool normalize = true)">
+    设置项目的基础概率，可选择是否对列表其余部分进行归一化。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetAllProbabilities" signature="void ResetAllProbabilities()">
+    将所有未锁定项目的概率均分。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="NormalizeProbabilities" signature="float NormalizeProbabilities()">
+    对未锁定项目进行归一化，使列表总和为 1。
+  </Member>
+</MemberGroup>
+
+---
+
+## 权重
+
+<MemberGroup title="Weight-based distribution helpers" tone="neutral">
+  <Member kind="PROPERTY" color="sky" name="TotalWeight" signature="int">
+    列表中所有项目权重之和。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="BaseWeight" signature="int">
+    辅助方法使用的参考权重。取值范围限制在 1 到 10000 之间。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="WeightsPriority" signature="bool">
+    启用后，在某些操作期间概率会恢复为基于权重推导出的分数。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetItemWeight" signature="int GetItemWeight(int index)">
+    返回项目的当前权重。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemWeight" signature="void SetItemWeight(int index, int weight)">
+    设置项目的权重，并根据需要重新分配或重新计算。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="CalculatePercentageFromWeights" signature="void CalculatePercentageFromWeights()">
+    根据权重重建概率。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetWeights" signature="void ResetWeights()">
+    根据当前概率分布重建权重。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RecalibrateWeights" signature="void RecalibrateWeights()">
+    重新平衡未锁定项目的权重，同时尽量保持总权重不变。
+  </Member>
+</MemberGroup>
+
+---
+
+## 项目状态与影响
+
+<MemberGroup title="Item state and influence helpers" tone="amber">
+  <Member kind="METHOD" color="emerald" name="SetItemProperties" signature="bool SetItemProperties(int index, float baseProbability, bool enabled, bool locked)">
+    同时更新多个核心项目属性。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemEnabled / SetAllItemsEnabled" signature="bool SetItemEnabled(int index, bool enabled)">
+    启用或禁用单个项目或整个列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemLocked / SetAllItemsLocked" signature="bool SetItemLocked(int index, bool locked)">
+    锁定或解锁单个项目或整个列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInfluenceProvider" signature="void SetItemInfluenceProvider(int index, IProbabilityInfluenceProvider influenceProvider)">
+    为项目指定外部影响提供者。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInfluenceSpread" signature="void SetItemInfluenceSpread(int index, Vector2 spread)">
+    控制影响下允许的概率最小值和最大值范围。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInvertInfluence" signature="void SetItemInvertInfluence(int index, bool invertInfluence)">
+    反转影响对该项目的作用方式。
+  </Member>
+</MemberGroup>
+
+关于影响的概念性说明，请参阅 <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>。
+
+---
+
+## 种子与历史
+
+<MemberGroup title="Seeding and history" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="CurrentSeed" signature="uint">
+    当前存储在列表上的种子。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Seed" signature="uint">
+    返回或设置列表种子。当 <code>KeepSeed</code> 为 false 时，RNGNeeds 会在每次选取前重新生成种子。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="KeepSeed" signature="bool">
+    启用后，两次选取之间保持相同的种子。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickHistory" signature="PickHistory">
+    访问最近选取记录的存储历史。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickCount / LastPickedIndex / LastPickedValue" signature="history helpers">
+    最近一次选取结果的便捷访问器。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickedIndices / LastPickedValues" signature="shared lists">
+    表示最后一次选取操作的共享结果列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLastPickedIndices / GetLastPickedValues" signature="void GetLastPicked...(List<...> listToFill)">
+    将结果填充到你自己的列表中，而不使用共享的内部列表。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetHistoryCapacity" signature="void SetHistoryCapacity(int capacity)">
+    更改历史记录的容量大小。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearHistory" signature="void ClearHistory()">
+    清空列表的选取历史记录。
+  </Member>
+</MemberGroup>
+
+另请参阅 <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>。
+
+---
+
+## 可耗尽列表
+
+<MemberGroup title="Depletable list helpers" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="IsDepletable" signature="bool">
+    为列表启用耗尽行为。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RefillItems" signature="void RefillItems()">
+    将所有项目的单位数量补充至最大值。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsUnits" signature="void SetAllItemsUnits(int units)">
+    设置所有项目的当前单位数量。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsMaxUnits" signature="void SetAllItemsMaxUnits(int units)">
+    设置所有项目的最大单位数量。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsDepletable / SetAllItemsDepletableProperties" signature="bulk depletion helpers">
+    批量配置所有项目的耗尽行为。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemDepletable" signature="void SetItemDepletable(int index, bool depletable = true, int units = 1, int maxUnits = 1)">
+    为单个项目配置耗尽行为。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetTotalUnits / GetTotalMaxUnits" signature="int GetTotal...()">
+    返回已启用的可耗尽项目的汇总耗尽信息。
+  </Member>
+</MemberGroup>
+
+---
+
+## 相关页面
+
+- <a href={API_ProbabilityItem.Link}>{API_ProbabilityItem.Title}</a>
+- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
+- <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>

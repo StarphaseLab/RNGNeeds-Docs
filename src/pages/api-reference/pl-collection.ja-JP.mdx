@@ -1,0 +1,137 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { GuidePLCollection, NestingListsPage, SupportPage } from '@/components/PageLinks'
+
+export const description =
+  'PLCollection<T>のリファレンスです。複数のProbabilityList<T>インスタンスを整理・選択するためのコレクション型について説明します。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# PLCollection&lt;T&gt;
+
+まず実践的なガイドが必要ですか？<a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>から始め、このページをコレクションAPIのコンパクトなコードリファレンスとしてご活用ください。 {{ className: 'lead' }}
+
+`PLCollection<T>`は複数の`ProbabilityList<T>`インスタンスをひとつのコレクションにまとめます。
+
+ひとつのリストでは不十分で、名前付きまたはインデックス付きのリストグループをより上位の構造で管理したい場合に使用します。
+
+---
+
+## 代表的なユースケース
+
+- グループ化されたルートテーブル
+- 名前付きダイアログプール
+- エンカウントカテゴリー
+- マルチバイオームのスポーンリスト
+- 複数のProbabilityListをひとまとめにする必要があるあらゆるシステム
+
+---
+
+## コアコレクションメンバー
+
+<MemberGroup title="Collection basics" tone="sky">
+  <Member kind="METHOD" color="emerald" name="ItemType" signature="Type ItemType()">
+    コレクションおよびすべての含まれるリストで使用される値の型を返します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Count" signature="int">
+    コレクション内のリストの数です。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddList" signature="void AddList(...) / overloads">
+    既存のリストを追加するか、オプションの名前を付けて新しいリストを作成します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveList" signature="bool RemoveList(...) / overloads">
+    インデックスまたは名前でリストを削除します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetList" signature="ProbabilityList<T> GetList(...) / overloads">
+    インデックスまたは名前でリストを取得します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetListName" signature="bool SetListName(...) / overloads">
+    リストの名前を変更します。名前は基底の<code>ProbabilityList&lt;T&gt;</code>に保持されるため、これはコレクション側から名前を一貫して管理するための方法です。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="MoveListUp / MoveListDown" signature="bool MoveListUp(int index) / bool MoveListDown(int index)">
+    コレクション内のリストの順序を変更します。
+  </Member>
+</MemberGroup>
+
+---
+
+## コレクションからの選択
+
+<MemberGroup title="Selection helpers" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="PickValueFrom" signature="bool PickValueFrom(...) / overloads">
+    名前またはインデックスで指定したリストから単一の値を選択します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValueFrom" signature="(bool ListFound, bool ValuePicked) TryPickValueFrom(...) / overloads">
+    リストが見つからない場合と選択に失敗した場合を区別する必要があるときに使用する、より安全な単一選択ヘルパーです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValuesFrom" signature="List<T> PickValuesFrom(...) / overloads">
+    ひとつのリストから複数の値を選択します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValuesFromAll" signature="List<T> PickValuesFromAll()">
+    すべてのリストから値を選択し、結果を新しいリストにまとめます。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValueFromAll" signature="List<T> PickValueFromAll()">
+    各リストから1つずつ値を選択し、収集した結果を返します。
+  </Member>
+</MemberGroup>
+
+---
+
+## メンテナンスヘルパー
+
+<MemberGroup title="Maintenance and state helpers" tone="amber">
+  <Member kind="METHOD" color="emerald" name="ClearCollection" signature="void ClearCollection()">
+    コレクションからすべてのリストを削除します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearList / ClearAllLists" signature="bool ClearList(...) / void ClearAllLists()">
+    ひとつのリストまたはすべてのリストをクリアします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="IsListEmpty" signature="(bool ListFound, bool IsEmpty) IsListEmpty(...) / overloads">
+    リストが存在するかどうか、および現在アイテムを含んでいるかどうかを確認します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RefillList / RefillAllLists" signature="bool RefillList(...) / void RefillAllLists()">
+    ひとつのリストまたはすべてのリスト内の消耗アイテムを補充します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 名前 vs インデックス
+
+<Note>
+  <p><strong>名前を使った方がAPIとして明確になることが多いです。</strong></p>
+  <p>インデックスによるアクセスは厳密に制御された内部システムには適していますが、コレクションがコンテンツグループを表す場合、名前ベースのアクセスの方が通常は読みやすく保守性も高くなります。</p>
+</Note>
+
+<Note>
+  <p><strong>リスト名は一見して思うよりも重要です。</strong></p>
+  <p><code>ListName</code>は表示用のオプションラベルに過ぎないわけではありません。エディターのワークフローや、名前でリストを取得・選択するコードにおいて、<code>PLCollection&lt;T&gt;</code>の名前ベースのルックアップを実用的にするものでもあります。</p>
+</Note>
+
+---
+
+## 使用例
+
+```csharp
+var responses = new PLCollection<string>();
+responses.AddList("Friendly");
+responses.AddList("Hostile");
+
+responses.GetList("Friendly")?.AddItems("Hello", "Good to see you", "Welcome back");
+responses.GetList("Hostile")?.AddItems("Go away", "Not interested", "Leave me alone");
+
+responses.PickValueFrom("Friendly", out var line);
+```
+
+---
+
+## 関連ページ
+
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+- <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>
+
+<Note>
+  <p><strong>PLCollectionを使って何か作っていてフィードバックが欲しいですか？</strong></p>
+  <p>アプローチの比較、命名戦略の相談、設定の確認などをご希望の場合は、<a href={SupportPage.Link}>{SupportPage.Title}</a>ページにDiscordコミュニティへのリンクがあります。</p>
+</Note>

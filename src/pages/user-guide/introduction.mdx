@@ -1,0 +1,56 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { Button } from "@/components/Button"
+import { ImageX } from "@/components/ImageX"
+import overviewInspectors from '@/images/screenshots/overview_inspectors_med.png';
+import rngnShape from '@/images/rngn-shape.png';
+import {Col, Row} from "@/components/mdx";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {AssetStoreLink} from "@/components/AssetStoreLink";
+import {GettingStartedPage} from "@/components/PageLinks";
+export const description =  'Unleash the power of probability with RNGNeeds, a versatile Unity plugin for managing probability distribution. Ideal for game development, enhancing dice rolls, monster spawns, item drops, and more. Experience dynamic, user-friendly, and lightning-fast performance with RNGNeeds.'
+
+<HeroPattern />
+
+# Introduction
+
+Welcome to RNGNeeds, your key to unlocking a world of possibility within Unity.
+We're excited to introduce you to our tool, designed to revolutionize your approach to randomness in your projects.
+We invite you to learn more and see for yourself why RNGNeeds could be the perfect fit for your Unity projects. {{ className: 'lead' }}
+
+<div className="mb-1 mt-6 flex gap-3 flex-wrap">
+    <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
+    <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
+    <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="Join our Discord" />
+</div>
+
+<ImageX className="w-full h-auto" src={overviewInspectors} priority={true} alt="RNGNeeds Inspectors" width={1000} />
+
+---
+
+<Row>
+    <Col>
+        ## Preface
+        Every game thrives on an element of surprise, that tantalizing unpredictability that hooks players in. But managing this randomness, these 'RNG needs', is often more art than science. With RNGNeeds, you have a Unity plugin that redefines randomness, transforming it from a wild variable into a finely-tuned instrument of creativity.{{ className: 'lead' }}
+
+        Beyond the dice rolls and item drops, RNGNeeds offers you a canvas of opportunity. Imagine dynamically adjusting the frequency of in-game storms as your player progresses through the storyline, modulating NPC behavior based on time of day, or making the battle more intense if the music volume is loud.{{ className: 'lead' }}
+
+        RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.{{ className: 'lead' }}        
+    </Col>
+    <Col>
+        <ImageX src={rngnShape} alt="RNGNeeds" width="256"/>        
+    </Col>
+</Row>
+
+
+## What is RNGNeeds?
+RNGNeeds is a powerful plugin that enables you to design and manage probability lists for any value, type, or custom object directly within the Unity Inspector. With this plugin, you can take control of your dice rolls, monster spawns, card decks, item drops, damage modifiers, or even organic animations using probability distribution with unparalleled simplicity and ease-of-use. Whether you want to design your lists, variable pick counts, and seeding right in the inspector, or harness the powerful API to control everything from code, RNGNeeds has you covered.
+
+With RNGNeeds, you're not just getting a powerful tool, but also a user-friendly and adaptable solution. It's designed to cater to both coders and designers, with all features accessible via the Inspector and an easy-to-use API. The plugin supports all LTS versions of Unity and offers a range of powerful features. You can pick multiple items at once using various probability methods, including pure random selection. It also offers an easy way to retain a preferred seed, set a custom one, or implement your own Seed Provider. Furthermore, you can easily implement and register your custom Selection Methods or seeding options.
+
+RNGNeeds also helps to make your workflow more efficient and adaptable. It enables you to design Influence Providers to dynamically modify probabilities based on external factors. You can choose a fixed pick count, or select a random range with an adjustable curve to control bias. Furthermore, you can avoid consecutive item selections with multiple repeat prevention techniques and track previous item picks for each list separately, employing history to mimic deterministic probability behavior.
+
+Our commitment to you extends beyond the current version of RNGNeeds. We're excited to share that we have a range of new features on the roadmap that we're actively working on. These include dynamic modification of probabilities, card deck extensions, and the ability to assign units to items in the list and allow picks to deplete them, among others.
+
+Thank you once again for choosing RNGNeeds. We're excited to see the amazing creations you'll bring to life with our plugin. Your trust in us fuels our passion to continue developing and refining RNGNeeds, to ensure it remains - probably - the best solution for all your random needs!
+
+---

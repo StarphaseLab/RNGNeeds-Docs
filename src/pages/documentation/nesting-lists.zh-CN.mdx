@@ -1,0 +1,253 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import {Note} from "@/components/mdx";
+import {GuidePLCollection, SamplesOverviewPage, PickHistoryPage, SelectingValuesPage, DepletableListsPage} from "@/components/PageLinks";
+import plCollectionBasicFunctions from '@/images/screenshots/plcollection-basic-functions.png';
+import plCollectionNamingLists from '@/images/screenshots/plcollection-naming-lists.png';
+import plCollectionReorderingLists from '@/images/screenshots/plcollection-reordering-lists.png';
+import plCollectionRemovingLists from '@/images/screenshots/plcollection-removing-lists.png';
+import plCollectionMethodSummary from '@/images/screenshots/plcollection-method-summary.png';
+export const translationStatus = 'auto'
+export const description = '了解如何将多个 ProbabilityList 嵌套在自定义 PLCollection 类中。'
+
+<HeroPattern />
+
+# 嵌套列表
+
+在其他集合中嵌套多个 ProbabilityList 可以显著提升组织的灵活性和功能性。
+相比标准的 C# List 或 Array，使用我们专门设计的 `PLCollection` 类能带来额外的优势。
+这些优势包括为集合中的列表命名以及从整个集合中选取值的能力，从而提升可用性和功能性。{{ className: 'lead' }}
+
+<Note>
+    本页介绍 PLCollection 类的功能和用法。如需实际的实现指南，请访问
+    <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a> 页面。
+</Note>
+
+---
+
+## PLCollection 类
+
+`PLCollection<T>` 是 **Probability List Collection** 的缩写，是一个泛型类，专为存储多个相同类型 `T` 的 ProbabilityList 而设计。
+该类提供了一系列实用方法，用于管理这些列表，并支持从整个集合中选取值。
+
+对于游戏设计师而言，`PLCollection` 在 Unity Editor 中提供了专属的 Inspector 绘制器，这一特性使管理和可视化列表变得更加便捷，大大提升了设计效率。
+
+### 设置 PLCollection
+
+要开始组织您的列表，只需在您的 **MonoBehaviour** 或 **ScriptableObject** 脚本中声明一个 `PLCollection<T>`。这与声明您所选类型的 `ProbabilityList` 的方式类似。
+
+```csharp {{ title: 'Adding PLCollection' }}
+using UnityEngine;
+using RNGNeeds;
+
+public class MyScript : MonoBehaviour 
+{    
+    public PLCollection<string> myCollection;
+}
+```
+
+<ImageX className="w-full h-auto" src={plCollectionBasicFunctions} alt="PLCollection - Basic Functions" width="1000"/>
+
+在 Unity Editor Inspector 中，您将看到 `PLCollection` 的新区域。
+左上角显示您的属性名称，以及当前集合中的列表数量。
+点击 **Add List to Collection** 按钮即可添加列表。
+
+---
+
+### 为列表命名
+
+在 `PLCollection` 中新创建的列表会自动被赋予一个与其在集合中位置对应的名称。
+这些名称的默认格式为 `#index`，例如 `#0`、`#1`、`#2`，以此类推。
+您可以通过点击名称字段并输入新名称来轻松重命名任何列表。
+
+<ImageX className="w-full h-auto" src={plCollectionNamingLists} alt="PLCollection - Naming Lists" width="1000"/>
+
+名称存储在 `ProbabilityList` 对象本身中，而不是存储在 `PLCollection` 类中。
+这提供了命名的灵活性，您可以为任何列表设置 `ListName` 属性，无论该列表是否属于某个集合。
+
+```csharp
+myProbabilityList.ListName = "My List";
+```
+
+如果添加列表时未指定名称，`PLCollection` 将根据其位置自动分配一个默认名称。
+
+```csharp {{ title: 'Adding and naming lists via code' }}
+// Adding an unnamed list
+myCollection.AddList(myList);               // List Name will be '#0'
+myCollection.AddList(myList, "My List");    // List Name will be 'My List'
+
+// Adding a named list
+myList.ListName = "My List";
+myCollection.AddList(myList);               // List Name will not change
+
+// Renaming a list
+myCollection.SetListName(0, "My List");
+myCollection.SetListName("My List", "New Name");
+```
+
+如果列表被成功找到并重命名，`SetListName` 方法将返回 `true`，否则返回 `false`。
+
+### 重新排列列表
+
+要在 Inspector 中启用列表重新排列功能，请点击集合右上角的 **Reorder Lists** 按钮。
+随后每个列表旁边将出现箭头，允许您通过上下移动来调整它们的顺序。
+
+<ImageX className="w-full h-auto" src={plCollectionReorderingLists} alt="PLCollection - Reordering Lists" width="1000"/>
+
+也可以使用 `MoveListUp` 和 `MoveListDown` 方法通过代码对列表进行重新排列。
+
+```csharp {{ title: 'Reordering lists via code' }}
+myCollection.MoveListUp(1);     // Move list at index 1 up
+myCollection.MoveListDown(1);   // Move list at index 1 down
+```
+
+只有当列表不处于集合中的第一位或最后一位时，才能对其进行移动。
+如果列表成功移动，`MoveListUp` 和 `MoveListDown` 方法将返回 `true`，否则返回 `false`。
+
+### 移除列表
+
+集合默认处于**锁定**状态，以防止意外移除列表。
+若要启用列表移除功能，请点击集合右上角的 **Lock** 按钮。
+
+<ImageX className="w-full h-auto" src={plCollectionRemovingLists} alt="PLCollection - Removing Lists" width="1000"/>
+
+解锁后，每个列表旁边将出现红色的 **Remove List from Collection** 按钮，允许您轻松删除它们。
+此外，点击标题栏中的 **Clear Collection** 按钮可以清空整个集合。
+
+<Note>
+    移除列表或清空集合是重要操作，这也是按钮呈红色的原因。
+    尽管这些操作不会触发确认弹窗，但可以通过 Unity Editor 的撤销功能来撤销这些操作。
+</Note>
+
+```csharp {{ title: 'Removing lists via code' }}
+myCollection.RemoveList(1);             // Remove list at index 1
+myCollection.RemoveList("My List");     // Remove list by name "My List"
+
+myCollection.ClearCollection();         // Removes all lists from the collection
+```
+
+如果列表被成功找到并移除，`RemoveList` 方法将返回 `true`，否则返回 `false`。
+
+### 清空列表
+
+PLCollection 还提供了用于清空单个列表的便捷方法，即移除列表中的所有物品。
+当您希望保留集合的结构框架但清除列表内容时，此功能非常有用。
+请注意，清空列表同时也会移除其 History。有关 History 的更多详情，请参阅
+<a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a> 章节。
+
+```csharp {{ title: 'Clearing lists via code' }}
+myCollection.ClearList(1);              // Clear list at index 1
+myCollection.ClearList("My List");      // Clear list by name "My List"
+myCollection.ClearAllLists();           // Clear all lists in the collection
+```
+
+如果列表被成功找到并清空，`ClearList` 方法将返回 `true`，否则返回 `false`。
+
+---
+
+## 从集合中选取值
+
+PLCollection 类提供了一组方法，用于从单个列表或整个集合中选取值。
+虽然集合本身不处理选择逻辑，但它提供了一个便捷的层级，用于管理和访问多个列表。
+
+要从集合中的特定列表选取值，您可以直接获取该列表，或使用 PLCollection 提供的方法。
+
+### 直接从 ProbabilityList 选取
+
+通过索引或名称从集合中访问列表，然后像操作任何标准 ProbabilityList 一样从中选取值。
+有关如何从列表中选取值的更多信息，请访问
+<a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a> 页面。
+
+```csharp {{ title: 'Selecting values directly from list' }}
+// Retrieving list from collection
+var list = myCollection.GetList(0);                     // Get list at index 0
+
+if (myCollection.GetList("MyList", out var list))       // Get list by name "MyList"
+{
+    var value = list.PickValue();
+}
+```
+
+### 通过 PLCollection 选取
+
+PLCollection 类提供了一组方法，用于从其中的列表中选取值。
+这些方法以 ProbabilityList 类中对应方法的名称命名，其摘要清楚地指明了使用哪个方法以及如何返回结果。
+
+<ImageX className="w-full h-auto" src={plCollectionMethodSummary} alt="PLCollection - Method Summary" width="1000"/>
+
+使用这些方法时，理解返回值非常重要，因为 `ProbabilityList` 中的某些操作会检查值是否被成功选取。
+在此基础上，`PLCollection` 增加了一个额外的检查层——列表本身是否被找到。
+由于从列表中选取值并非总能成功——列表可能为空或包含已禁用的条目——因此了解列表是否被找到以及值是否被成功选取至关重要。
+
+对于值类型来说，确定选取是否成功尤为重要，因为在选取失败时可能会返回默认值。
+
+<Note>
+    摘录自 [Selecting Values](/documentation/selecting-values#disabled-items) 页面：
+
+    *"但是，如果您使用的是 `value types`，选取失败的结果将是该类型的 `default` 值。在某些情况下，选取失败返回的值可能与真实值无法区分。例如，对于 `string`、`boolean` 或 `int` 等值类型，分别会返回空字符串、`false` 或 `0`。"*
+</Note>
+
+以下是从集合中选取值的各类方法族：
+
+- **Pick Value From** — 从列表中选取单个值的方法：
+  - `bool PickValueFrom(int index, out T value)`
+  - `bool PickValueFrom(string name, out T value)`
+- **Try Pick Value From** — 从列表中选取单个值并返回一个元组，指示列表是否被找到以及值是否被选取：
+  - `(bool ListFound, bool ValuePicked) TryPickValueFrom(int index, out T value)`
+  - `(bool ListFound, bool ValuePicked) TryPickValueFrom(string name, out T value)`
+- **Pick Values From**（简化变体）— 从列表中选取多个值的方法。这些方法返回一个值列表，不指示值是否被选取。如果列表未被找到，结果为 null；如果没有选取到值，列表为空：
+  - `List<T> PickValuesFrom(int index)`
+  - `List<T> PickValuesFrom(string name)`
+- **Pick Values From**（完整变体）— 从列表中选取多个值并返回布尔值指示列表是否被找到：
+  - `bool PickValuesFrom(int index, out List<T> values)`
+  - `bool PickValuesFrom(string name, out List<T> values)`
+- **Pick Values From**（填充变体）— 从列表中选取多个值并将结果填充到现有列表中。这些方法同样返回布尔值指示列表是否被找到：
+  - `bool PickValuesFrom(int index, List<T> listToFill)`
+  - `bool PickValuesFrom(string name, List<T> listToFill)`
+- **Pick Value From All** — 从集合中每个列表各选取一个值的方法：
+  - `List<T> PickValueFromAll()`
+- **Pick Values From All** — 从集合中每个列表各选取多个值的方法：
+  - `List<T> PickValuesFromAll()`
+
+随着 RNGNeeds v0.9.7 中 <a href={DepletableListsPage.Link}>{DepletableListsPage.Title}</a> 的加入，`PLCollection` 类还新增了用于补充集合中所有列表单位数的方法：
+
+- **Refill List** — 补充集合中某个列表单位数的方法：
+- `bool RefillList(int index)`
+- `bool RefillList(string name)`
+- **Refill All Lists** — 补充集合中所有列表单位数的方法：
+- `void RefillAllLists()`
+
+### 示例：通过 PLCollection 选取值
+
+以下示例演示了如何使用 `TryPickValueFrom` 方法从集合中的列表选取值。
+
+```csharp {{ title: 'Selecting values via PLCollection' }}
+var result = myCollection.TryPickValueFrom(0, out var value);
+result.ListFound        // Indicates whether the list was found
+result.ValuePicked      // Indicates whether the value was picked
+
+if (myCollection.TryPickValueFrom("My List", out var value).ValuePicked)
+{
+    // Value was picked, therefore list was found and not empty
+}
+else
+{
+    // Value was not picked - the selection was unsuccessful
+    // could also mean the list was not found or was empty
+}    
+```
+
+---
+
+### 总结
+
+PLCollection 类简化了 Unity 中 ProbabilityList 的管理，使多个列表的组织、修改和值选取变得轻松便捷。
+它提供了列表命名、重新排序和移除等实用功能，并配备了多种高效访问值的方法。
+
+如需实际用例，请探索
+<a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>，其中提供了在项目中实现 `PLCollection` 的详细指南。
+对于更复杂的使用场景（如模块化战利品表方案），请查看插件附带的 **Treasure Chest** 和 **Deck Builder** 示例。
+
+在 <a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a> 中了解更多示例。
+
+---

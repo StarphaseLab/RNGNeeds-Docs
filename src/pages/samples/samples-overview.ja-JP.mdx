@@ -1,0 +1,97 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import { SupportPage, SamplesDicePlaygroundPage, SamplesRandomAudioPage, SamplesMonsterSpawnerPage } from "@/components/PageLinks";
+import installingSamplesPackageManager from '@/images/screenshots/installing-samples-manager.png';
+import installingSamplesAssetsFolder from '@/images/screenshots/installing-samples-assets-folder.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import {Note} from "@/components/mdx";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeeds のサンプルを Unity にインポートして探索する方法を学びましょう。ダイスロールからルートテーブルまで、これらの例がプロジェクトで確率分布を活用するためのガイドとなります。'
+
+<HeroPattern />
+
+# サンプル概要
+
+RNGNeeds には、プラグインの多様な可能性を探索し、開発を始めるためのさまざまなサンプルが付属しています。
+これらのサンプルは、シンプルなダイスロールから複雑なルートテーブルまで多岐にわたります。このセクションでは、Unity プロジェクトにサンプルをインポートする方法をご説明します。 {{ className: 'lead' }}
+
+---
+
+## サンプルのインポート
+
+RNGNeeds はパッケージとして配布されているため、Assets フォルダーではなく Packages フォルダー内に表示されます。
+この設計により、プロジェクトをクリーンかつ整理された状態に保つことができます。ただし、サンプルは別途取り込む必要があります。手順は以下のとおりです。
+
+**ステップ 1：Package Manager を開く**
+
+Unity で **Window &raquo; Package Manager** に移動します。Package Manager ウィンドウが開き、プロジェクト内のさまざまな Unity パッケージを管理・インストールできます。
+
+<ImageX className="w-full h-auto" src={installingSamplesPackageManager} alt="Package Manager Window" width="1000"/>
+
+**ステップ 2：RNGNeeds を見つける**
+
+Package Manager ウィンドウの「In Project」セクションから RNGNeeds を見つけます。
+
+**ステップ 3：サンプルをインポートする**
+
+RNGNeeds の横にある矢印をクリックして詳細を展開します。「Import Samples」ボタンが表示されます。このボタンをクリックすると、サンプルがプロジェクトに取り込まれます。
+
+**ステップ 4：Assets フォルダー内のサンプルを確認する**
+
+サンプルがインポートされると、プロジェクトの Assets フォルダー内に表示されます。自由に探索・実験してみてください。
+
+<ImageX className="w-full h-auto" src={installingSamplesAssetsFolder} alt="Samples in Assets Folder" width="1000"/>
+
+<Note>
+    **マテリアルのアップグレード**
+
+    URP または HDRP プロジェクトにサンプルをインポートすると、マテリアルがピンク色になり変換が必要になる場合があります。これは、RNGNeeds がビルトインレンダーパイプラインで配布されているためです。
+
+    **URP へのアップグレード** - *Render Pipeline Converter* を使用して
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/features/rp-converter.html" target="_blank" rel="noopener noreferrer">こちらのガイド</a>に従ってください。
+
+    **HDRP へのアップグレード** - 
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@16.0/manual/Upgrading-To-HDRP.html" target="_blank" rel="noopener noreferrer">こちら</a>のガイドに従ってください。
+
+</Note>
+
+---
+
+## サンプルの探索
+
+RNGNeeds に付属するサンプルは、さまざまなユースケースとシナリオをカバーしています。コードを詳しく読み、設定を調整して、すべてがどのように動作するかを確かめてみてください。
+これらのサンプルは教育的かつ刺激的なものとして設計されており、開発の土台として活用していただけます。
+
+以下は、用意されているサンプルの簡単な概要です。
+
+- <a href={SamplesDicePlaygroundPage.Link}>{SamplesDicePlaygroundPage.Title}</a> - さまざまなダイスロールと組み合わせをシミュレートします。
+- <a href={SamplesRandomAudioPage.Link}>{SamplesRandomAudioPage.Title}</a> - 確率の変化によるキャラクターのレスポンスをデザインします。
+- <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> - 確率に基づいてさまざまなモンスターのスポーンを制御します。
+- **Treasure Chest** - 異なるレアリティレベルを持つモジュラーなルートテーブルを作成します。
+- **Card Deck Builder** - ドロー、シャッフルなどの操作を含むカードデッキを管理します。
+
+これらのサンプルを自由に改変して、ご自身のプロジェクトに組み込んでください。RNGNeeds のパワーと柔軟性を理解する手助けとなるよう設計されています。
+
+これらのサンプルに関するフィードバックは大変貴重です！追加のサンプルや新しいアイデアのご提案があれば、ぜひコミュニティでシェアしてください。
+
+---
+
+## ロードマップ：インスピレーションと探索のためのサンプル
+
+RNGNeeds の使い方を具体的な例でご案内し、インスピレーションを提供することに取り組んでいます。
+これらのサンプルは、Unity ゲーム開発における当プラグインの創造的な可能性と実践的な活用方法を紹介するために設計されています。
+現在開発中の 2 つの魅力的なサンプルをご紹介します（今後さらに追加予定）。
+
+- **The Improbable Lab：** ゲームデザインにおける RNG の原則を強調するアドベンチャーミニゲームです。このサンプルを通じて、RNGNeeds を使って魅力的で予測不能なゲームプレイ要素を作る方法を探索できます。確率がいかにユニークでスリリングなゲーム体験を生み出すかを楽しく体験できます。
+
+- **Battlefield of Odds：** 確率が支配する戦場へ飛び込みましょう！このアクションたっぷりのミニゲームは、モンスターの群れとの戦いのあらゆる側面が RNG によって動かされることを示しています。ルートドロップ、敵の行動、攻撃の結果など、RNG が生み出すダイナミックでレスポンシブな世界を体験できます。
+
+更に多くのサンプルを開発・リリースしていきますのでご期待ください。各サンプルは、ゲーム開発における革新的な確率分布の世界へのユニークな視点を提供します。始めたばかりの方も、新しいアイデアをお探しの方も、サンプルが創造力を刺激し、RNGNeeds の可能性への理解を深めるお手伝いをします！
+
+**お困りの場合は？**
+
+サンプルに関して問題が発生したり、ご質問がある場合は、遠慮なく
+<a href={SupportPage.Link}>{SupportPage.Title}</a> からお問い合わせいただくか、<a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord コミュニティ</a>にご参加ください。お気軽にどうぞ！
+
+---

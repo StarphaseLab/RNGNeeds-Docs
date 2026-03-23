@@ -1,0 +1,256 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import {Note} from "@/components/mdx";
+import {GuidePLCollection, SamplesOverviewPage, PickHistoryPage, SelectingValuesPage, DepletableListsPage} from "@/components/PageLinks";
+import plCollectionBasicFunctions from '@/images/screenshots/plcollection-basic-functions.png';
+import plCollectionNamingLists from '@/images/screenshots/plcollection-naming-lists.png';
+import plCollectionReorderingLists from '@/images/screenshots/plcollection-reordering-lists.png';
+import plCollectionRemovingLists from '@/images/screenshots/plcollection-removing-lists.png';
+import plCollectionMethodSummary from '@/images/screenshots/plcollection-method-summary.png';
+export const description = 'Probability Listを専用のPLCollectionクラス内にネストする方法を学びます。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# リストのネスト
+
+複数の Probability List を他のコレクション内にネストすることで、組織の柔軟性と機能性が大幅に向上します。
+標準のC# ListやArrayの代わりに専用クラス `PLCollection` を使用することで、さらなるメリットが得られます。
+コレクション内のリストに名前を付けたり、コレクション全体から値を選択したりする機能が含まれており、使いやすさと機能性の両方が向上します。 {{ className: 'lead' }}
+
+<Note>
+    このページでは PLCollection クラスの機能と使い方を紹介します。実際の実装ガイドについては、
+    <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a> ページをご覧ください。
+</Note>
+
+---
+
+## PLCollection クラス
+
+`PLCollection<T>`（**Probability List Collection** の略）は、同じ型 `T` の複数の Probability List を保持するための汎用クラスです。
+このクラスはリストの管理に役立つメソッドを提供し、コレクション全体から値を選択することも可能です。
+
+ゲームデザイナーにとって、`PLCollection` は Unity Editor での特別な Inspector ドロワーにより大きなメリットがあります。この機能によりリストの管理と可視化が容易になり、デザインプロセスが向上します。
+
+### PLCollection のセットアップ
+
+リストの整理を始めるには、**MonoBehaviour** または **ScriptableObject** スクリプト内で `PLCollection<T>` を宣言するだけです。これは、選択した型の `ProbabilityList` を宣言する方法と同様に行います。
+
+```csharp {{ title: 'PLCollection の追加' }}
+using UnityEngine;
+using RNGNeeds;
+
+public class MyScript : MonoBehaviour 
+{    
+    public PLCollection<string> myCollection;
+}
+```
+
+<ImageX className="w-full h-auto" src={plCollectionBasicFunctions} alt="PLCollection - Basic Functions" width="1000"/>
+
+Unity Editor の Inspector では、`PLCollection` 用の新しいセクションが表示されます。
+左上にはプロパティ名と現在コレクションに含まれているリストの数が表示されます。
+**Add List to Collection** ボタンをクリックすることでリストを追加できます。
+
+---
+
+### リストの命名
+
+`PLCollection` 内に新しく作成されたリストには、コレクション内の位置に対応する名前が自動的に割り当てられます。
+デフォルトの名前形式は `#index`（例：`#0`、`#1`、`#2` など）です。
+名前フィールドをクリックして新しい名前を入力することで、任意のリストの名前を簡単に変更できます。
+
+<ImageX className="w-full h-auto" src={plCollectionNamingLists} alt="PLCollection - Naming Lists" width="1000"/>
+
+名前は `PLCollection` クラスではなく、`ProbabilityList` オブジェクト自体に保存されます。
+これにより、コレクションの一部かどうかに関わらず、任意のリストに `ListName` プロパティを設定できる柔軟性が生まれます。
+
+```csharp
+myProbabilityList.ListName = "My List";
+```
+
+名前が指定されずにリストが追加された場合、`PLCollection` はその位置に基づいてデフォルト名を自動的に割り当てます。
+
+```csharp {{ title: 'コードによるリストの追加と命名' }}
+// 名前なしのリストを追加
+myCollection.AddList(myList);               // リスト名は '#0' になります
+myCollection.AddList(myList, "My List");    // リスト名は 'My List' になります
+
+// 名前付きのリストを追加
+myList.ListName = "My List";
+myCollection.AddList(myList);               // リスト名は変更されません
+
+// リストの名前変更
+myCollection.SetListName(0, "My List");
+myCollection.SetListName("My List", "New Name");
+```
+
+`SetListName` メソッドは、リストが見つかり正常に名前変更された場合は `true` を、そうでない場合は `false` を返します。
+
+### リストの並び替え
+
+Inspector 内でリストの並び替えを有効にするには、コレクションの右上にある **Reorder Lists** ボタンをクリックします。
+各リストの横に矢印が表示され、上下に移動してリストの順序を調整できます。
+
+<ImageX className="w-full h-auto" src={plCollectionReorderingLists} alt="PLCollection - Reordering Lists" width="1000"/>
+
+リストはコードを使って `MoveListUp` および `MoveListDown` メソッドで並び替えることも可能です。
+
+```csharp {{ title: 'コードによるリストの並び替え' }}
+myCollection.MoveListUp(1);     // インデックス1のリストを上に移動
+myCollection.MoveListDown(1);   // インデックス1のリストを下に移動
+```
+
+リストは、コレクションの最初または最後でない場合にのみ移動できます。
+`MoveListUp` および `MoveListDown` メソッドは、リストが正常に移動された場合は `true` を、そうでない場合は `false` を返します。
+
+### リストの削除
+
+コレクションはデフォルトで **Locked**（ロック）状態になっており、誤ってリストを削除しないよう保護されています。
+リストの削除を有効にするには、コレクションの右上にある **Lock** ボタンをクリックします。
+
+<ImageX className="w-full h-auto" src={plCollectionRemovingLists} alt="PLCollection - Removing Lists" width="1000"/>
+
+ロックが解除されると、各リストの横に赤い **Remove List from Collection** ボタンが表示され、簡単に削除できます。
+また、ヘッダーにある **Clear Collection** ボタンをクリックすることで、コレクション全体をクリアできます。
+
+<Note>
+    リストの削除やコレクションのクリアは重要な操作であり、ボタンの赤色によって強調されています。
+    これらの操作は確認ポップアップを表示しませんが、Unity Editor の Undo 機能を使って元に戻すことができます。
+</Note>
+
+```csharp {{ title: 'コードによるリストの削除' }}
+myCollection.RemoveList(1);             // インデックス1のリストを削除
+myCollection.RemoveList("My List");     // 名前 "My List" のリストを削除
+
+myCollection.ClearCollection();         // コレクションからすべてのリストを削除
+```
+
+`RemoveList` メソッドは、リストが正常に見つかり削除された場合は `true` を、そうでない場合は `false` を返します。
+
+### リストのクリア
+
+PLCollection は、個々のリストをクリアする（リストからすべてのアイテムを削除する）便利なメソッドも提供しています。
+この機能は、コレクションの構造的なフレームワークを維持しつつ、リストの内容を消去したい場合に便利です。
+リストをクリアすると履歴も削除されることに注意してください。履歴の詳細については、
+<a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a> セクションをご参照ください。
+
+```csharp {{ title: 'コードによるリストのクリア' }}
+myCollection.ClearList(1);              // インデックス1のリストをクリア
+myCollection.ClearList("My List");      // 名前 "My List" のリストをクリア
+myCollection.ClearAllLists();           // コレクション内のすべてのリストをクリア
+```
+
+`ClearList` メソッドは、リストが正常に見つかりクリアされた場合は `true` を、そうでない場合は `false` を返します。
+
+---
+
+## コレクションからの値の選択
+
+PLCollection クラスは、個々のリストまたはコレクション全体から値を選択するためのメソッドセットを提供します。
+コレクション自体は選択ロジックを処理しませんが、複数のリストの管理とアクセスのための便利なレイヤーを提供します。
+
+コレクション内の特定のリストから値を選択するには、リストを直接取得するか、PLCollection が提供するメソッドを利用します。
+
+### Probability List から直接選択する
+
+コレクションからインデックスまたは名前でリストにアクセスし、標準の Probability List と同じように値を選択します。
+リストから値を選択する方法の詳細については、
+<a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a> ページをご覧ください。
+
+```csharp {{ title: 'リストから直接値を選択する' }}
+// コレクションからリストを取得
+var list = myCollection.GetList(0);                     // インデックス0のリストを取得
+
+if (myCollection.GetList("MyList", out var list))       // 名前 "MyList" のリストを取得
+{
+    var value = list.PickValue();
+}
+```
+
+### PLCollection 経由での選択
+
+PLCollection クラスは、コレクション内のリストから値を選択するためのメソッドセットを提供します。
+これらのメソッドは ProbabilityList クラスの対応するメソッドにちなんで命名されており、どのメソッドが使用され、結果がどのように返されるかがサマリーに明記されています。
+
+<ImageX className="w-full h-auto" src={plCollectionMethodSummary} alt="PLCollection - Method Summary" width="1000"/>
+
+これらのメソッドを使用する際の戻り値を理解することが重要です。`ProbabilityList` の一部の操作は値が正常に選択されたかどうかを確認します。
+さらに、`PLCollection` はリスト自体が見つかったかどうかを確認するレイヤーを追加します。
+リストからの値の取得は保証されていません（リストが空または無効なアイテムのみの場合があります）ので、リストが見つかったかどうかと値が正常に選択されたかどうかの両方を把握することが重要です。
+
+選択の成否を判断することは、特に値型において重要です。選択が失敗した場合にデフォルト値が返される可能性があります。
+
+<Note>
+    [Selecting Values](/documentation/selecting-values#disabled-items) ページより抜粋：
+    
+    *「ただし、`value types`（値型）を使用している場合、選択が失敗した結果は型の `default` 値になります。
+    場合によっては、失敗した選択から返された値が本物と区別できないことがあります。
+    例えば、`string`、`boolean`、`int` などの値型では、それぞれ空の文字列、`false`、または `0` が返されます。」*
+</Note>
+
+コレクションから値を取得するために利用可能なメソッドファミリーの一覧を以下に示します。
+
+- **Pick Value From** - リストから単一の値を取得するメソッド：
+  - `bool PickValueFrom(int index, out T value)`
+  - `bool PickValueFrom(string name, out T value)`
+- **Try Pick Value From** - リストから単一の値を取得し、リストが見つかったかどうかと値が取得されたかどうかを示すタプルを返すメソッド：
+  - `(bool ListFound, bool ValuePicked) TryPickValueFrom(int index, out T value)`
+  - `(bool ListFound, bool ValuePicked) TryPickValueFrom(string name, out T value)`
+- **Pick Values From**（簡易版） - リストから複数の値を取得するメソッド。値のリストを返しますが、値が取得されたかどうかは示しません。リストが見つからない場合は null、値が選択されなかった場合はリストが空になります：
+  - `List<T> PickValuesFrom(int index)`
+  - `List<T> PickValuesFrom(string name)`
+- **Pick Values From**（フル版） - リストから複数の値を取得し、リストが見つかったかどうかを示す bool を返すメソッド：
+  - `bool PickValuesFrom(int index, out List<T> values)`
+  - `bool PickValuesFrom(string name, out List<T> values)`
+- **Pick Values From**（フィル版） - リストから複数の値を取得し、既存のリストに結果を格納するメソッド。リストが見つかったかどうかを示す bool も返します：
+  - `bool PickValuesFrom(int index, List<T> listToFill)`
+  - `bool PickValuesFrom(string name, List<T> listToFill)`
+- **Pick Value From All** - コレクション内の各リストから単一の値を取得するメソッド：
+  - `List<T> PickValueFromAll()`
+- **Pick Values From All** - コレクション内の各リストから複数の値を取得するメソッド：
+  - `List<T> PickValuesFromAll()`
+
+RNGNeeds v0.9.7 での <a href={DepletableListsPage.Link}>{DepletableListsPage.Title}</a> の追加により、`PLCollection` クラスにはコレクション内のすべてのリストのユニットを補充するメソッドも含まれています。
+
+- **Refill List** - コレクション内のリストのユニットを補充するメソッド：
+- `bool RefillList(int index)`
+- `bool RefillList(string name)`
+- **Refill All Lists** - コレクション内のすべてのリストのユニットを補充するメソッド：
+- `void RefillAllLists()`
+
+### 例：PLCollection 経由での値の選択
+
+以下は、`TryPickValueFrom` メソッドを使用してコレクション内のリストから値を選択する方法を示す例です。
+
+```csharp {{ title: 'PLCollection 経由での値の選択' }}
+var result = myCollection.TryPickValueFrom(0, out var value);
+result.ListFound        // リストが見つかったかどうかを示します
+result.ValuePicked      // 値が取得されたかどうかを示します
+
+if (myCollection.TryPickValueFrom("My List", out var value).ValuePicked)
+{
+    // 値が取得されました。リストが見つかり、かつ空でないことを意味します
+}
+else
+{
+    // 値が取得されませんでした。選択が失敗しました
+    // リストが見つからなかった、またはリストが空だった可能性もあります
+}    
+```
+
+---
+
+### まとめ
+
+PLCollection クラスは Unity における Probability List の管理を効率化し、複数のリストの整理、変更、値の選択を容易に行えるようにします。
+リストの命名、並び替え、削除などの実用的な機能と、値に効率的にアクセスするための多様なメソッドを提供します。
+
+実際のユースケースについては、
+<a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a> をご覧ください。プロジェクトに `PLCollection` を実装するための詳細なガイドが提供されています。
+モジュール式のルートテーブルアプローチを活用したより複雑なユースケースについては、プラグインに付属の **Treasure Chest** および **Deck Builder** サンプルをご確認ください。
+
+これらやその他の例については、
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a> でご覧いただけます。
+
+---

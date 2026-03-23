@@ -1,0 +1,55 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+
+import samplesUnitAudioScene from '@/images/screenshots/samples-unit-audio-scene.png';
+import samplesUnitAudioAnnie from '@/images/screenshots/samples-unit-audio-annie.png';
+import { RepeatPreventionPage } from "@/components/PageLinks";
+
+export const translationStatus = 'auto'
+
+export const description =
+    '探索 RNGNeeds 如何为游戏的音频添加随机性——无论是单位响应、对话选项还是环境音效。Random Audio 示例展示了如何打造动态的听觉体验。'
+
+<HeroPattern />
+
+# Random Audio
+
+借助 RNGNeeds 的 Random Audio 示例，让您的游戏角色焕发生机。
+本示例展示了如何随机化单位响应、对话选项和环境音效，从而打造更具沉浸感的动态音频体验。
+从奇特的角色台词到罕见的响应，轻松学会如何精细调整游戏的听觉世界。{{ className: 'lead' }}
+
+---
+
+## AudioClip 与概率
+
+为游戏音频添加随机性是 RNG 大显身手的常见场景，无论是单位响应、对话选项还是环境音效。RNGNeeds 非常适合处理这类任务，就像掷一个简单的整数骰子一样轻松。
+要实现这一点，您可以定义一个类型为 `AudioClip` 的 `ProbabilityList`。从该列表中选取值后，将返回可直接播放的 AudioClip。
+
+```csharp {{ title: 'ProbabilityList handling AudioClip Type'}}
+public ProbabilityList<AudioClip> randomAudio;
+
+if(audioSource.isPlaying == false) audioSource.PlayOneShot(randomAudio.PickValue());
+```
+
+要查看实际效果，请打开 **RandomAudioClip** 场景。在这个简单的小游戏中，您将扮演 Annie——一位热情过头、话多不断的实验室助手。您可以在 **/Prefabs** 文件夹中找到并打开 **Annie Lab Assistant** Prefab，从而查看她的音频设置。在 Prefab 层级中，找到 **UnitAudio** GameObject。
+附加的 `UnitAudio` 脚本包含三个 Probability List，分别对应 Select（选中）、Move（移动）和 Interact（交互）响应。
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioAnnie} alt="Samples Random Unit Audio Annie" width="1000"/>
+
+这些响应的不同概率使独特且罕见的反应成为可能，例如 Annie 那句出现频率极低的奇特台词。
+
+这种设置概率的灵活性让您能够精细调整听觉体验。
+例如，如果您收到反馈说某个响应让玩家感到厌烦，您只需降低它被播放的概率，而不必将其完全删除。
+
+这些 ProbabilityList 使用了
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> 功能，确保 Annie 不会连续说出同一句台词。
+
+<ImageX className="w-full h-auto" src={samplesUnitAudioScene} alt="Samples Random Unit Audio Scene" width="1000"/>
+
+### 控制 Annie
+
+- **左键单击以选中单位**（蓝色物体）。重复单击将触发 *Select Response*。
+- **右键单击地面以发起移动**，并播放 *Move Response*。
+- **右键单击金色物体以进行交互**，并播放 *Interact Response*。
+
+---

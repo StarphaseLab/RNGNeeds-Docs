@@ -1,0 +1,99 @@
+﻿import {HeroPattern} from "@/components/HeroPattern";
+import {
+    GettingStartedPage, NestingListsPage,
+    PreferencesPage, SamplesOverviewPage,
+    ProbabilityInfluencePage,
+    RepeatPreventionPage,
+    SupportPage, GuideSelectingDistinctValues
+} from "@/components/PageLinks";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+export const description =
+    'Get answers to the most common questions about RNGNeeds in our FAQ section, covering everything from basic setup to advanced features.'
+
+<HeroPattern />
+
+# Frequently Asked Questions
+
+Welcome to the FAQ section of RNGNeeds documentation. 
+This space is dedicated to addressing the most common questions and concerns related to the usage and functionality of the RNGNeeds plugin. 
+While we've provided a set of initial questions and answers based on our understanding of potential inquiries, 
+we understand that this is just the beginning. As we gather real user questions and feedback, 
+this section will be regularly updated to reflect the evolving needs of our user base. {{ className: 'lead' }}
+
+---
+
+## How do I install RNGNeeds?
+
+RNGNeeds is installed as a Package through Unity's Asset Store. Please visit our 
+<a href={GettingStartedPage.Link}>{GettingStartedPage.Title}</a> 
+section and follow the installation guide.
+
+## Does RNGNeeds work with my version of Unity?
+
+RNGNeeds is developed in Unity 2020 LTS and tested up to Unity 6. Minimum Unity version is 2020.2.
+
+## Are there samples included with RNGNeeds?
+
+Yes, RNGNeeds includes a collection of demo scenes and samples to help you get started. 
+These samples demonstrate various applications of the plugin, providing a hands-on way to explore its features. 
+You can find an import guide on our 
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a> page.
+
+## Can I use RNGNeeds with my custom objects?
+
+Absolutely! RNGNeeds is engineered to function seamlessly with any value or reference type, whether it's a part of Unity's suite or your custom **serializable** class. It doesn't matter if it's an *int, Vector3, GameObject, Enum, AnimationCurve, LayerMask,* or your *'Monster' Scriptable Object*, -
+you can craft a `ProbabilityList<OfAnyType>` with ease.
+
+## Where can I find the plugin settings?
+
+RNGNeeds houses its settings within the Editor Preferences panel. To discover how to locate this, refer to the
+<a href={PreferencesPage.Link}>{PreferencesPage.Title}</a>
+section in our User Guide.
+
+## How can I dynamically influence the odds of a particular outcome?
+
+RNGNeeds introduces the concept of ***Probability Influence Providers***. With them, you can design rules to dynamically modify probabilities based on external factors. Please visit our
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+section of Documentation to learn more.
+
+## How can I select distinct values only?
+To select unique values, please follow the method outlined in 
+<a href={GuideSelectingDistinctValues.Link}>this guide</a>, utilizing the **Depletable Lists** feature of RNGNeeds. 
+
+## Can I prevent the same item from being selected consecutively?
+
+Yes, RNGNeeds offers multiple ***Repeat Prevention Techniques*** that limit or eliminate repeated picks. Please visit our
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a>
+section of Documentation to learn more.
+
+## Can I nest multiple Probability Lists?
+
+Certainly! However, please note that nesting a ProbabilityList within a generic List or Array may not be fully supported in the editor and can potentially cause repaint issues. 
+To conveniently handle nested lists, we recommend using our special class `PLCollection<T>`.
+For more information on how to effectively nest Probability Lists, please refer to the 
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> 
+section in our Documentation.
+
+## Why don't my scripts compile after following the guides?
+
+In our documentation, we sometimes omit namespaces in code snippets to keep things concise. 
+If you're facing compilation issues, ensure you've added the necessary namespace. 
+Simply include `using RNGNeeds;` at the beginning of your script to resolve any related issues.
+
+---
+
+## What kind of support is available if I run into issues?
+
+Your satisfaction is our top priority. If you're having difficulties, please visit our 
+<a href={SupportPage.Link}>{SupportPage.Title}</a>
+to find receive guidance and options to get in touch.
+
+## How can I suggest improvements or new features for RNGNeeds?
+
+We welcome your feedback and suggestions! Feel free to share them with us via
+<a href={SUPPORT_EMAIL_LINK}>email</a>
+or on our 
+<a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord server</a>.
+We're always looking for ways to make RNGNeeds even better!
+
+---

@@ -1,0 +1,126 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage, RepeatPreventionPage, SelectingValuesPage} from "@/components/PageLinks";
+import obstacleSpawner from '@/images/screenshots/testing-outcomes-obstacle-spawner.png';
+import obstacleSpawnerTest from '@/images/screenshots/testing-outcomes-obstacle-spawner-test.png';
+import testingOutcomesConsole from '@/images/screenshots/testing-outcomes-console.png';
+import {ImageX} from "@/components/ImageX";
+
+export const description =
+    '掌握 RNGNeeds 测试工具，在 Inspector 和运行时场景中评估并优化您的概率配置。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# 测试结果
+
+深入阅读本指南，了解 RNGNeeds 提供的测试工具与技术。通过模拟各种场景，您可以更深入地理解由您精心设计的概率和配置所产生的结果。{{ className: 'lead' }}
+
+---
+
+## 在 Inspector 中测试
+
+在设计概率分布时，通常需要在不频繁进入 Play Mode 的情况下可视化结果。RNGNeeds 的测试功能允许您模拟选取过程，将抽象的百分比转化为具体的统计数据，有助于理解并优化您的配置。
+
+**考虑以下场景**：您正在开发一款随机生成障碍物的无尽跑酷游戏。代码尝试从六个障碍物列表中选取一个，概率各不相同，其中一个被禁用。
+
+<ImageX className="w-full h-auto" src={obstacleSpawner} alt="Obstacle Spawner Inspector" width="1000"/>
+
+```csharp {{ title: 'Obstacle Spawner Code'}}
+public class ObstacleSpawner : MonoBehaviour
+{
+    public ProbabilityList<GameObject> obstacles;
+
+    public void SpawnObstacle()
+    {
+        if (obstacles.TryPickValue(out var obstacle))
+        {
+            // Spawn Obstacle
+        }
+    }
+}
+```
+
+假设您预计在一分钟的游戏时间内会生成约 180 个障碍物。为了可视化这些生成的分布情况，打开抽屉的 **PICK** 部分，将拾取次数设置为 180，然后点击 **TEST** 按钮。
+
+<ImageX className="w-full h-auto" src={obstacleSpawnerTest} alt="Obstacle Spawner Test" width="1000"/>
+
+Inspector 随后将显示每个项目的结果：被选取的次数及其最终概率。**百分比通过颜色编码**来突出显示设计值与实际结果之间的偏差。默认情况下，被低估的项目显示为橙色，而被高估的项目显示为绿色。
+
+<Note>
+    **自定义测试结果**
+
+    **颜色着色** - 如果默认颜色不符合您的需求，可以在 <a href={PreferencesPage.Link}>{PreferencesPage.Title}</a> 窗口中使用 *Test Color Gradient* 修改着色。这是所有 Probability List 抽屉的全局设置。
+
+    **灵敏度** - 在每个抽屉的附加选项子菜单中，单独微调颜色偏差（灵敏度）。
+
+    **百分比位数** - 使用抽屉附加选项子菜单中的 *Test % Digits* 滑块控制显示百分比的精度。
+
+    如需深入了解自定义设置，请查阅我们的 <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> 文档页面。
+</Note>
+
+为了提供全面的详细信息，结果也会记录在控制台中，详细说明选择方法、种子、拾取次数、重复百分比等内容。
+
+<ImageX className="w-full h-auto" src={testingOutcomesConsole} alt="Testing Outcomes Console" width="1000"/>
+
+### 测试可耗尽列表
+
+务必记住，**测试可耗尽列表会消耗项目单位**，就像实际游戏过程中一样。在测试期间选取项目时，其单位数量会减少，每次都会设置列表的新状态。虽然您可能会有意将列表设计为游戏体验的一部分（部分耗尽），但如果您的目的只是测试结果而不产生永久变化，请考虑在测试后补充项目。
+
+<Note>
+    提示：建议频繁测试以获得更准确的洞察。为避免每次测试后都需要手动补充项目，您可以 **Control + 单击**（macOS 上为 **Command + 单击**）**TEST** 按钮。此快捷操作会在每次测试前自动补充项目。
+</Note>
+
+---
+
+## 解读测试结果
+
+在分析结果时，设计师可能会这样解读：*"在一分钟的游戏时间内，大约会有 34 个爆炸桶作为障碍物生成。"* 从控制台数据可以看出，*"大约会生成 158 个障碍物，其中 32 个是重复的。"* 预期 180 次拾取与实际数量之间的差异，是由于列表中存在一个被禁用的项目。
+
+<Note>
+    有关禁用项目如何影响拾取次数或概率的信息，请访问 <a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> 页面。要了解最小化或消除连续重复拾取的方法，请参阅我们的 <a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> 页面。
+</Note>
+
+然而，需要注意的是，180 次拾取可能无法提供全面的统计代表性。重复测试可能会显示结果略有差异。要获得更准确的洞察，请考虑增加拾取次数。例如，使用 1,800 次拾取进行测试，结果可能会更接近预期概率。
+
+测试完成后，您可以通过点击 TEST 按钮旁的 X 按钮来重置结果。此步骤并非必须，因为测试结果不会随列表一起存储。它们是抽屉数据的一部分，在切换 Inspector 时会自动重置。
+
+---
+
+## 在代码中测试
+
+对于需要在运行时评估配置的场景，或者希望直接在代码中分析测试统计数据的情况，RNGNeeds 提供了一种执行测试并获取 `TestResults` 的方法。
+
+```csharp {{ title: 'Testing in Code'}}
+var testResults = myProbabilityList.RunTest();
+testResults.Print();
+```
+
+`TestResults` 类将结果封装在 `Dictionary<int, int> indexPicks` 中，其中键代表项目在列表中的索引，值表示其被拾取的频率。此类还提供了额外的信息：
+
+- `string selectionMethodName` - 所应用选择方法的名称。
+- `PreventRepeatMethod preventRepeat` - 用于防止重复的方法。
+- `uint seed` - 选取前生成的种子。
+- `int pickCountMin` - 指定的最小拾取次数。
+- `int pickCountMax` - 指定的最大拾取次数。
+- `int pickCount` - 在最小-最大范围内随机选择的拾取次数。
+- `int actualPickCount` - 实际拾取的项目总数。
+- `int repeatCount` - 连续相同拾取的次数。
+- `double testDuration` - 测试的持续时间。
+- `float RepeatsPercentage` - 计算方式为 `repeatCount / actualPickCount`。
+
+此外，`TestResults` 还提供了几个用于格式化和展示结果的实用属性和方法：
+
+- `void Print()` - 以类似 Inspector 测试的方式显示结果。
+- `string SelectionMethodInfo` - 关于选择方法、重复防止及种子的信息。
+- `string PickCountInfo` - 最小、最大及随机选择的拾取次数详情。
+- `string ActualPickCountInfo` - 已拾取项目、重复百分比及总数的数据。
+- `string TestDurationInfo` - 以用户友好的格式呈现测试持续时间。
+- `string GetFormattedResults()` - 提供简洁的结果概览。
+- `string GetFormattedPickDetails()` - 提供每个索引的详细分类。
+- `string GetFormattedResultsWithDetails()` - 合并以上两种输出。
+
+要重置测试结果，只需调用 `myTestResults.Clear();`。
+
+---

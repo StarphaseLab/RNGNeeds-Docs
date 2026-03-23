@@ -1,0 +1,42 @@
+import {Col, Properties, Property, Row} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+export const translationStatus = 'auto'
+export const description =
+  '了解 RNGNeeds 中使用的术语和概念。深入理解这些内容将有助于您更好地浏览文档及插件本身。'
+
+<HeroPattern />
+# 术语表
+要充分发挥 RNGNeeds 的潜力，理解插件中使用的核心术语和概念至关重要。
+本页为您提供常用主要术语的定义。 {{ className: 'lead' }}
+
+---
+<Row>
+    <Col>
+        <Properties>
+            <Property name="Probability List">Probability List（概率列表）是 `Probability Items`（概率项）的集合，每个项代表一个可被选中的潜在值。该列表定义了一组可能的结果，每个结果都有其对应的概率。</Property>
+            <Property name="Probability Item">Probability Item（概率项）是 `Probability List` 中的单个条目。它封装了一个用户自定义的值（值类型或引用类型），并将其与特定的 Base Probability（基础概率）关联。该项还存储了其他附加信息，例如启用或锁定状态。</Property>
+            <Property name="Base Probability">Base Probability（基础概率）是分配给 `Probability Item` 的初始概率值。该值可以手动调整，但不会直接影响选择过程，而是作为进一步调整和计算的参考基准。</Property>
+            <Property name="Probability">Probability（概率）是指 `Probability Item` 被选中的调整后概率。它是由 Base Probability 以及任何影响因素或调整共同计算得出的值，并在选择过程中实际使用。</Property>
+            <Property name="Enabled Probability">Enabled Probability（已启用概率）是列表中所有已启用 `Probability Items` 的概率总和。被禁用的项不计入此计算。Enabled Probability 的值将在选择过程中使用。</Property>
+            <Property name="Unlocked Probability">Unlocked Probability（已解锁概率）是列表中所有未锁定 `Probability Items` 的概率总和。当其他项的概率发生调整时，已解锁概率也可能随之变化。在设计列表时，概率归一化或重新计算过程中会参考此值。</Property>
+
+            <Property name="Depletable List">Depletable List（可耗尽列表）是一种允许可耗尽项在被选中时消耗单位数量的 Probability List。已耗尽的项将不再可选，其行为类似于被禁用的项，直到其单位数量被补充为止。</Property>
+            <Property name="Depletable Item">Depletable Item（可耗尽项）是一种 Probability Item，当其存在于 Depletable List 中时，每次被选中都会消耗一个单位。一旦单位耗尽，该项将不可再被选中，直到其单位被补充。</Property>
+            <Property name="Units">在可耗尽项中，Units（单位）指该项可被选中的次数。每次选中将消耗一个单位。</Property>
+            <Property name="Max Units">在可耗尽项中，Max Units（最大单位数）指该项可拥有的单位数量上限。当项被补充时，单位数将重置为该最大值。</Property>
+            <Property name="Refill">Refill（补充）用于描述将 Depletable Item 的单位数量重置为其定义最大值的过程。</Property>
+            <Property name="Selectable Item">若一个 Probability Item 处于启用状态，且为不可耗尽（无限）类型，或对于可耗尽项而言至少拥有一个可用单位，则该项被视为 Selectable Item（可选项）。</Property>
+        </Properties>
+    </Col>
+    <Col>
+        <Properties>
+            <Property name="Selection Method">Selection Method（选择方式）是指从 `Probability List` 中选取项所使用的算法或流程。不同的选择方式产生的结果可能几乎相同，但其性能会因列表大小和 `Pick Count` 的不同而有所差异。</Property>
+            <Property name="Pick Count">Pick Count（选取数量）是单次操作中从 `Probability List` 中选取的项数。`Pick Count` 可以是一个固定值，也可以是一个范围，从而为不同场景提供灵活性。</Property>
+            <Property name="Repeat Prevention">Repeat Prevention（防重复）是一项避免连续选中同一 `Probability Item` 的功能。该功能提升了选择结果的多样性，在不希望出现重复结果的场景中尤为实用。</Property>
+            <Property name="Influence Provider">Influence Provider（影响提供者）是继承自 `IProbabilityInfluenceProvider` 接口的脚本，用于定义应用于某个项概率的影响规则。</Property>
+            <Property name="Influenced List">若列表中任意项分配了 `Influence Provider`，或任意项本身即为提供者，则该列表被视为 `influenced`（受影响的）列表。</Property>
+            <Property name="Influenced Probability">Influenced Probability（受影响概率）是指 `Probability Item` 的 Base Probability 在通过 `Probability Influence Provider` 配置的外部影响作用后所得到的概率值。</Property>
+        </Properties>
+    </Col>
+</Row>
+---

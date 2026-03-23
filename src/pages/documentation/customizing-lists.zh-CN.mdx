@@ -1,0 +1,201 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import drawerButtonsInfo from '@/images/screenshots/drawer-buttons-info.png';
+import drawerButtonsBars from '@/images/screenshots/drawer-buttons-bars.png';
+import drawerButtonsTheme from '@/images/screenshots/drawer-buttons-theme.png';
+import drawerButtonsThemeMonochrome from '@/images/screenshots/drawer-buttons-theme-monochrome.png';
+import drawerButtonsAdditionalOptions from '@/images/screenshots/drawer-buttons-additional-options.png';
+import providerInterfacesNoProvider from '@/images/screenshots/provider-interfaces-no-provider.png';
+import providerInterfacesInfoProvider from '@/images/screenshots/provider-interfaces-info-provider.png';
+import providerInterfacesInfoProviderAlt from '@/images/screenshots/provider-interfaces-info-provider-alt.png';
+import providerInterfacesColorProvider from '@/images/screenshots/provider-interfaces-color-provider.png';
+import {PreferencesPage} from "@/components/PageLinks";
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    '探索如何在 RNGNeeds 中定制 Probability List 的外观与功能。深入了解高级自定义选项，从直观的调色板到 Provider 接口，全面提升您在 Unity Inspector 中的游戏设计体验。'
+
+<HeroPattern />
+
+# 自定义列表
+
+作为游戏开发者，我们经常深陷于 Unity 的 Inspector 之中。正因如此，RNGNeeds 为 Probability List 精心打造了一套自定义 drawer，兼具直观性与丰富功能，提供大量自定义选项以提升您的工作效率。{{ className: 'lead' }}
+
+---
+
+## 外观与颜色
+
+Drawer 提供了一套针对显示信息和配色方案的自定义选项，为每位设计师打造量身定制的体验。
+
+### Stripe
+
+Drawer 的一大亮点功能是 **Stripe**。这一视觉元素由彩色色块组成，以直观的方式呈现各项概率。您可以通过点击 **STRIPE** 按钮访问 Stripe Options 子菜单，从而调整 Stripe 的高度。此外，这些色块还可以显示额外的条目信息，可通过 Drawer 左侧区域的三个按钮进行切换。
+
+<ImageX className="w-full h-auto" src={drawerButtonsInfo} alt="Drawer Buttons - Info" width="1000"/>
+
+<Note>
+    值得注意的是，对于 Stripe 上较窄的色块，信息可能会被隐藏。但鼠标悬停高亮功能仍会在列表条目与其 Stripe 表示之间建立视觉关联。将鼠标悬停在色块或条目上时，两者都会同时高亮显示。
+</Note>
+
+### Preview Bars
+
+列表中的每个条目行都包含一个 **Preview Bar**。这是概率的可视化表示，以成比例的水平条形图呈现。这种可视化方式为概率分布提供了另一种视角。Drawer 标题栏中的后三个按钮提供了进一步的自定义选项。
+
+<ImageX className="w-full h-auto" src={drawerButtonsBars} alt="Drawer Buttons - Bars" width="1000"/>
+
+- **Color Dimming** - 默认情况下，各颜色会根据其概率进行变暗处理，概率越高的条目显示越亮。此功能可以开启或关闭。
+- **Colorize Preview Bars** - 切换 Preview Bar 的着色效果。关闭后，条形图将呈现中性色调。
+- **Normalize Preview Bars** - 拉伸条形图，使概率最高的条目填满整个长度，其他条形图按比例调整。
+
+### 调色板
+
+考虑到设计师可能需要管理数百个对象，调色板作为一种组织工具，可以帮助他们对各种对象类型进行分类和颜色编码。自定义调色板也可以在偏好设置窗口中创建。提供了大量按不同类别组织的调色板供您选择。
+
+要为特定 Drawer 选择调色板，请点击 **THEME** 按钮，然后从下拉菜单中选择所需的调色板。
+
+<ImageX className="w-full h-auto" src={drawerButtonsTheme} alt="Drawer Buttons - Theme" width="1000"/>
+
+调色板分类：
+
+- **DimeTone** - 包含十种不同颜色，非常适合轻松区分大量条目。
+- **Gradients** - 适用于递增或递减的值。
+- **Duality** - 非常适合二元值（如 true/false）或四元系统（如东、南、西、北）。
+- **Item Rarity** - 融合了知名游戏中流行的稀有度配色方案。
+- 以及许多其他主题调色板。
+
+调色板下拉菜单末尾的 **Monochrome** 选项尤为值得关注。虽然可以在偏好设置窗口中设置默认颜色，但每个 Drawer 都可以拥有其独特的单色调。与 Color Dimming 结合使用时，单色调色板可以有效突出细微差异。
+
+<ImageX className="w-full h-auto" src={drawerButtonsThemeMonochrome} alt="Drawer Buttons - Theme Monochrome" width="1000"/>
+
+---
+
+## 附加 Drawer 选项
+
+通过 Drawer 的 Additional Options 子菜单深入探索更多自定义功能。点击 Drawer 左上角的 RNGNeeds 图标即可访问。
+
+<ImageX className="w-full h-auto" src={drawerButtonsAdditionalOptions} alt="Drawer Buttons - Additional Options" width="1000"/>
+
+<Note>
+    默认情况下，Drawer 仅显示基本选项。如果截图中的某些选项未显示，请在 <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 窗口中将 Drawer Options Level 切换为 Advanced。
+</Note>
+
+### 基本 Drawer 选项
+
+- **Reset Probabilities**：将列表中所有未锁定条目的概率均分。
+- **Reset Settings to Default**：将 Drawer 的设置恢复为偏好设置中的默认值。
+- **Get New Drawer ID**：在复制可能共享 Drawer 设置的对象时非常有用。此操作可确保当前 Drawer 拥有唯一且独立的设置。
+- **Set as Default Settings (!)**：将当前 Drawer 的设置设为偏好设置中的默认值。新建的 Drawer 将继承这些默认值，而之前已初始化的 Drawer 保持不变。
+
+### 高级 Drawer 选项
+
+- **Stripe % Digits**：调整 Stripe 上显示的数字位数。
+- **Item % Digits**：设置列表中各条目显示的数字位数。
+- **Test % Digits**：确定测试结果中的数字位数。
+- **Test Color Bias**：修改测试结果着色的强度。
+- **Item Utility Space**：指定列表元素中为条目数据和值预留的宽度。
+
+### 概率影响使用选项
+
+- **Spread % Digits**：设置 Influence Spread 中显示的数字位数。
+- **Spread Color Bias**：调整展开着色的强度。
+- **Show Spread on Bars**：分割 Preview Bar 以直观地呈现展开效果。
+
+---
+
+## 高级自定义
+
+对于愿意进行少量简单编码的用户，RNGNeeds 提供了更广泛的自定义空间。通过 Provider Interfaces，用户可以让对象或引用值向 Probability List 提供定制化的信息和颜色。
+
+### Probability Item Info Provider
+
+`IProbabilityItemInfoProvider` 接口允许您向 Probability Item 提供自定义信息。这些信息随后会显示在 Stripe 上对应的彩色色块中。在处理自定义可序列化类型时，这一功能尤为实用——否则这些类型可能只会显示类型名称。
+
+<ImageX className="w-full h-auto" src={providerInterfacesNoProvider} alt="Provider Interfaces - No Provider" width="1000"/>
+
+以下代码片段说明了如何实现该接口：
+
+```csharp {{ title: 'Implementing IProbabilityItemInfoProvider interface'}}
+[Serializable]
+public class MyCustomType : IProbabilityItemInfoProvider
+{
+    public string ItemInfo => customInfo;
+
+    public string customInfo;
+    public Vector3 somePosition;
+    public bool someBool;
+}
+```
+
+通过实现该接口，我们可以将 `string customInfo` 指向接口属性 `string ItemInfo`。这可确保 Probability List Drawer 显示所需的信息，使用户能够轻松识别其自定义类型的实例。
+
+<ImageX className="w-full h-auto" src={providerInterfacesInfoProvider} alt="Provider Interfaces - Info Provider" width="1000"/>
+
+当然，自定义信息背后的逻辑完全由用户决定。在下面的示例中，我们选择放弃 `customInfo` 字段，转而将 `Vector3 somePosition` 传递给接口属性。
+
+```csharp {{ title: 'Alternative Implementation'}}
+[Serializable]
+public class MyCustomType : IProbabilityItemInfoProvider
+{
+    public string ItemInfo => somePosition.ToString();
+
+    public Vector3 somePosition;
+    public bool someBool;
+}
+```
+
+通过此设置，Drawer 将仅显示 `Vector3` 的字符串输出。
+
+<ImageX className="w-full h-auto" src={providerInterfacesInfoProviderAlt} alt="Provider Interfaces - Info Provider Alt" width="1000"/>
+
+<Note>
+    同样的原则也适用于 `MonoBehaviour` 或 `ScriptableObject`。Provider 接口可与任何引用类型集成。使用 Unity 对象时唯一的区别在于：列表条目将显示对象引用字段，而自定义信息将展示在 Stripe 上。
+</Note>
+
+---
+
+### Probability Item Color Provider
+
+`IProbabilityItemColorProvider` 接口允许您为 Probability List 引入自定义颜色，让您对条目的视觉呈现拥有更强的掌控力。当您希望某些条目脱颖而出，或在使用需要特定颜色编码的主题时，此功能尤为有用。
+
+请参考以下示例，该示例取自我们的 **Treasure Chest** 样本。在这里，`ItemRarity` ScriptableObject 同时实现了两个 Provider 接口。
+
+```csharp {{ title: 'Implementing IProbabilityItemColorProvider interface'}}
+[CreateAssetMenu(fileName = "New Item Rarity", menuName = "RNGNeeds/Treasure Chest/Item Rarity")]
+public class ItemRarity : ScriptableObject, IProbabilityItemColorProvider, IProbabilityItemInfoProvider
+{
+    public string title;
+    public Color rarityColor;
+    public Color ItemColor => rarityColor;
+    public string ItemInfo => title;
+}
+```
+
+通过实现该接口，`customColor` 字段会填入接口属性 `Color ItemColor`。这意味着 Probability List Drawer 现在将以您指定的颜色显示条目，从而更轻松地通过视觉识别不同类型或类别。在下方截图中，Drawer 采用了 Monochrome 主题，但所指定的条目稀有度引入了各自独特的颜色。Color Provider 可与任何调色板结合使用。
+
+<ImageX className="w-full h-auto" src={providerInterfacesColorProvider} alt="Provider Interfaces - Color Provider" width="1000"/>
+
+与 `IProbabilityItemInfoProvider` 一样，自定义颜色背后的逻辑完全由您决定。例如，您可能希望根据特定条件或属性对条目进行颜色编码。您还可以探索我们的 **Deck Builder** 和 **Treasure Chest** 样本，它们利用 Color Provider 轻松区分条目的稀有度颜色。
+
+<Note>
+    Info 和 Color Provider 接口专为配合 RNGNeeds Editor 功能而设计。虽然它们在运行时也可以发挥作用，但如果您在运行时不需要这些信息，可以将它们从构建中排除。
+</Note>
+
+```csharp {{ title: 'Excluding Provider Interfaces from Build'}}
+public class MyComponent : MonoBehaviour
+    #if UNITY_EDITOR
+    , IProbabilityItemColorProvider, IProbabilityItemInfoProvider
+    #endif
+{
+    #if UNITY_EDITOR
+    public Color ItemColor => customColor;
+    public string ItemInfo => customInfo;
+
+    public string customInfo;
+    public Color customColor;
+    #endif
+    
+    // runtime relevant code
+}
+```
+
+---

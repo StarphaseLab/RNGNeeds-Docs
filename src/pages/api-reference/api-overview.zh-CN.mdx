@@ -1,0 +1,143 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import {
+    API_PickHistory,
+    API_PLCollection,
+    API_ProbabilityItem,
+    API_ProbabilityList,
+    API_RNGNeeds,
+    API_SeedProvider,
+    API_SelectionMethods,
+    DocsOverviewPage,
+    NestingListsPage,
+    ProbabilityInfluencePage,
+    SeedingOptionsPage,
+    SupportPage,
+} from '@/components/PageLinks'
+
+export const translationStatus = 'auto'
+
+export const description =
+    'RNGNeeds API 的实用导览：先介绍核心类型，再介绍扩展点，并附有指向精选指南的链接——在那里阅读比直接查看原始参考更有帮助。'
+
+<HeroPattern />
+
+# API 概览
+
+初次接触本章节？如果想先了解整体全貌，请从 <a href={DocsOverviewPage.Link}>文档概览</a> 开始，然后再回到本页，将其作为 API 中运行时类型与扩展点的快速导览。{{ className: 'lead' }}
+
+API 参考是文档其余部分的代码层对照手册。
+
+- **文档 / 指南 / 示例** 讲解工作流、使用场景与实际配置。
+- **API 参考** 解释运行时类型的实际作用、成员的含义，以及扩展点所在的位置。
+
+因此，本章节有意设计得更偏技术性。其目标是帮助你回答诸如 **"我该用哪个类型？"**、**"这个属性实际控制什么？"** 以及 **"我在哪里注册自定义选择方法？"** 等问题，而无需反向工程包的源代码。
+
+---
+
+## API 结构一览
+
+以下是最简洁的 API 结构图：首先是你最可能直接使用的核心运行时类型，其次是当你需要自定义或扩展 RNGNeeds 时会用到的扩展点。
+
+### 核心运行时类型
+
+这些是日常运行时使用的主要构建块——在创建列表、处理条目、组织列表组或查看最近抽取记录时，你通常会首先接触这些类型。
+
+<LinkGrid>
+    <LinkCard href={API_ProbabilityList.Link} title={API_ProbabilityList.Title}>
+        主要的运行时类型。从这里开始了解列表的创建、条目的添加、值的抽取、概率与权重的管理、种子设置、耗尽机制、历史记录以及重复防止功能。
+    </LinkCard>
+    <LinkCard href={API_ProbabilityItem.Link} title={API_ProbabilityItem.Title}>
+        单个条目层。当你需要了解启用与锁定条目、影响值、权重、单位、耗尽机制，以及条目有效概率的评估方式时，请查阅此页。
+    </LinkCard>
+    <LinkCard href={API_PLCollection.Link} title={API_PLCollection.Title}>
+        用于同时处理多个具名或有索引的概率列表的集合层。非常适合分组战利品表、对话池、遭遇集合及类似系统。
+    </LinkCard>
+    <LinkCard href={API_PickHistory.Link} title={API_PickHistory.Title}>
+        最近抽取记录的历史辅助工具。当你需要查看已选内容、实现重复防止逻辑或处理近期抽取结果时，非常有用。
+    </LinkCard>
+</LinkGrid>
+
+### 扩展点
+
+这些页面适用于高级集成工作——自定义选择行为、确定性工作流、种子控制，以及将这些系统关联起来的静态注册表。
+
+<LinkGrid>
+    <LinkCard href={API_SelectionMethods.Link} title={API_SelectionMethods.Title}>
+        选择算法的入口点。当你想了解内置方法或创建自定义方法时，请查阅此页。
+    </LinkCard>
+    <LinkCard href={API_RNGNeeds.Link} title={API_RNGNeeds.Title}>
+        面向高级用户的静态集成中心。用于注册选择方法、查看已注册的方法、使用种子提供者，以及了解回退行为。
+    </LinkCard>
+    <LinkCard href={API_SeedProvider.Link} title={API_SeedProvider.Title}>
+        用于确定性工作流、可复现测试、调试或自定义种子策略的扩展点。
+    </LinkCard>
+</LinkGrid>
+
+---
+
+## 深入之前的几个重要概念
+
+<Note>
+    <p><strong>基础概率</strong>不一定等于选择时实际使用的最终概率。</p>
+    <p><code>ProbabilityItem&lt;T&gt;</code> 存储的是 <code>BaseProbability</code>，但经过评估后的 <code>Probability</code> 可能因影响提供者、分布设置及其他运行时状态而发生变化。</p>
+</Note>
+
+<Note>
+    <p><strong>Enabled</strong> 与 <strong>Locked</strong> 含义不同。</p>
+    <p>禁用的条目在选择时会被忽略。锁定的条目仍可被选中，但其概率受到保护，不会受到规范化和重新分配等列表操作的影响。</p>
+</Note>
+
+<Note>
+    <p><strong>精选文档与 API 文档的职责不同。</strong></p>
+    <p>如果你需要教程、示例和设计建议，精选章节才是正确的去处——尤其是 <a href={DocsOverviewPage.Link}>文档概览</a>、<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>、<a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a> 以及 <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>。</p>
+</Note>
+
+---
+
+## 本章节的参考页面
+
+<MemberGroup title="Core runtime types" tone="sky">
+    <Member kind="CLASS" color="sky" name="ProbabilityList<T>">
+        用于管理概率条目和选取值的主列表 API。
+    </Member>
+    <Member kind="CLASS" color="sky" name="ProbabilityItem<T>">
+        概率列表中的单个条目，包含概率、状态、影响值、权重和耗尽数据。
+    </Member>
+    <Member kind="CLASS" color="sky" name="PLCollection<T>">
+        多个概率列表的集合，提供查找、抽取、重填和清空等辅助功能。
+    </Member>
+    <Member kind="CLASS" color="sky" name="PickHistory">
+        存储最近的抽取记录，并提供检索历史条目或最新抽取索引的辅助方法。
+    </Member>
+</MemberGroup>
+
+<MemberGroup title="Extension points" tone="amber">
+    <Member kind="STATIC" color="violet" name="RNGNeedsCore">
+        选择方法、种子提供者、日志记录和全局辅助功能的静态注册表与集成入口点。
+    </Member>
+    <Member kind="INTERFACE" color="amber" name="ISelectionMethod">
+        实现完全自定义选择算法的完整自定义路径。
+    </Member>
+    <Member kind="BASE CLASS" color="amber" name="SelectionMethodBase">
+        当你需要在准备阶段、带种子的随机性、耗尽机制和重复防止管道方面获得帮助时，用于自定义选择逻辑的部分实现。
+    </Member>
+    <Member kind="INTERFACE" color="amber" name="ISeedProvider">
+        RNGNeeds 用于生成种子的契约接口。
+    </Member>
+</MemberGroup>
+
+---
+
+## 需要示例而非成员描述？
+
+当你想了解意图、工作流和示例时，请前往精选章节：
+
+- <a href={DocsOverviewPage.Link}>文档概览</a>
+- <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+- <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a>
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+
+<Note>
+    <p><strong>想和我们探讨你的想法？</strong></p>
+    <p>如果你正在扩展 RNGNeeds，并希望获得关于 API 设计、自定义选择方法或整体架构的反馈，欢迎访问我们的 <a href={SupportPage.Link}>{SupportPage.Title}</a> 页面，并从那里加入 Discord。</p>
+</Note>

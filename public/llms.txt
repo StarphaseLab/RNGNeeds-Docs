@@ -1,0 +1,56 @@
+# RNGNeeds
+
+> RNGNeeds is a probability distribution plugin for Unity. It lets developers design and manage weighted probability lists for any type directly in the Unity Inspector, with a full C# API for runtime control. Features include visual probability editing (the Stripe), multiple selection methods (burst-compiled), probability influence providers, depletable lists, repeat prevention, pick history, seeding, and nested list support.
+
+- [Full documentation as single file](https://docs.rngneeds.com/llms-full.txt): Complete docs in one markdown file for LLM ingestion
+
+## User Guide
+
+- [Introduction](https://docs.rngneeds.com/user-guide/introduction): What RNGNeeds is and why it exists
+- [Getting Started](https://docs.rngneeds.com/user-guide/getting-started): Installation from Asset Store and creating your first probability list
+- [User Interface](https://docs.rngneeds.com/user-guide/user-interface): The Stripe widget, probability input, locking, disabling items, and drawer customization
+- [Preferences](https://docs.rngneeds.com/user-guide/preferences): RNGNeeds settings in Unity Preferences
+- [FAQ](https://docs.rngneeds.com/user-guide/faq): Frequently asked questions
+- [Support](https://docs.rngneeds.com/user-guide/support): Discord community and support channels
+
+## Documentation
+
+- [Overview](https://docs.rngneeds.com/documentation/docs-overview): Map of the documentation sections and how they connect
+- [Terminology](https://docs.rngneeds.com/documentation/terminology): Key terms — Probability List, Probability Item, Base/Evaluated Probability, Influence, Weights, etc.
+- [Designing a List](https://docs.rngneeds.com/documentation/designing-a-list): Creating lists, adding items, setting probabilities, using weights
+- [Selecting Values](https://docs.rngneeds.com/documentation/selecting-values): Pick methods, pick counts, fixed vs random range, selection methods
+- [Depletable Lists](https://docs.rngneeds.com/documentation/depletable-lists): Unit-based depletion — items are removed after N picks
+- [Repeat Prevention](https://docs.rngneeds.com/documentation/repeat-prevention): Techniques to avoid consecutive duplicate picks
+- [Probability Influence](https://docs.rngneeds.com/documentation/probability-influence): Dynamic probability modification via IProbabilityInfluenceProvider
+- [Testing Outcomes](https://docs.rngneeds.com/documentation/testing-outcomes): In-editor testing tools for evaluating probability distributions
+- [Seeding Options](https://docs.rngneeds.com/documentation/seeding-options): Deterministic seeding, custom seed providers, retained seeds
+- [Pick History](https://docs.rngneeds.com/documentation/pick-history): Tracking previous picks per list
+- [Nesting Lists](https://docs.rngneeds.com/documentation/nesting-lists): Using probability lists inside other probability lists
+- [Customizing Lists](https://docs.rngneeds.com/documentation/customizing-lists): Color themes, dimming, appearance options per drawer
+- [Change Log](https://docs.rngneeds.com/documentation/change-log): Version history and release notes
+
+## Samples
+
+- [Samples Overview](https://docs.rngneeds.com/samples/samples-overview): How to import and use the included sample scenes
+- [Dice Playground](https://docs.rngneeds.com/samples/dice-playground): Interactive dice rolling with biased probabilities
+- [Random Audio](https://docs.rngneeds.com/samples/random-audio): Probability-driven audio clip selection
+- [Monster Spawner](https://docs.rngneeds.com/samples/monster-spawner): Spawning different monster types with weighted probabilities
+
+## Guides
+
+- [Guides Overview](https://docs.rngneeds.com/guides/guides-overview): Practical how-to guides for common use cases
+- [Selecting Distinct Values](https://docs.rngneeds.com/guides/guide-selecting-distinct-values): Picking unique items without repeats in a single selection
+- [Probability Influence Guides](https://docs.rngneeds.com/guides/guide-probability-influence): Step-by-step influence provider implementations
+- [PLCollection Guides](https://docs.rngneeds.com/guides/guide-plcollection): Working with grouped probability lists via PLCollection
+- [Depletable List Examples](https://docs.rngneeds.com/guides/guide-depletable-list-examples): Practical examples of unit-based depletion patterns
+
+## API Reference
+
+- [API Overview](https://docs.rngneeds.com/api-reference/api-overview): Map of runtime types and extension points
+- [RNGNeeds Core](https://docs.rngneeds.com/api-reference/rngneeds): Static registry, selection method registration, global configuration
+- [ProbabilityList<T>](https://docs.rngneeds.com/api-reference/probability-list): The main list type — items, probabilities, picking, seeding, depletion, history
+- [ProbabilityItem<T>](https://docs.rngneeds.com/api-reference/probability-item): Per-item properties — enabled, locked, influence, weights, units, depletion
+- [PickHistory](https://docs.rngneeds.com/api-reference/pick-history): Recent pick tracking and history inspection
+- [Selection Methods](https://docs.rngneeds.com/api-reference/selection-methods): Built-in and custom selection algorithms, burst-compiled variants
+- [Seed Providers](https://docs.rngneeds.com/api-reference/seed-provider): ISeedProvider interface and custom seed implementations
+- [PLCollection](https://docs.rngneeds.com/api-reference/pl-collection): Named/indexed groups of probability lists for organized multi-list setups

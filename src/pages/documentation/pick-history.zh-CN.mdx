@@ -1,0 +1,227 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+export const translationStatus = 'auto'
+export const description =
+    '了解 RNGNeeds 如何追踪每个列表的历史拾取记录，以及如何利用历史记录模拟确定性概率行为。'
+
+<HeroPattern />
+
+# Pick History
+
+Pick History 是一个强大的工具，帮助用户浏览最近的选择记录、重现特定场景，甚至预先选取物品以优化游戏流程。
+它提供了完整的记录，使用户能够监控选择结果、在游戏中使用数据，或与玩家分享信息以提升游戏体验。{{ className: 'lead' }}
+
+---
+
+## 历史结构
+
+让我们从理解 Pick History 的基本概念开始。
+我们将探讨它如何归档记录、选择结果如何通过历史记录传递，以及历史容量的运作机制。
+
+**每个列表都有自己的 History** — 每个 ProbabilityList 都拥有其独立的历史记录，该历史记录在选择机制中扮演着不可或缺的角色。
+当您选取值时，系统首先根据设定的概率确定结果。
+该结果随后被记录到历史中。最终，系统从历史中映射最近拾取的索引，以生成您实际接收到的值。
+
+**History 记录索引** — 历史结构针对性能和清晰度进行了优化。系统不记录物品的实际值，而是记录其索引，从而最大程度地减少内存占用。
+每个索引旁还会存储拾取的精确日期和时间，为选择过程提供按时间顺序排列的记录。
+
+<Note>
+    需要注意的是，由于历史记录仅追踪索引，因此从列表中移除任何物品都将自动清除历史记录。
+    这是因为列表中的索引将不再对应其原始顺序或它们曾经代表的值。
+</Note>
+
+**最新索引置顶** — 为了方便用户使用，历史记录将最近的拾取结果存放在顶部。列表中的第一条条目始终代表最新的选择。
+
+**History 容量** — 每个历史记录都有一个可存储条目数量的上限，即其容量。您可以根据需求调高或调低此容量。
+
+**PickHistory 对象** — 作为 `ProbabilityList` 不可或缺的一部分，它既是列表历史记录的存储载体，也是访问历史数据和设置的主要入口。
+每次您从 ProbabilityList 请求值时，结果都会先以索引的形式记录到其历史中，然后才作为实际值返回。
+
+**HistoryEntry 对象** — 这是一个*池化对象*，用于同时捕获拾取的索引和时间。
+Pick History 维护着一个 HistoryEntry 对象列表，作为近期选择的按时间顺序排列的日志。
+
+<Note>
+    **Picks 与 Entries 的区别**
+
+    在历史记录中，**Entries** 一词表示历史记录本身，包含拾取的索引和时间戳。每条此类记录都存储在一个 `HistoryEntry` 对象中。
+
+    相反，**Picks** 严格指代被选中的索引。历史检索方法的命名规范旨在清晰地表明返回数据的性质。
+</Note>
+
+---
+
+## 历史容量
+
+默认情况下，每个列表的 History 最多可容纳 1000 条条目。这意味着，除非您扩大此容量，否则一次最多可以拾取 1000 个值。
+随着您进行更多选择，较旧的条目会被向下推移，一旦超出设定容量，它们将被移除。
+例如，如果您先选取 1000 个物品，然后再选取 500 个，历史记录将显示最近的 500 条拾取记录，以及最初 1000 条记录的后半部分。
+
+```csharp {{ title: 'Setting the History Capacity'}}
+// Setting the history capacity directly via the PickHistory property
+myProbabilityList.PickHistory.Capacity = 100;
+
+// Using a dedicated method to set the history capacity
+myProbabilityList.SetHistoryCapacity(100);
+```
+
+调整列表的 History 容量可以让您精细控制列表的内存使用。
+如果历史记录对您来说不是优先考虑的事项，可以将此值设置得很低。
+但请记住，容量同样会限制您一次可以选取的值的数量。
+例如，在历史容量为 5 的列表上调用 `SelectValues(10)` 将只会返回 5 个值。
+
+---
+
+## 检索历史记录
+
+```csharp {{ title: 'Accessing the Pick History'}}
+// Access the PickHistory object
+PickHistory pickHistory = myProbabilityList.PickHistory;
+
+// The History property contains the List of HistoryEntries
+List<HistoryEntry> historyEntries = pickHistory.History;
+
+HistoryEntry latestEntry = historyEntries[0];
+Debug.Log($"Last Picked Index was {latestEntry.Index}, picked at {latestEntry.Time}");
+```
+
+<Note>
+    **日期与时间的存储方式**
+
+    HistoryEntry 使用自定义的 `SerializableDateTime` 对象来捕获拾取时间。这一设计选择将 DateTime 类的便利性与 Unity 的序列化能力完美结合。
+    时间戳利用 DateTime 的 `Now` 属性获取精确的 `long Ticks` 值，确保计时的准确性。此外，它还提供了一个便捷方法，以熟悉的 DateTime 格式获取此信息。
+
+    例如，执行 `Debug.Log(historyEntry.Time)` 将产生类似 `26.08.2023 12:03:57` 的输出，与直接使用 DateTime 的体验完全一致。
+</Note>
+
+### 便捷方法
+
+您也可以使用历史记录的便捷方法或属性来访问记录。
+返回列表的方法通过提供内部列表的引用来优先保证效率，避免为新列表分配额外内存。
+这种方式对于性能至关重要的高频操作尤为有益。
+
+```csharp {{ title: 'Retrieving history'}}
+int latestIndex = myProbabilityList.PickHistory.LatestIndex;
+List<int> latestIndices = myProbabilityList.PickHistory.GetLatestPicks(5);
+
+// The same data can also be accessed directly from the Probability List
+int latestIndexDirect = myProbabilityList.LastPickedIndex;
+List<int> latestIndicesDirect = myProbabilityList.LastPickedIndices;
+
+// The Probability List further simplifies the process by mapping indices to values automatically
+string latestValue = myProbabilityList.LastPickedValue;
+List<string> latestValues = myProbabilityList.LastPickedValues;
+```
+
+<Note>
+    **Last 与 Latest 的区别**
+
+    您可能会注意到，在谈及最近的拾取结果时，我们使用了不同的术语：ProbabilityList 中使用 **Last**，Pick History 中使用 **Latest**。
+    这一选择经过了大量内部讨论。
+    当您询问 ProbabilityList 的*上一次选择*时，使用 **Last** 是合理的。
+    但在历史记录的语境中，"last"可能会被误解为"历史中的第一条"或"历史的起点"。
+    为避免这种混淆，我们在历史记录中使用 **Latest** 来明确表示最新的记录。
+</Note>
+
+对于希望获得更多控制权或需要保存结果的用户，可以使用接受列表作为参数并将指定记录填充其中的方法。
+若要获取最新条目，只需指定所需的记录数量即可。
+
+```csharp {{ title: 'Retrieving history'}}
+// Methods that return a reference to a private list
+HistoryEntry latestEntryRef = myProbabilityList.PickHistory.LatestEntry;
+List<HistoryEntry> latestEntriesRef = myProbabilityList.PickHistory.GetLatestEntries(5);
+
+// Methods designed to fill a provided list
+List<int> latestPicksFill = new List<int>();
+myProbabilityList.PickHistory.GetLatestPicks(latestPicksFill, 5);
+
+List<HistoryEntry> latestEntriesFill = new List<HistoryEntry>();
+myProbabilityList.PickHistory.GetLatestEntries(latestEntriesFill, 5);
+```
+
+---
+
+## HistoryEntry 对象池
+
+HistoryEntry 是一个**池化对象**，专为高效存储每次拾取的索引和时间而设计。
+在选择过程中，这些对象被动态创建，一旦不再使用（例如历史记录被清除或超出容量），
+它们将被归还到对象池以供复用。
+
+这一池化机制在所有历史记录间共享，确保内存使用得到优化，并始终有足够数量的 HistoryEntry 对象可供使用。
+初始时对象池为空。随着各个列表开始超出其容量，被释放的 HistoryEntry 对象将逐渐填充对象池。
+在此之前，每次选取物品都会产生少量内存分配。
+然而，一旦对象池积累了足够数量的未使用对象，这些分配就会停止，这些对象将被历史记录重新使用。
+
+要立即受益于对象池的高效性，您可以预先填充或"预热"对象池。
+根据您使用的 ProbabilityList 数量及其设定的容量，可以估算出最佳的对象池大小。
+这确保了内存在初始化阶段完成分配，后续的选择操作将直接从预先存在的对象池中获取对象。
+
+```csharp {{ title: 'Warming-up the HistoryEntry Pool'}}
+RNGNeedsCore.WarmupHistoryEntries(10000);
+```
+
+---
+
+## 从历史记录中提取值
+
+在某些场景下，直接从历史记录中提取值比实时拾取更为高效或合适。这种方式提供了一个独特的优势：通过预先选取一组值并将其存储在历史记录中，您可以快速访问一系列预定结果，而无需承担选择过程的计算开销。这在以下情况下尤为有益：
+
+- **性能至关重要** — 在游戏中高强度的时刻，每一毫秒都至关重要，从历史记录中提取可以确保流畅的性能表现。
+- **需要一致性** — 通过使用预先选取的值，可以保证在多个会话或用户之间获得一致的体验。
+- **预测性分析** — 在模拟或需要基于固定随机值集合分析潜在结果的场景中。
+
+以下是一种实现思路：
+
+```csharp {{ title: 'Iterating over History - Example'}}
+public ProbabilityList<string> myProbabilityList;
+
+// First, pick values to populate the history
+myProbabilityList.PickValues(1000);
+
+private int historyDrawIndex = 0; // Counter to keep track of where we left off
+
+// A method to draw a specified range of values from the history
+public List<string> DrawFromHistory(int countToDraw)
+{
+    List<string> drawnValues = new List<string>();
+
+    int remainingHistory = myProbabilityList.PickHistory.History.Count - historyDrawIndex;
+    countToDraw = Mathf.Min(countToDraw, remainingHistory);
+
+    for (int i = 0; i < countToDraw; i++)
+    {
+        var drawnIndex = myProbabilityList.PickHistory.History[historyDrawIndex + i].Index;
+        drawnValues.Add(myProbabilityList.GetProbabilityItem(drawnIndex).Value);
+    }
+
+    historyDrawIndex += countToDraw;
+
+    return drawnValues;
+}
+```
+
+在上述代码中，我们使用了一个名为 `myProbabilityList` 的 `string` 类型 `ProbabilityList`。
+
+1. **填充历史记录**：
+在从历史记录中提取之前，我们首先使用 `PickValues` 方法拾取 1000 个值来填充历史记录。这确保了我们的历史记录中存有近期选择的记录。
+
+2. **追踪提取位置**：
+我们引入了一个名为 `historyDrawIndex` 的计数器来追踪在历史记录中的当前位置。这确保了每次从历史记录中提取时，都会从上次停止的地方继续，避免重复出现相同的值。
+
+3. **从历史记录中提取**：
+`DrawFromHistory` 方法用于从历史记录中检索指定数量的值。
+- 我们首先使用 `remainingHistory` 变量确定历史记录中尚未提取的条目数量。
+- 然后决定要提取多少个值，确保不会尝试提取超过历史记录剩余数量的值。
+- **在循环的每次迭代中：**
+- 我们从历史记录中检索物品的索引。
+- 然后使用 `GetProbabilityItem` 方法从 `ProbabilityList` 中获取实际值，并将其添加到 `drawnValues` 列表中。
+- 最后，更新 `historyDrawIndex` 以确保下次提取从正确的位置开始。
+
+<Note>
+    **性能注意事项**：
+
+    虽然我们重点介绍了各种功能和速度优势，但需要了解的是，RNGNeeds 的核心功能（例如 `SelectValues` 方法）已经针对一般用途进行了优化。概率分布计算、重复防止和历史记录写入等复杂过程都被设计为高效运行。
+
+    对于大多数用户和场景来说，性能不应该成为问题。但是，如果您将系统推至极限并发现性能瓶颈，我们讨论过的工作流程和优化方法可以帮助缓解这些问题。请始终记住，我们构建 RNGNeeds 时兼顾了简洁性与性能。
+</Note>
+
+---

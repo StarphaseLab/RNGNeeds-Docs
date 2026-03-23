@@ -1,0 +1,91 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_RNGNeeds } from '@/components/PageLinks'
+
+export const translationStatus = 'auto'
+
+export const description =
+  'RNGNeeds 种子提供者的参考文档，涵盖确定性工作流以及全局种子提供者与单个列表种子之间的关系。'
+
+<HeroPattern />
+
+# 种子提供者
+
+种子提供者控制 RNGNeeds 生成新种子的方式。当你关注确定性行为、可复现的调试、自动化测试或自定义的全局随机策略时，本页最为适用。{{ className: 'lead' }}
+
+## 需要了解的两个层次
+
+### 全局种子提供者
+
+通过 <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> 进行配置。这控制了每当某个列表请求新种子时，RNGNeeds 在全局范围内生成新种子的方式。
+
+### 单列表种子行为
+
+通过每个 `ProbabilityList<T>` 上的 `Seed`、`CurrentSeed` 和 `KeepSeed` 进行控制。这决定了列表在两次抽取之间是保留还是重新生成其种子。
+
+---
+
+## `ISeedProvider`
+
+<MemberGroup title="Seed provider contract" tone="sky">
+  <Member kind="INTERFACE" color="amber" name="ISeedProvider">
+    RNGNeeds 用于生成种子的接口。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="NewSeed" signature="uint">
+    返回一个新的种子值。
+  </Member>
+</MemberGroup>
+
+自定义种子提供者只需提供新的种子值，而这种简洁性正是它的强大之处：你可以接入自己的确定性或集中式种子策略，而无需修改其他地方的选择代码。
+
+---
+
+## 默认行为
+
+除非你替换它，否则 RNGNeeds 会附带一个由 `RNGNeedsCore` 使用的默认种子提供者。
+
+---
+
+## 典型工作流
+
+<MemberGroup title="Common seeding scenarios" tone="amber">
+  <Member kind="USE" color="zinc" name="Keep the same seed per list">
+    在列表上设置 <code>KeepSeed = true</code>，并手动指定一个种子，以便从该列表配置中获得可复现的重复抽取结果。
+  </Member>
+  <Member kind="USE" color="zinc" name="Generate fresh seeds automatically">
+    保持 <code>KeepSeed = false</code>。列表会在每次抽取前使用当前全局种子提供者重新生成种子。
+  </Member>
+  <Member kind="USE" color="zinc" name="Replace global seed generation">
+    通过 <code>RNGNeedsCore.SetSeedProvider(...)</code> 注册你自己的提供者。
+  </Member>
+</MemberGroup>
+
+---
+
+## 自定义提供者示例
+
+```csharp
+public class FixedSeedProvider : ISeedProvider
+{
+    private uint current = 12345;
+
+    public uint NewSeed => current++;
+}
+
+RNGNeedsCore.SetSeedProvider(new FixedSeedProvider());
+```
+
+---
+
+## 相关 API
+
+<MemberGroup title="Related members" tone="violet">
+  <Member kind="METHOD" color="emerald" name="RNGNeedsCore.SetSeedProvider" signature="void SetSeedProvider(ISeedProvider seedProvider)">
+    替换全局种子提供者。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RNGNeedsCore.ResetSeedProvider" signature="void ResetSeedProvider()">
+    恢复默认行为。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="RNGNeedsCore.NewSeed" signature="uint">
+    返回由当前活动提供者生成的新种子。
+  </Member>
+</MemberGroup>

@@ -1,0 +1,59 @@
+import { Head, Html, Main, NextScript } from 'next/document'
+import Script from "next/script";
+
+const localeScript = `
+  // Set <html lang> from URL path (functional, no cookie needed)
+  (function() {
+    var m = location.pathname.match(/^\\/([a-z]{2}-[A-Z]{2})[\\/]/);
+    if (m) document.documentElement.lang = m[1];
+  })();
+`
+
+const modeScript = `
+  let darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+  updateMode()
+  darkModeMediaQuery.addEventListener('change', updateModeWithoutTransitions)
+  window.addEventListener('storage', updateModeWithoutTransitions)
+
+  function updateMode() {
+    let isSystemDarkMode = darkModeMediaQuery.matches
+    let isDarkMode = window.localStorage.isDarkMode === 'true' || (!('isDarkMode' in window.localStorage) && isSystemDarkMode)
+
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+
+    if (isDarkMode === isSystemDarkMode) {
+      delete window.localStorage.isDarkMode
+    }
+  }
+
+  function disableTransitionsTemporarily() {
+    document.documentElement.classList.add('[&_*]:!transition-none')
+    window.setTimeout(() => {
+      document.documentElement.classList.remove('[&_*]:!transition-none')
+    }, 0)
+  }
+
+  function updateModeWithoutTransitions() {
+    disableTransitionsTemporarily()
+    updateMode()
+  }
+`
+
+export default function Document() {
+  return (
+    <Html lang="en">
+      <Head>
+        <script dangerouslySetInnerHTML={{ __html: localeScript + modeScript }} />
+      </Head>
+        <body className="bg-zinc-100 antialiased dark:bg-rngbg-950">
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  )
+}

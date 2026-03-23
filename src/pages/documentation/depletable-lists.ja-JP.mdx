@@ -1,0 +1,224 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import depListsEnable from '@/images/screenshots/dep-lists-enable.png';
+import depListsMixingItems from '@/images/screenshots/dep-lists-mixing-items.png';
+import depListsOldListReset from '@/images/screenshots/dep-lists-old-list-reset.png';
+import depListsPreferences from '@/images/screenshots/dep-lists-preferences.png';
+import depListsActionMenuDropdown from '@/images/screenshots/dep-lists-action-menu-dropdown.png';
+import headerBarInformativePick from '@/images/screenshots/header-bar-options-informative-pick.png';
+import {
+    GuideDepletableList,
+    GuideSelectingDistinctValues,
+    PreferencesPage,
+    SelectingValuesPage,
+    UserInterfacePage
+} from "@/components/PageLinks";
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeedsのDepletable Lists（消耗型リスト）の強力な機能を探求し、アイテムの限定的な利用可能性でゲームメカニクスを強化します。';
+
+<HeroPattern />
+
+# Depletable Lists
+
+Depletable Lists（消耗型リスト）は、アイテムに限定的な利用可能性を持たせることができる強力な機能です。
+各アイテムの最大ユニット数と利用可能なユニット数を設定することで、ゲームメカニクスに幅広い可能性をもたらします。
+消耗型アイテムは、ゲーム報酬のユニークな選択を保証したり、カードデッキやルートテーブルのように同一アイテムの複数インスタンスを管理するなど、さまざまな方法で活用できます。 {{ className: 'lead' }}
+
+---
+
+## Depletable Listとは？
+
+簡単に言えば、Depletable Listは**限定的な利用可能性を持つアイテムの管理**を可能にします。
+
+同じカードが複数枚含まれるカードデッキを想像してみてください。
+標準的なRNGNeedsの使い方では、同一のカードは同じアイテムの複数のエントリとして表現されます。
+しかし、Depletable Listsを使用すると、カードは**複数のユニット**を持つ単一のアイテムとして表現されます。
+
+このリストから値が選択（カードが引かれる）されると、ユニットはピックごとに**1つずつ消費**されます。すべてのユニットが使用されると、アイテムは**消耗（depleted）**状態、つまり選択不可能な状態になります。
+実質的に、そのカードはデッキに存在しなくなったように見えます。
+
+もう一つの一般的なシナリオは、ゲーム報酬のプールからユニークな値を選択するような、個別の値の選択です。
+Depletable Listsを使えば、これを簡単に実現できます。リストをDepletableに設定し、各アイテムにユニットを1つ（`1`）割り当てるだけです。
+
+<Note>
+    このページでは、限定的なアイテム利用可能性の基本的な概念を説明し、Inspector上およびコード経由でのユニット管理に関するガイダンスを提供します。実践的な応用については、以下のページをご覧ください：
+    - <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a> - Depletable Listsを使ったユニークな報酬の選択方法を学びます。
+    - <a href={GuideDepletableList.Link}>{GuideDepletableList.Title}</a> - Depletable Listsを活用した実践的な例を紹介します。
+</Note>
+
+---
+
+## はじめに
+
+デフォルトでは、Probability Listsは**消耗しない（not depletable）**状態で作成されます。つまり、*無限のユニット*を持つと考えることができます。
+これはRNGNeedsの標準的な動作ですが、リストを消耗型と無限型の間で切り替えるのは簡単です。
+
+1. **Advanced Drawer Options Levelを有効にする**：
+<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a>
+ウィンドウに移動し、Drawer Options Levelを**Advanced**に切り替えます。このグローバル設定を有効にすると、すべてのProbability List Inspectorで高度な機能が表示されます。
+
+2. ドロワーの**PICK**セクションを開き、**Depletable**ボタンをクリックして状態を切り替えます。
+
+あるいは、コードでDepletable Listsを有効にすることもできます：
+
+```csharp {{ title: 'コードでDepletable Listsを有効にする'}}
+myDepletableList.IsDepletable = true;
+```
+
+<ImageX className="w-full h-auto" src={depListsEnable} alt="Depletable Lists - Enable" width="1000"/>
+
+`ProbabilityList`を**depletable**に設定すると、そのアイテムも**depletable**に設定されている場合に限り、個々のアイテムのユニットを消費できるようになります。
+つまり、リストは消耗型と非消耗型のアイテムを混在させることができますが、消耗するのは消耗型アイテムのユニットのみです。
+
+### 消耗型アイテム（Depletable Items）
+
+リストはデフォルトで無限型として作成されますが、**Probability Itemsはdepletableとして初期化**され、それぞれ利用可能ユニット数`1`、最大ユニット数`1`の初期値が設定されます。
+これらの設定はリスト自体がdepletableとしてマークされている場合にのみ有効になるため、ゲームデザイナーはリストのdepletable状態を設定を調整することなく簡単に切り替えられます。
+同様に、リストを非消耗型に切り替えても、個々のアイテムのdepletable設定には影響しません。
+
+また、各アイテムのdepletable状態は個別に設定できるため、同じリスト内に消耗型と無限型のアイテムを混在させることも可能で、リソース管理の柔軟性が向上します。
+
+<Note>
+    Depletable Lists機能が導入される前（バージョン0.9.7以前）に作成された`ProbabilityItem`は、デフォルトで無限型となり、ユニット数と最大ユニット数が`0`に設定されます。
+    これらのアイテムは手動で設定する必要がありますが、Probability ListのドロワーとAPIの両方で、リスト内のすべてのアイテムのプロパティを調整するための便利なメソッドが提供されています。
+
+    **Inspector上で** - **Action Menu**をクリックして**Reset**を選択し、**Execute Action Button**（オレンジ色の矢印）をクリックします。
+
+    <ImageX className="w-full h-auto" src={depListsOldListReset} alt="Depletable Lists - Reset Units in Old list" width="1000"/>
+
+    **コードで** - `myDepletableList.SetAllItemsDepletableProperties(true, 1, 1);`を使用して、すべてのアイテムを利用可能ユニット数1、最大ユニット数1のdepletableに設定します。
+</Note>
+
+`ProbabilityItem`のdepletable状態を管理するには、以下のプロパティを使用します：
+- `IsDepletable` - アイテムが消耗型かどうかを取得または設定します。
+- `IsDepleted` - アイテムが消耗済みの場合は`true`、まだユニットが残っているか無限型の場合は`false`を返します。
+- `IsSelectable` - アイテムが選択可能かどうかを判定します。アイテムが有効で、かつ非消耗型（無限型）であるか、消耗型の場合は少なくとも1つの利用可能なユニットがある場合に選択可能です。
+
+---
+
+## ユニットと最大ユニット数
+
+`ProbabilityList`内の各アイテムは、利用可能なユニット数と最大ユニット数を設定できます。これらは`ProbabilityItem`クラスの以下のプロパティで管理されます：
+
+- `Units` - 現在の利用可能ユニット数、つまりアイテムが選択できる残り回数です。**1回選択されるたびに1ユニット消費されます。**
+- `MaxUnits` - アイテムが持てる最大ユニット数です。この値はアイテムまたはリスト全体を**補充（refill）**する際に使用されます。
+
+アイテムまたはリスト全体を補充するとは、利用可能なユニット数を最大値にリセットすることを意味します。個々のアイテムまたはリスト全体に対して実行できます。
+
+さらに、`ProbabilityList`クラスはリスト内のアイテムの全体的な利用可能状況を追跡するメソッドを提供します。これらのメソッドは有効な消耗型アイテムのユニットのみをカウントします：
+
+- `GetTotalUnits()` - リスト内のすべての利用可能なユニットの合計を返します。現在の合計利用可能ユニット数を示します。
+- `GetTotalMaxUnits()` - リストのすべての最大ユニット数の合計を返します。すべての消耗型アイテムが持てる理論上の最大値を表します。
+
+<ImageX className="w-full h-auto" src={headerBarInformativePick} alt="Header Bar - Informative Pick Section Button" width="1000"/>
+
+Total UnitsとTotal Max Unitsは、リストがdepletableの場合、**PICK**セクションボタンの*Informative版*にも表示されます。Informative Section Buttonsの詳細については、<a href={UserInterfacePage.Link + "#header-bar"}>{UserInterfacePage.Title}</a>ページをご覧ください。
+
+### ショートカットを使ったユニット調整
+
+Probability List Inspectorは、個々のアイテムまたはリスト全体のユニット調整を簡単に行えるよう設計されています。単一アイテムのユニットを調整するには、**ユニット値の上にマウスポインタを合わせ**、以下のショートカットを使用します：
+
+- **マウスホイール**：ユニット数を増減します。
+- **WASD**または**矢印キー**：ユニット数の増加、減少、補充、または消耗を行います。
+
+また、ユニット調整時に修飾キーを使用することで機能を拡張できます：
+- **Shift**：変化量を`10`倍にします（このデフォルト倍率はRNGNeedsのPreferencesでカスタマイズ可能です）。
+- **Control**（macOSでは**Command**）：最大値へのクランプを無視します。
+
+これらのショートカットはRNGNeedsの<a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title} Window</a>でカスタマイズできます。
+
+<ImageX className="w-full h-auto" src={depListsPreferences} alt="Depletable Lists - Preferences" width="1000" />
+
+### コードによるユニット調整
+
+個々のアイテムまたはリスト全体のユニット数をプログラムで調整することもできます。
+
+```csharp {{ title: 'コードでユニットを調整する'}}
+// 単一アイテムのUnitsを設定する
+var item = myDepletableList.GetProbabilityItem(1);
+item.Units = 15;
+item.MaxUnits = 20;
+
+// 単一アイテムを補充する
+item.Refill();
+
+// リスト内のすべてのアイテムを3ユニット、最大5ユニットに設定する
+myDepletableList.SetAllItemsUnits(3);
+myDepletableList.SetAllItemsMaxUnits(5);
+
+// リスト内のすべてのアイテムを補充する
+myDepletableList.RefillItems();
+```
+
+---
+
+## Action Menuの使用
+
+**Action Menu**は、すべてのアイテムのユニット数と最大ユニット数を調整するための一連のアクションを提供し、リスト内の消耗型アイテムの管理を簡素化します。
+
+<ImageX className="w-full h-auto" src={depListsActionMenuDropdown} alt="Depletable Lists - Action Menu Dropdown" width="1000" />
+
+**Action Menu**をクリックすると、以下のオプションを含むドロップダウンが表示されます：
+
+- **Refill Items** - すべての消耗型アイテムのユニットを最大値にリセットします。
+- **Set Depletable** - すべてのアイテムのdepletable状態を指定の設定に切り替えます（デフォルトは`On`）。
+- **Set Units** - すべての消耗型アイテムに指定したユニット数を割り当てます（デフォルトは`1`）。
+- **Set Max Units** - すべての消耗型アイテムに指定した最大ユニット数を割り当てます（デフォルトは`1`）。
+- **Reset** - すべての設定をドロワーのデフォルト設定にリセットします。
+
+アクションを選択した後、対応する値（depletable状態の場合はOn/Off、ユニット数と最大ユニット数の場合は整数値）を変更できます。
+
+<Note>
+    これらの設定を変更すると、ドロワーのデフォルト設定が実質的に変更されます。例えば、**Set Max Units**アクションを選択して値を`5`に調整した場合、その後の**Reset**アクションはすべてのアイテムの最大ユニット数を`5`に設定します。
+
+    この機能により、消耗型アイテムを管理するための独自のデフォルト設定を各ドロワーごとにカスタマイズできます。
+</Note>
+
+---
+
+## 選択ロジック
+
+Depletable Listは標準的なProbability Listと同様に機能しますが、消耗フラグが追加されています。**重要な違い**は、アイテムの限定的な利用可能性を管理し、それが選択プロセスに与える影響を理解することにあります。
+
+消耗型アイテムが選択されると、そのユニットはゼロになるまで`1`ずつ減少します。アイテムの利用可能なユニットがゼロになると、そのアイテムは**消耗済み（depleted）**とみなされ、ユニットが**補充（Refill）**されるまで選択不可能になります。
+
+この特性は、**消耗型リストの状態が選択プロセス中に変化する可能性がある**ことを意味します。
+
+対照的に、標準（無限型）リストでは、選択プロセスはすべてのアイテムが常に利用可能であるという前提で動作するため、リストの状態は選択前後で一定に保たれます。
+
+しかし消耗型リストでは、**特定の選択後にアイテムが利用不可能になる場合があり**、消耗済みアイテムが選択される可能性が変化し、選択プロセスのダイナミクスに影響を与えます。
+
+### 消耗済みアイテムとピック数
+
+消耗済みアイテムは無効化されたアイテムと同様に機能します。選択されても最終結果には含まれません。ただし、無効化された（または消耗済みの）アイテムを選択すると、合計ピック数が減少する場合があります。このアプローチにより、確率分布が意図した設計と一致した状態に保たれます。
+
+<Note>
+    無効化されたアイテムの背景にあるロジックと、それが選択プロセスに与える影響について詳しくは、
+    <a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a>ページをご覧ください。
+</Note>
+
+**Maintain Pick Count**機能は、消耗型リストを扱う際に特に便利です。有効にすると、選択プロセスは合計ユニット数が十分にある限り、指定されたピック数を維持しようとします。
+
+**Maintain Pick Count**が有効な場合の主要なポイントは以下のとおりです：
+
+- **標準リスト**：すべてのアイテムが無限型なので、常にピック数を維持します。
+- **すべてのアイテムが消耗型のDepletable List**：合計ユニット数が十分にある限りピック数を維持します。例えば、リストの利用可能な合計ユニット数が10の場合、ピック数15を指定すると10アイテムのみが選択されます。すべてのユニットが使用されると、すべてのアイテムが無効化されたかのように振る舞います。
+- **アイテムが混在するDepletable List**：少なくとも1つのアイテムが無限型の場合、残りのピック数はその無限型アイテムから選択されます。消耗型アイテムのユニットがすべて消費されると、リストは無限型アイテムのみが利用可能なかのように機能します。
+
+### 消耗型アイテムと無限型アイテムの混在
+
+消耗型アイテムと無限型アイテムが混在するDepletable Listの例を考えてみましょう：
+
+- **有効かつ無限型**のアイテム2つ
+- **有効かつ消耗型**のアイテム2つ
+- **無効化された**アイテム1つ
+
+ピック数は`10`に設定されています。リストの利用可能な合計ユニット数は`2`（各消耗型アイテムに1つずつ）です。これらの設定でテストすると、2つの利用可能なユニットが消費され、残りの選択は無限型アイテムから無制限に提供されます。
+
+<ImageX className="w-full h-auto" src={depListsMixingItems} alt="Depletable Lists - Mixing Items" width="1000"/>
+
+重要なポイントは次のとおりです：消耗型アイテムがすべて使われると、選択プロセスは無限型アイテムのみで続行され、**無効化された**または**消耗済みの**アイテムは実質的に無視されます。
+
+---

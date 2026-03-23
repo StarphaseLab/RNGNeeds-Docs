@@ -1,0 +1,237 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import {PreferencesPage, SamplesTreasureChestPage, PickHistoryPage, DepletableListsPage} from "@/components/PageLinks";
+import diceRoll2d6 from '@/images/screenshots/dice-roll-2d6.png';
+import disabledItemEffect from '@/images/screenshots/disabled-item-effect.png';
+import {ImageX} from "@/components/ImageX";
+
+export const translationStatus = 'auto'
+
+export const description =
+    '了解 RNGNeeds 中可用的不同选择方法，以及如何有效地使用它们。'
+
+<HeroPattern />
+
+# 选取值
+
+在本页中，您将了解如何从 Probability List 中选取值。无论您是游戏设计师、程序员，还是两者兼备，本指南将帮助您和您的团队决定 RNGNeeds 如何返回所需的值。{{ className: 'lead' }}
+
+---
+
+## 选取值
+
+无论您是在 Inspector 中设计 Probability List，还是在代码中设置其值、概率及其他属性，选取值都是一个简单的过程。
+
+```csharp {{ title: 'Selecting values'}}
+public ProbabilityList<string> myProbabilityList;
+
+List<string> results = myProbabilityList.PickValues();
+```
+
+这将启动**选择过程**，并根据列表的当前配置返回值，包括选取数量、选择方法、防重复等因素。
+
+**请参考以下示例：** 假设在一个游戏中，玩家动作的成功与否由掷骰子决定。在这个场景中，游戏设计师可以自由地在 Inspector 中直接定义掷骰子的机制。
+
+<ImageX className="w-full h-auto" src={diceRoll2d6} alt="Dice Roll 2D6" width="1000"/>
+
+设计师可以设置列表中的条目数量（代表骰子的面数）以及所需的 Pick Count（代表掷骰子的数量）。这种灵活性使设计师能够轻松调整游戏的 RNG 元素，将游戏体验打磨成他们心目中的样子。
+
+现在来看一下代码：
+
+```csharp {{ title: 'Dice Rolls set up by the designer'}}
+public ProbabilityList<int> dice;
+
+int sumOfRolls = dice.PickValues().Sum();
+```
+
+代码只关心掷骰结果的总和。这样一来，设计师可以决定掷骰方式是 1D6、2D10 还是任何他们想要的形式。例如，如果设计师在列表中添加三个值分别为 1、2 和 3 的条目，并将 Pick Count 设为 2，那么实际上就创建了一个 2D3 骰子。
+
+<Note>
+    **这个过程凸显了 RNGNeeds 的核心优势之一**
+
+    它允许游戏设计师在 Inspector 中配置列表，从而直接掌控游戏的 RNG 元素。这种方式不仅简化了程序员的工作——他们只需负责发起选择过程——同时也赋予了设计师对游戏概率机制的直接控制权。这是一种双赢的设计，使 RNGNeeds 成为游戏开发中简单高效的工具。
+</Note>
+
+此外，程序员也可以接管骰子逻辑，覆盖列表的原有配置：
+
+```csharp {{ title: 'Dice Rolls set by the coder'}}
+public ProbabilityList<int> dice;
+
+// This will pick only one value
+int sumOfRolls = dice.PickValues(1).Sum();
+
+// and is equivalent to this
+int result = dice.PickValue();
+
+// This will configure the list to randomly select 2 to 4 values
+dice.LinkPickCounts = false;
+dice.PickCountMin = 2;
+dice.PickCountMax = 4;
+int sumOfRolls = dice.PickValues().Sum();
+
+// and is equivalent to this, without the need to configure pick counts manually
+int sumOfRolls = dice.PickValues(2, 4).Sum();
+```
+
+---
+
+## 理解返回值
+
+RNGNeeds 从设计之初便将性能作为首要目标之一。为此，我们将系统设计为尽可能减少 GC 分配。因此，部分选择方法返回的是内部列表的引用，而非创建新的 List。
+
+在内部，随机选取值完成后，结果会首先写入列表的 Pick History。从选择过程开始到此时，系统只处理索引。实际结果通过返回 `LastPickedValue` 或 `LastPickedValues` 属性来产生，具体取决于所使用的方法。这些属性从已选取索引的历史记录中获取结果，并将其映射到列表中存储的实际值。
+
+从本质上说，所有值的选取都经过历史记录。
+
+<Note>
+    默认历史容量上限为 1000 条记录。这意味着在不增加容量的情况下，默认最多可返回 1000 个条目。深入了解历史记录功能，请访问
+    <a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a>
+    页面。
+</Note>
+
+### 返回单个值的方法
+
+以下方法产生单个结果：
+
+- `T PickValue()`
+- `bool TryPickValue(out T value)`
+- `(T Value, int Index) PickValueWithIndex()`
+- `bool TryPickValueWithIndex(out T Value, out int Index)`
+
+这些方法直接通过 `LastPickedValue` 属性在选取完成后立即返回 `T value`，使用简单直接。唯一的例外是当选取因选中了列表中的禁用条目而失败时，这些方法将返回该类型的 `default` 值。要确认选取是否成功，可以使用 **TryPick** 系列方法。有关禁用条目行为的更多内容，请参阅本页后续部分。
+
+### 返回共享列表的方法
+
+以下方法返回 Probability List 所拥有的列表的引用：
+
+- `List<T> PickValues()`
+- `List<T> PickValues(int pickCount)`
+- `List<T> PickValues(int pickCountMin, int pickCountMax)`
+
+这些方法不会创建新的 List，而是返回 Probability List 所拥有的 `private List<T>` 的引用。
+
+但是，由于该列表在多次选取之间是共享的，您获取的只是引用，下一次选取将会改变其内容。请参考以下示例：
+
+```csharp {{ title: 'Results in a shared list'}}
+public ProbabilityList<int> myProbabilityList;
+
+var firstResult = myProbabilityList.PickValues(3);
+            
+// firstResult now contains a set of picked values, let's say 3, 5, 7
+
+Debug.Log(firstResult[0]);  // outputs '3'
+
+var secondResult = myProbabilityList.PickValues(3);
+
+// secondResult contains new values, let's say 1, 2, 5
+
+// However, firstResult is still a reference to the same list as secondResult
+// so the values 3, 5, 7 are overwritten
+
+Debug.Log(firstResult[0]);  // outputs '1'
+```
+
+### 填充列表的方法
+
+如果您希望保留列表中的值，可以使用以下方法——它们不返回共享列表，而是将值追加到您提供的列表中。
+
+- `bool PickValues(List<T> listToFill)`
+- `bool PickValues(List<T> listToFill, int pickCount)`
+- `bool PickValues(List<T> listToFill, int pickCountMin, int pickCountMax)`
+
+这些方法的工作方式类似，但不返回共享列表，而是将值添加到您提供的列表中。它们不会清空列表，而是通过 `listToFill.AddRange(LastPickedValues)` 追加值。当您需要选取多组结果并自行管理列表创建时，这种方式非常实用。
+
+```csharp {{ title: 'Adding results to your list'}}
+public ProbabilityList<int> myProbabilityList;
+
+List<int> myResults = new List<int>();
+
+myProbabilityList.PickValues(myResults, 3);     // will add three values to your list
+myProbabilityList.PickValues(myResults, 2, 5);  // will add an additional two to five values
+```
+
+---
+
+## 禁用条目
+
+禁用列表中的条目是防止某些值在选择过程中被选取的便捷方法。例如，在设计阶段测试不同结果时，您可能希望暂时禁用某个值而不将其从列表中删除。不过，使用禁用条目时有几个重要概念需要了解。
+
+<Note>
+    **(1) 禁用条目可能改变概率分布** —— 禁用条目仍然存在于概率列表中。这意味着选取过程仍可能随机选中禁用条目。但是，如果选取结果是一个禁用条目，该次选取将被忽略。
+
+    **(2) 禁用条目可能降低选取数量** —— 承接第一点，如果选取被忽略，实际的选取数量可能低于预期值。
+</Note>
+
+**请参考以下示例：** 列表中有三个条目，每个条目的概率均为 33.3%，其中一个被禁用。
+
+<ImageX className="w-full h-auto" src={disabledItemEffect} alt="Dsabled Item Effect" width="1000"/>
+
+- 从该列表中选取 100 个值时，实际选取数量可能会偏低，因为每次选中禁用条目时该次选取都会被忽略。结果大约会选取到 66 个条目，但两个已启用条目的概率看起来是正确的——各约 33%。
+
+- 若要保持所需的选取数量，可以启用 `Maintain Pick Count` 功能。启用后，选择过程将持续进行直到达到所需的选取数量。结果将为 100 个条目，但两个已启用条目的概率将接近各 50%。
+
+<Note>
+    **启用"Maintain Pick Count"功能：**
+
+    - 打开抽屉的 **PICK** 部分，点击选取数量设置下方的 Maintain Pick Count 按钮将其开启。
+    - 或者，您也可以在代码中将 `MaintainPickCountIfDisabled` 设置为 true。
+    
+    *请注意，该选项针对每个 Probability List 单独设置。*
+</Note>
+
+### 可耗尽列表中的选取数量
+
+在标准 Probability List 中，条目始终可用，因此维持选取数量较为简单。然而，在 **Depletable List** 中，条目可能因耗尽而变得不可用。在这种情况下，只有当列表中至少存在一个不可耗尽（无限）的条目时，才能维持预期的选取数量。
+
+如需深入了解 Depletable List 的工作方式及其对游戏动态的影响，请访问
+<a href={DepletableListsPage.Link}>此页面</a>。
+
+### 判断选取是否成功
+
+从含有禁用条目的列表中选取多个值时，维护起来相当容易，因为返回的 `List<T>` 只包含成功选取的值。
+
+```csharp {{ title: 'Selecting multiple values from a list with disabled items'}}
+public ProbabilityList<string> myProbabilityList;
+
+myProbabilityList.AddItem("Enabled Item 1", .33f);
+myProbabilityList.AddItem("Enabled Item 2", .33f);
+myProbabilityList.AddItem("Disabled Item", .33f, enabled: false);
+myProbabilityList.NormalizeProbabilities();
+
+// This will return a List<string> with about 66 values
+var results = myProbabilityList.PickValues(100);
+
+// This will return a List<string> with 100 values
+myProbabilityList.MaintainPickCountIfDisabled = true;
+var results = myProbabilityList.PickValues(100);
+```
+
+但是，当使用返回单个值的方法（如 `.PickValue()`）时，结果可能取决于 ProbabilityList 所持有的 `Type`。这是因为 `.PickValue()` 必须返回某个值。如果从持有`引用类型`的 ProbabilityList 中选取到禁用条目，结果将为 `null`，您可以通过空值检查来判断选取是否成功。
+
+另一方面，如果您使用的是`值类型`，不成功选取的结果将是该类型的 `default` 值。在某些情况下，不成功选取返回的值可能与正常值难以区分。例如，对于 `string`、`boolean` 或 `int` 等值类型，将分别返回空字符串、`false` 或 `0`。
+
+如果您需要判断单个值选取是否成功，可以使用 `.TryPickValue(out T value)`
+
+```csharp {{ title: 'Selecting a single value from a list with disabled items'}}
+if(myProbabilityList.TryPickValue(out var selectedValue))
+{
+    // do something with selectedValue
+}
+
+// Alternatively, you can also force the selection to pick an enabled item
+myProbabilityList.MaintainPickCountIfDisabled = true;
+var result = myProbabilityList.PickValue();
+```
+
+禁用条目也可以作为一种强大的设计选择，为模块化选择带来灵活性。请探索我们的
+<a href={SamplesTreasureChestPage.Link}>{SamplesTreasureChestPage.Title}</a> 示例，了解如何创建模块化且易于维护的选择系统。
+
+### 禁用条目与维持选取数量的边界情况
+
+使用禁用条目时，有两种情况需要注意。
+
+1. **列表中只有一个已启用条目** - 如果列表中只有一个已启用条目且启用了 Maintain Pick Counts，选择过程将被跳过，系统将手动创建一个包含相同值的列表。
+
+2. **已启用概率极小** - 如果列表中所有已启用条目的概率非常小（例如 0.0001%），Maintain Pick Count 实际上会命令选择过程持续进行直到达到选取数量。这可能导致选择过程非常漫长，甚至可能挂起（过程可能永远无法完成）。RNGNeeds 会根据总已启用概率和应选取的条目数量计算一个因子。如果达到阈值，选择将被跳过，不返回任何值。在这种情况下，控制台将抛出警告，通知您此边界情况。
+
+---

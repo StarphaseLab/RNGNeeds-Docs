@@ -1,0 +1,203 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {
+    CustomizingListsPage,
+    SamplesMonsterSpawnerPage,
+    GuideProbabilityInfluence,
+    PreferencesPage
+} from "@/components/PageLinks";
+import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
+import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
+import probabilityInfluencePercentagePreview from '@/images/screenshots/probability-influence-percentage-preview.png';
+import probabilityInfluenceHealthGlobeMaximumSpread from '@/images/screenshots/probability-influence-health-globe-maximum-spread.png';
+import probabilityInfluenceHealthGlobeInverted from '@/images/screenshots/probability-influence-health-globe-inverted.png';
+import probabilityInfluenceExternalProvider from '@/images/screenshots/probability-influence-external-provider.png';
+import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    '了解如何使用 RNGNeeds 的 Probability Influence，根据外部因素动态调整概率。'
+
+<HeroPattern />
+
+# Probability Influence
+
+深入探索动态概率的世界——RNGNeeds 将成为您打造引人入胜、实时响应游戏体验的利器。Probability Influence 允许您根据外部因素精细调整各类游戏事件的发生概率，实时适应不断演变的游戏动态。{{ className: 'lead' }}
+
+<Note>
+    有关实现 Probability Influence 的详细指南和示例，请访问
+    <a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> 页面。
+</Note>
+
+---
+
+## 什么是 Probability Influence？
+
+从本质上说，Probability Influence 是对**预设概率的动态调整**。
+
+假设您为玩家找到稀有道具设置了 3% 的概率。Probability Influence 允许您根据游戏因素动态修改这一概率。例如，您可以在玩家表现出色时提升掉落率，或者在稀有道具刚被获得后降低它。
+
+这一概念将**动态概率**引入游戏玩法，催生了大量创新机制。游戏中几乎任何元素都可以影响事件的发生。从将暴击率与玩家属性挂钩、根据派系关系调整 NPC 互动，到随游戏内时间临近午夜而改变稀有生物的刷新率，乃至在玩家调高音乐音量时强化战斗节奏——可能性无穷无尽，而我们已让实现过程变得简单直接。
+
+**Influence Providers** 是关键所在。这些对象通过编程为您的固定概率提供动态调整值。例如，一个 Health Manager 可以追踪玩家的当前血量百分比。游戏设计师随后决定如何应用这些信息——将 Provider 分配给 Probability List 中的条目，并使用 **Influence Spread** 精细调控对每个概率的影响程度。
+
+<Note>
+    列表中的每个条目都可以被分配其独特的 Influence Provider，从而实现丰富而动态的外部因素交互。这一机制使您能够整合多种影响因素，协同动态地调整概率和结果。无论是玩家的血量、游戏内的时间，还是其他任何游戏状态，您都可以针对每个条目量身定制影响逻辑，以反映这些变化中的条件，带来细腻且响应灵敏的游戏体验。
+</Note>
+
+---
+
+## Influence 与 Spread
+
+影响值是一个介于 `-1 到 1` 之间的 `float` 值，**零**表示**没有影响**。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceFloatValue} alt="Probability Influence - Float Value" width="1000"/>
+
+该值由 **Influence Provider** 提供给 Probability List——Influence Provider 是一个使用特殊接口的脚本或对象。关于这一点的更多细节将在后文讨论。
+
+仅有 -1 到 1 范围内的影响值还不够实用，还需要一种机制来控制它如何调整列表中的各个条目。这正是 **Influence Spread** 的用武之地——它允许游戏设计师精细调控影响值对设计概率的实际作用程度。
+
+Spread 将影响范围映射到概率的实际调整量上。借助 Spread，游戏设计师可以为传入影响值对各条目概率的调整幅度设定上限。
+
+在下面的示例中，怪物掉落血球的概率被设计为 20%。游戏设计师希望这一概率受到玩家血量的影响——在玩家受伤时增加血球的掉落概率，在玩家状态良好时降低它。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpreadMapping} alt="Probability Influence - Spread Mapping" width="1000"/>
+
+观察曲线如何将影响范围映射到 Influence Spread 上。**最大负向影响**（-1）将该条目的概率降低至 10%，而**最大正向影响**（1）则将概率提升至 40%。-1 到 1 之间的任意值都会被按比例映射到 Spread 范围内，0 影响值对应设计概率 20%。
+
+### 受影响的条目与列表
+
+只要列表中任何一个条目受到影响，整个列表都被视为受影响状态，这意味着它将在每次抽取前重新计算概率。这种重新校准是必要的——因为当某个条目的概率可以动态变化时，其他条目的概率也会相应地自动调整。
+
+为了帮助预测这种动态环境下的结果，Probability List Inspector 会显示受影响概率的结果百分比。
+
+概率条左侧的百分比代表**当所有传入影响值均为 -1 时**的结果概率，右侧的百分比则显示**所有传入影响值均为 1 时**的场景。结果以颜色编码：默认情况下，若结果概率低于设计概率则显示为红色，高于则显示为蓝色。
+
+<ImageX className="w-full h-auto" src={probabilityInfluencePercentagePreview} alt="Probability Influence - Percentage Preview" width="1000"/>
+
+在上面的示例中，四个方向的设计概率均等，各为 25%。**South** 方向受到影响。最大负向影响会将其概率降低至 0%。在这种情况下，只有三个方向可供选择，因此预览中显示它们的概率相等。South 方向的预览百分比显示为红色，表示其低于设计的 25% 概率。其余方向显示为蓝色，因为它们的概率将高于设计值。
+
+反之，若影响值达到最大正向，South 方向的概率将会提升，导致列表中各条目的概率总和超过 100%。因此，结果概率的预览会经过归一化处理。
+
+<Note>
+    您可以在
+    <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> 窗口中全局自定义颜色编码渐变。
+    查找 ***Spread Color Gradient*** 设置项。
+
+    此外，您还可以针对每个独立的 Drawer 微调颜色差异的敏感度。
+    只需打开
+    <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>
+    并调整 ***Spread Color Bias*** 滑块即可。
+</Note>
+
+### 受影响条目的选取逻辑
+
+每当进行值的选取时，Probability List 首先检查其中是否有任何条目受到影响。如果有，RNGNeeds 将根据提供的影响值计算调整后的概率。完成调整后，选取过程将基于这些新概率进行。
+
+<Note>
+    在选取前即时计算影响值，营造了一个概率实时调整的动态环境，其调整依据来自外部因素的逻辑。
+    具体示例请参见 <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> 示例——怪物从三个地点随机刷新，受玩家与各刷新点距离的影响。
+</Note>
+
+---
+
+## Influence Providers
+
+在 RNGNeeds 中，影响机制通过 `IProbabilityInfluenceProvider` 接口建立。该接口允许 Provider 对象动态调整 Probability List 中各条目的概率。Provider 主要分为两种类型：
+
+- **External Providers**：这些是实现了该接口的特定 Unity 对象（如 `MonoBehaviour` 或 `ScriptableObject`），可以直接分配给列表中的条目以影响其概率。
+- **以条目值作为 Provider**：这种方式利用 ProbabilityList 内 Unity 对象或自定义类的固有值来影响概率。
+
+### External Providers
+
+任何实现了 `IProbabilityInfluenceProvider` 接口的 Unity 对象——无论是 `MonoBehaviour` 还是 `ScriptableObject`——都可以作为 **External Influence Provider**。这些 Provider 提供了一种灵活的方式，根据外部条件或状态动态调整条目概率，提供 -1 到 1 范围内的值。
+
+回想一下前面提到的血球示例——一个简单的 Health Manager Component 实现了该接口，以反映玩家剩余的血量百分比。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceExternalProvider} alt="Probability Influence - External Provider" width="1000"/>
+
+该组件随即成为血球条目的 **external provider**。程序员还可以通过提供 **Influence Info** 向游戏设计师说明底层逻辑——当 Provider 被关联后，该信息将显示在 Inspector 中。
+
+```csharp
+public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    public float maxHealth;
+    public float currentHealth;
+    public float HealthPercentage => currentHealth / maxHealth;
+    
+    public float ProbabilityInfluence => HealthPercentage.Remap(0, 1, 1, -1);
+    public string InfluenceInfo => $"Based on health percentage: {HealthPercentage:P2} = {ProbabilityInfluence} Influence";
+}
+```
+
+在上面的代码片段中，接口的 `ProbabilityInfluence` 属性将血量百分比重新映射为反向影响值——100% 血量对应 -1 影响值，从而降低血量充足的玩家的掉落概率。这一逻辑通过 `InfluenceInfo` 属性对游戏设计师透明呈现。
+
+### 以值作为 Influence Provider
+
+值本身也可以充当 Influence Provider。在
+<a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a>
+示例中，`SpawnLocation` MonoBehaviour 充当 Provider，其影响逻辑基于玩家与刷新点之间的距离。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpawnLocationsProviders} alt="Probability Influence - Spawn Locations Providers" width="1000"/>
+
+```csharp {{ title: 'Spawn Location Code'}}
+public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    // code not relevant for this guide was omitted
+    
+    public Transform playerLocation;
+    public float DistanceToPlayer => Vector3.Distance(transform.position, playerLocation.position);
+    
+    // Remaps the distance to player into an influence value
+    public float ProbabilityInfluence => DistanceToPlayer.Remap(0f, 30f, 1f, -1f);
+    public string InfluenceInfo => $"Distance to player: {DistanceToPlayer} = {ProbabilityInfluence}";
+}
+```
+
+在这一实现中，与玩家的距离被重新映射——距离为零时产生最大正向影响（1），而距离达到 30 单位时则产生最大负向影响（-1）。
+
+<Note>
+    需要注意的是，如果同时分配了 External Provider，且值本身也被指定为 Influence Provider，则值的影响将优先生效，并覆盖外部 Provider。
+</Note>
+
+---
+
+## 反转影响
+
+在某些场景下，反转（或逆转）传入的影响值会带来显著收益。当您作为游戏设计师希望逆转程序员建立的逻辑、需要在同一列表中混合正常与反转逻辑，或者想要放大影响对特定条目的作用时，这一功能尤为实用。
+
+反转影响是一个用途广泛的工具，能够显著拓展依赖动态概率调整的游戏机制的设计空间。
+
+### 用例探讨
+
+回顾前面的血球示例。即使将最大 Spread 设置为 100%，在最大正向影响下，血球的掉落率也只能上限至 56%。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeMaximumSpread} alt="Probability Influence - Maximum Spread" width="1000"/>
+
+实际上，将 Spread 设置为最大值确实会将该条目的概率提升至 100%。然而，如果列表中另一条目的设计概率为 80%，则列表总概率将达到 180%。因此，列表在任何选取前都会经过归一化处理：
+
+- **Item 0 -** 80 / 180 = 0.44
+- **Item 1 -** 100 / 180 = 0.56
+
+这些数值被准确地显示在 Spread 条旁，提供了最大正向影响下归一化概率的预览。
+
+**为了提升血球的掉落概率**，我们必须降低另一条目的概率。这正是反转影响发挥作用的地方。通过为第一个条目分配相同的 Influence Provider 并启用 **Invert Influence** 开关，我们便能实现这一目标。
+
+<Note>
+    当您为某个条目启用 Inverted Influence 时，其**设计概率指示器**（Spread 滑块内的白线）将会高亮显示。这有助于在 Provider 选项折叠时识别已反转的条目。
+</Note>
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeInverted} alt="Probability Influence - Inverted Influence" width="1000"/>
+
+我们立即可以观察到，在最大**正向影响**下，血球的掉落概率跃升至 100%。这一提升的原因在于：**负向影响**——即**正向影响**的反面——同时作用于顶部条目的概率。
+
+本质上，**掉落**血球的概率提升，而**不掉落**血球的概率降低，二者均受同一因素影响：玩家的血量。
+
+---
+
+### 总结
+
+对 Probability Influence 有了扎实的理解之后，您已做好深入探索其实际应用的准备。通往动态且引人入胜的游戏机制的旅程将在
+<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> 页面继续——那里有详尽的指南和示例，助您获得启发并指导您的实现。
+
+---

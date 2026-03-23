@@ -1,0 +1,135 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {CustomizingListsPage, PreferencesPage, RepeatPreventionPage, SelectingValuesPage} from "@/components/PageLinks";
+import obstacleSpawner from '@/images/screenshots/testing-outcomes-obstacle-spawner.png';
+import obstacleSpawnerTest from '@/images/screenshots/testing-outcomes-obstacle-spawner-test.png';
+import testingOutcomesConsole from '@/images/screenshots/testing-outcomes-console.png';
+import {ImageX} from "@/components/ImageX";
+
+export const description =
+    'Master RNGNeeds testing tools to evaluate and optimize your probability configurations both in the Inspector and in runtime scenarios.'
+
+<HeroPattern />
+
+# Testing Outcomes
+
+Dive into this guide to discover the tools and techniques RNGNeeds offers for testing. 
+By simulating various scenarios, you can gain a deeper understanding of the outcomes shaped by your crafted probabilities and configurations. {{ className: 'lead' }}
+
+---
+
+## Testing in the Inspector
+
+When designing probability distributions, it's often essential to visualize outcomes without constantly entering play mode. 
+The testing feature in RNGNeeds allows you to simulate selections, turning abstract percentages into tangible statistics, aiding in understanding and refining your setups.
+
+**Consider this scenario**: You're developing an endless runner game where random obstacles appear. 
+The code attempts to select an obstacle from a list of six, with varying probabilities, and one of them is disabled.
+
+<ImageX className="w-full h-auto" src={obstacleSpawner} alt="Obstacle Spawner Inspector" width="1000"/>
+
+```csharp {{ title: 'Obstacle Spawner Code'}}
+public class ObstacleSpawner : MonoBehaviour
+{
+    public ProbabilityList<GameObject> obstacles;
+
+    public void SpawnObstacle()
+    {
+        if (obstacles.TryPickValue(out var obstacle))
+        {
+            // Spawn Obstacle
+        }
+    }
+}
+```
+
+Imagine you anticipate around 180 obstacles to spawn in a minute of gameplay. To visualize the distribution of these spawns, open the **PICK** section of the drawer, 
+set the pick count to 180, and hit the **TEST** button.
+
+<ImageX className="w-full h-auto" src={obstacleSpawnerTest} alt="Obstacle Spawner Test" width="1000"/>
+
+The inspector will then display the results for each item: the number of times it was picked and its resulting probability. 
+The **percentage is color-coded** to highlight deviations between the designed and actual outcomes. By default, underrepresented items are tinted orange, while overrepresented ones are green.
+
+<Note>
+    **Customizing Test Results**
+
+    **Color Tint** - If the default colors don't suit your needs, you can modify the tints in the <a href={PreferencesPage.Link}>{PreferencesPage.Title}</a> window using the *Test Color Gradient*. This is a global setting for all Probability List drawers.
+
+    **Sensitivity** - Fine-tune the color bias (sensitivity) for each drawer individually in its Additional Options sub-menu.
+
+    **Percentage Digits** - Control the precision of displayed percentages with the *Test % Digits* slider in the drawer's Additional Options sub-menu.
+
+    For a deeper dive into customization, check out our <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> documentation page.
+</Note>
+
+
+For a comprehensive breakdown, results are also logged in the console, detailing the selection method, seed, pick counts, repeat percentages, and more.
+
+<ImageX className="w-full h-auto" src={testingOutcomesConsole} alt="Testing Outcomes Console" width="1000"/>
+
+### Testing Depletable Lists
+
+It's crucial to remember that **testing depletable lists consumes units of items** just as it would during actual gameplay. 
+As items are selected during tests, their units will decrease, setting a new state of the list each time. 
+While you may intentionally design your lists to be partially depleted as part of the gameplay experience, if your aim is simply to test the outcomes without permanent changes, consider refilling the items after testing.
+
+<Note>
+    Tip: Frequent testing is recommended to gain more accurate insights. 
+    To avoid the need to manually refill items after each test, you can **Control + Click** (or **Command + Click** on macOS) the **TEST** button. 
+    This shortcut refills the items automatically before each test.
+</Note>
+
+---
+
+## Interpreting Test Results
+
+When analyzing the results, a designer might interpret them as, *"In one minute of gameplay, approximately 34 exploding barrels will spawn as obstacles."* From the console data, it's evident that *"around 158 obstacles will spawn, with 32 being repeats."* The discrepancy between the expected 180 picks and the actual number is due to the disabled item in the list.
+
+<Note>
+    For insights on how disabled items influence pick counts or probabilities, visit the <a href={SelectingValuesPage.Link + "#disabled-items"}>{SelectingValuesPage.Title}</a> page. To understand methods to minimize or eliminate consecutive repeated picks, refer to our <a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> page.
+</Note>
+
+However, it's essential to note that 180 picks might not provide a comprehensive statistical representation. Repeated tests could show slight variations in outcomes. To gain more accurate insights, consider increasing the pick count. For instance, testing with 1,800 picks might yield results that align more closely with the intended probabilities.
+
+Once you've finished testing, you can reset the results by clicking the X button adjacent to the TEST button. This step isn't obligatory, as test results aren't stored with the list. They're part of the drawer data, which resets when switching inspectors.
+
+
+--- 
+
+## Testing in Code
+
+For scenarios where you need to evaluate your configurations during runtime or if you're keen on analyzing test statistics directly from your code, RNGNeeds provides a way to execute tests and retrieve the `TestResults`.
+
+```csharp {{ title: 'Testing in Code'}}
+var testResults = myProbabilityList.RunTest();
+testResults.Print();
+```
+
+The `TestResults` class encapsulates the outcomes in a `Dictionary<int, int> indexPicks`, where the key represents the item's index in the list, and the value indicates its pick frequency. This class also offers additional insights:
+
+- `string selectionMethodName` - Name of the applied selection method.
+- `PreventRepeatMethod preventRepeat` - Method used for repeat prevention.
+- `uint seed` - Seed generated prior to selection.
+- `int pickCountMin` - Specified minimum pick count.
+- `int pickCountMax` - Specified maximum pick count.
+- `int pickCount` - Randomly chosen pick count within the min-max range.
+- `int actualPickCount` - Total items picked.
+- `int repeatCount` - Count of consecutive identical picks.
+- `double testDuration` - Test's duration.
+- `float RepeatsPercentage` - Calculated as `repeatCount / actualPickCount`.
+
+Moreover, `TestResults` furnishes several utility properties and methods to format and present the outcomes:
+
+- `void Print()` - Displays results akin to inspector-based testing.
+- `string SelectionMethodInfo` - Information on selection method, repeat prevention, and seed.
+- `string PickCountInfo` - Details on the min, max, and randomly chosen pick count.
+- `string ActualPickCountInfo` - Data on picked items, repeat percentage, and total count.
+- `string TestDurationInfo` - Presents test duration in a user-friendly format.
+- `string GetFormattedResults()` - Offers a concise view of the results.
+- `string GetFormattedPickDetails()` - Provides a detailed breakdown for each index.
+- `string GetFormattedResultsWithDetails()` - Merges the above two outputs.
+
+To reset the test results, simply invoke `myTestResults.Clear();`.
+
+---

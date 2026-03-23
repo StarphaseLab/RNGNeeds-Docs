@@ -1,0 +1,99 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {
+    GettingStartedPage, NestingListsPage,
+    PreferencesPage, SamplesOverviewPage,
+    ProbabilityInfluencePage,
+    RepeatPreventionPage,
+    SupportPage, GuideSelectingDistinctValues
+} from "@/components/PageLinks";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+export const translationStatus = 'auto'
+export const description =
+    '在我们的常见问题解答部分获取关于 RNGNeeds 最常见问题的答案，涵盖从基本设置到高级功能的所有内容。'
+
+<HeroPattern />
+
+# 常见问题解答
+
+欢迎来到 RNGNeeds 文档的常见问题解答部分。
+本页面专门解答与 RNGNeeds 插件使用和功能相关的常见问题与疑虑。
+我们根据对用户潜在疑问的理解整理了一批初始问答，但我们深知这只是一个开始。
+随着我们不断收集真实用户的问题与反馈，本部分将持续更新，以满足用户群体不断变化的需求。 {{ className: 'lead' }}
+
+---
+
+## 如何安装 RNGNeeds？
+
+RNGNeeds 通过 Unity 的 Asset Store 以 Package 形式安装。请访问我们的
+<a href={GettingStartedPage.Link}>{GettingStartedPage.Title}</a>
+部分并按照安装指南进行操作。
+
+## RNGNeeds 是否支持我使用的 Unity 版本？
+
+RNGNeeds 基于 Unity 2020 LTS 开发，并已测试至 Unity 6。最低支持的 Unity 版本为 2020.2。
+
+## RNGNeeds 是否包含示例？
+
+是的，RNGNeeds 包含一系列演示场景和示例，帮助您快速上手。
+这些示例展示了插件的多种应用场景，让您能够以实践的方式探索其功能。
+您可以在我们的
+<a href={SamplesOverviewPage.Link}>Samples {SamplesOverviewPage.Title}</a> 页面找到导入指南。
+
+## 我能将 RNGNeeds 与自定义对象一起使用吗？
+
+当然可以！RNGNeeds 支持与任意值类型或引用类型无缝协作，无论是 Unity 内置类型还是您自定义的 **serializable** 类均可使用。无论是 *int、Vector3、GameObject、Enum、AnimationCurve、LayerMask*，还是您自己的 *'Monster' Scriptable Object*，都可以轻松创建 `ProbabilityList<OfAnyType>`。
+
+## 在哪里可以找到插件设置？
+
+RNGNeeds 的设置位于 Editor Preferences 面板中。如需了解如何找到该设置，请参阅用户指南中的
+<a href={PreferencesPage.Link}>{PreferencesPage.Title}</a>
+部分。
+
+## 如何动态影响某个结果的概率？
+
+RNGNeeds 引入了 ***Probability Influence Providers*** 的概念。借助它们，您可以设计规则，根据外部因素动态调整概率。请访问我们文档中的
+<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
+部分以了解更多信息。
+
+## 如何只选取不重复的值？
+
+要选取唯一值，请参照
+<a href={GuideSelectingDistinctValues.Link}>本指南</a>中介绍的方法，利用 RNGNeeds 的 **Depletable Lists** 功能来实现。
+
+## 能否防止同一项目被连续选中？
+
+可以，RNGNeeds 提供了多种 ***Repeat Prevention Techniques***，可限制或完全避免重复选取。请访问我们文档中的
+<a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a>
+部分以了解更多信息。
+
+## 可以嵌套多个 Probability Lists 吗？
+
+当然可以！但请注意，在泛型 List 或 Array 中嵌套 ProbabilityList 在编辑器中可能未被完全支持，并有可能导致重绘问题。
+为了方便处理嵌套列表，我们建议使用我们的专用类 `PLCollection<T>`。
+如需了解如何有效嵌套 Probability Lists 的更多信息，请参阅我们文档中的
+<a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+部分。
+
+## 为什么按照指南操作后脚本仍无法编译？
+
+在文档中，我们有时会省略代码片段中的命名空间以保持简洁。
+如果您遇到编译问题，请确认是否已添加必要的命名空间。
+只需在脚本开头加入 `using RNGNeeds;` 即可解决相关问题。
+
+---
+
+## 遇到问题时可以获得哪些支持？
+
+您的满意度是我们的首要任务。如果您遇到困难，请访问我们的
+<a href={SupportPage.Link}>{SupportPage.Title}</a>
+页面，获取指导和联系方式。
+
+## 如何向 RNGNeeds 提出改进建议或新功能请求？
+
+我们非常欢迎您的反馈与建议！请随时通过
+<a href={SUPPORT_EMAIL_LINK}>电子邮件</a>
+或我们的
+<a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord 服务器</a>
+与我们分享。我们始终致力于让 RNGNeeds 变得更好！
+
+---

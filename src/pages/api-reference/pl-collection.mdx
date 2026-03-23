@@ -1,0 +1,135 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { GuidePLCollection, NestingListsPage, SupportPage } from '@/components/PageLinks'
+
+export const description =
+  'Reference for PLCollection<T>, the collection type for organizing and selecting across multiple ProbabilityList<T> instances.'
+
+<HeroPattern />
+
+# PLCollection&lt;T&gt;
+
+Need the practical walkthrough first? Start with <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>, then use this page as the compact code reference for the collection API itself. {{ className: 'lead' }}
+
+`PLCollection<T>` organizes multiple `ProbabilityList<T>` instances into one collection.
+
+Use it when one list is not enough and you want a higher-level structure for named or indexed list groups.
+
+---
+
+## Typical use cases
+
+- grouped loot tables
+- named dialogue pools
+- encounter categories
+- multi-biome spawn lists
+- any system where several probability lists belong together
+
+---
+
+## Core collection members
+
+<MemberGroup title="Collection basics" tone="sky">
+  <Member kind="METHOD" color="emerald" name="ItemType" signature="Type ItemType()">
+    Returns the value type used by the collection and all contained lists.
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Count" signature="int">
+    Number of lists in the collection.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddList" signature="void AddList(...) / overloads">
+    Adds an existing list or creates a new list with an optional name.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveList" signature="bool RemoveList(...) / overloads">
+    Removes a list by index or name.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetList" signature="ProbabilityList<T> GetList(...) / overloads">
+    Retrieves a list by index or by name.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetListName" signature="bool SetListName(...) / overloads">
+    Renames a list. Since names live on the underlying <code>ProbabilityList&lt;T&gt;</code>, this is the collection-friendly way to keep those names useful and consistent.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="MoveListUp / MoveListDown" signature="bool MoveListUp(int index) / bool MoveListDown(int index)">
+    Reorders lists inside the collection.
+  </Member>
+</MemberGroup>
+
+---
+
+## Picking through the collection
+
+<MemberGroup title="Selection helpers" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="PickValueFrom" signature="bool PickValueFrom(...) / overloads">
+    Picks a single value from one named or indexed list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValueFrom" signature="(bool ListFound, bool ValuePicked) TryPickValueFrom(...) / overloads">
+    Safer single-pick helper when you need to distinguish missing lists from unsuccessful picks.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValuesFrom" signature="List<T> PickValuesFrom(...) / overloads">
+    Picks multiple values from one list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValuesFromAll" signature="List<T> PickValuesFromAll()">
+    Picks values from all lists and merges the results into a new list.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValueFromAll" signature="List<T> PickValueFromAll()">
+    Picks one value from each list and returns the collected results.
+  </Member>
+</MemberGroup>
+
+---
+
+## Maintenance helpers
+
+<MemberGroup title="Maintenance and state helpers" tone="amber">
+  <Member kind="METHOD" color="emerald" name="ClearCollection" signature="void ClearCollection()">
+    Removes all lists from the collection.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearList / ClearAllLists" signature="bool ClearList(...) / void ClearAllLists()">
+    Clears one list or all lists.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="IsListEmpty" signature="(bool ListFound, bool IsEmpty) IsListEmpty(...) / overloads">
+    Checks whether a list exists and whether it currently contains items.
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RefillList / RefillAllLists" signature="bool RefillList(...) / void RefillAllLists()">
+    Refills depletable items in one list or across all lists.
+  </Member>
+</MemberGroup>
+
+---
+
+## Naming vs indexing
+
+<Note>
+  <p><strong>Names are often the cleaner API.</strong></p>
+  <p>Index-based access is fine for tightly controlled internal systems, but name-based access usually stays clearer and more maintainable when the collection represents content groups.</p>
+</Note>
+
+<Note>
+  <p><strong>List names matter more than they might look at first glance.</strong></p>
+  <p><code>ListName</code> is not just an optional label for display. It is also what makes named lookup in <code>PLCollection&lt;T&gt;</code> practical, both in editor workflows and in code that retrieves or picks from lists by name.</p>
+</Note>
+
+---
+
+## Example
+
+```csharp
+var responses = new PLCollection<string>();
+responses.AddList("Friendly");
+responses.AddList("Hostile");
+
+responses.GetList("Friendly")?.AddItems("Hello", "Good to see you", "Welcome back");
+responses.GetList("Hostile")?.AddItems("Go away", "Not interested", "Leave me alone");
+
+responses.PickValueFrom("Friendly", out var line);
+```
+
+---
+
+## Related pages
+
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a>
+- <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>
+
+<Note>
+  <p><strong>Building something with PLCollection and want feedback?</strong></p>
+  <p>If you want to compare approaches, ask about naming strategy, or sanity-check a setup, the <a href={SupportPage.Link}>{SupportPage.Title}</a> page will point you to our Discord community.</p>
+</Note>

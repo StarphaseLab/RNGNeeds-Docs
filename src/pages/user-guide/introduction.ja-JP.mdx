@@ -1,0 +1,57 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { Button } from "@/components/Button"
+import { ImageX } from "@/components/ImageX"
+import overviewInspectors from '@/images/screenshots/overview_inspectors_med.png';
+import rngnShape from '@/images/rngn-shape.png';
+import {Col, Row} from "@/components/mdx";
+import {DISCORD_LINK} from "@/components/RLinks";
+import {AssetStoreLink} from "@/components/AssetStoreLink";
+import {GettingStartedPage} from "@/components/PageLinks";
+export const description = 'RNGNeeds は、確率分布を管理するための多用途な Unity プラグインです。ダイスロール、モンスタースポーン、アイテムドロップなど、ゲーム開発に最適です。動的でユーザーフレンドリー、そして高速なパフォーマンスをぜひお試しください。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# はじめに
+
+RNGNeeds へようこそ。Unity の世界に無限の可能性を解き放つ、あなたの強力なパートナーです。
+ランダム性へのアプローチを革新するために設計されたこのツールをご紹介できることを、大変嬉しく思います。
+RNGNeeds があなたの Unity プロジェクトに最適な選択肢である理由を、ぜひご自身でお確かめください。{{ className: 'lead' }}
+
+<div className="mb-1 mt-6 flex gap-3 flex-wrap">
+    <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
+    <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
+    <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="Join our Discord" />
+</div>
+
+<ImageX className="w-full h-auto" src={overviewInspectors} priority={true} alt="RNGNeeds Inspectors" width={1000} />
+
+---
+
+<Row>
+    <Col>
+        ## 序文
+        すべてのゲームは、プレイヤーを引きつける予測不可能な驚きの要素によって成り立っています。しかし、このランダム性、つまり「RNG needs（ランダム性のニーズ）」を管理することは、科学というよりもむしろ芸術です。RNGNeeds を使えば、ランダム性を野生の変数から精密に調整された創造のツールへと変換する Unity プラグインを手に入れることができます。{{ className: 'lead' }}
+
+        ダイスロールやアイテムドロップにとどまらず、RNGNeeds はさまざまな可能性を提供します。プレイヤーがストーリーラインを進むにつれてゲーム内の嵐の頻度を動的に調整したり、時間帯に基づいて NPC の行動を変化させたり、音楽の音量が大きい場合にバトルをより激しくしたりすることを想像してみてください。{{ className: 'lead' }}
+
+        RNGNeeds はあなたを演出者の席に置き、ゲームの世界に反応し適応するユニークで没入感のある体験を作り上げることができます。RNG は単なる運ではありません。それは、何でも起こり得る生き生きとした世界を創造することなのです。{{ className: 'lead' }}
+    </Col>
+    <Col>
+        <ImageX src={rngnShape} alt="RNGNeeds" width="256"/>
+    </Col>
+</Row>
+
+
+## RNGNeeds とは？
+RNGNeeds は、あらゆる値、型、またはカスタムオブジェクトの確率リストを Unity Inspector 内で直接デザイン・管理できる強力なプラグインです。このプラグインを使用すると、ダイスロール、モンスタースポーン、カードデッキ、アイテムドロップ、ダメージ修正、さらには有機的なアニメーションまで、確率分布を使って比類ない簡単さと使いやすさでコントロールできます。Inspector 上でリスト、ピック数の変数、シードをデザインしたい場合でも、強力な API を使ってコードですべてを制御したい場合でも、RNGNeeds はすべての用途に対応しています。
+
+RNGNeeds は強力なツールであるだけでなく、ユーザーフレンドリーで適応性の高いソリューションでもあります。Inspector からアクセスできるすべての機能と使いやすい API により、コーダーとデザイナーの両方に対応するよう設計されています。このプラグインはすべての LTS バージョンの Unity をサポートし、幅広い強力な機能を提供します。純粋なランダム選択を含むさまざまな確率手法を使用して、一度に複数のアイテムを選択できます。また、優先シードを保持したり、カスタムシードを設定したり、独自の Seed Provider を実装したりする簡単な方法も提供します。さらに、カスタムの Selection Method やシードオプションを簡単に実装・登録できます。
+
+RNGNeeds は、ワークフローをより効率的で適応性の高いものにするのにも役立ちます。外部要因に基づいて確率を動的に変更する Influence Provider を設計できます。固定のピック数を選択するか、バイアスを制御するための調整可能なカーブを持つランダムな範囲を選択することができます。さらに、複数の連続選択防止テクニックにより、連続したアイテム選択を避け、各リストの以前のアイテム選択を追跡して、確定的な確率動作を模倣するための履歴を活用できます。
+
+私たちの取り組みは、現在のバージョンの RNGNeeds にとどまりません。ロードマップには、確率の動的変更、カードデッキの拡張、リスト内のアイテムにユニットを割り当てて選択によってそれらを消費できるようにする機能など、現在積極的に開発中の新しい機能が多数あります。
+
+RNGNeeds をお選びいただき、誠にありがとうございます。私たちは、このプラグインを使って生み出される素晴らしい作品を楽しみにしています。皆様の信頼が、RNGNeeds をすべてのランダムなニーズに対して — おそらく — 最良のソリューションであり続けるよう、開発・改良し続ける私たちの情熱の糧となっています！
+
+---

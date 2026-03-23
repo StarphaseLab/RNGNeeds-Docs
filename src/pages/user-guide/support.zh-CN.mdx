@@ -1,0 +1,40 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Button} from "@/components/mdx";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+import {FAQPage, PreferencesPage, TerminologyPage, UserInterfacePage} from "@/components/PageLinks";
+export const translationStatus = 'auto'
+export const description =
+    '需要 RNGNeeds 的帮助吗？我们的支持版块随时为您服务，确保您使用插件的体验顺畅无忧。'
+
+<HeroPattern />
+
+# 支持
+
+欢迎来到文档的支持版块。RNGNeeds 以用户为本，致力于提供简便易用且精致的用户体验。不过，使用过程中难免会遇到疑问或问题，无论何时，我们都会为您提供帮助。{{ className: 'lead' }}
+
+---
+
+在寻求直接支持之前，您不妨先查阅本文档的各个章节以及常见问题解答（FAQ）。许多常见问题和疑难都已在其中涵盖，您或许能更快找到所需的解决方案。
+
+- <a href={FAQPage.Link}>{FAQPage.Title}</a>
+- <a href={UserInterfacePage.Link}>了解用户界面</a>
+- <a href={PreferencesPage.Link}>通过首选项窗口自定义 RNGNeeds</a>
+- <a href={TerminologyPage.Link}>RNGNeeds 核心术语</a>
+
+## 邮件支持
+
+如果您仍遇到困难，欢迎直接通过电子邮件联系我们。我们将尽一切努力尽快回复您的咨询。
+
+<Button href={SUPPORT_EMAIL_LINK} variant="secondary" children="支持邮箱" />
+
+## 加入我们的 Discord 社区
+
+我们也诚邀您加入不断壮大的 Discord 社区。这里是与其他用户交流、查找常见问题解答以及分享或获取项目灵感的绝佳场所。请注意，虽然我们会尽力关注并回复 Discord 上的咨询，但对于紧急支持请求，电子邮件仍是最可靠的渠道。
+
+Discord 是一个充满活力的平台，支持实时讨论与分享。我们期待看到您用 RNGNeeds 创造出的精彩作品！
+
+<Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" children="加入我们的 Discord" />
+
+您的反馈弥足珍贵。如果您对 RNGNeeds 有任何改进建议或希望新增的功能，欢迎随时告知我们。让我们携手，让 RNGNeeds 变得更加出色！
+
+---

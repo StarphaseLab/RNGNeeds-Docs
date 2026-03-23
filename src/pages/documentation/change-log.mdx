@@ -1,0 +1,208 @@
+import {HeroPattern} from "@/components/HeroPattern";
+export const description =
+  'Stay up-to-date with the latest changes and improvements made to RNGNeeds.'
+
+<HeroPattern />
+
+# Changelog
+
+Welcome to the RNGNeeds Changelog page. Here, you'll find a detailed history of updates and improvements made to the plugin.
+Our documentation currently matches the latest version available on the Asset Store. 
+Once a new version is approved by the Asset Store, we'll promptly update the documentation to reflect those changes. {{ className: 'lead' }}
+
+---
+
+## v1.0.0 Released 02 December 2025
+
+### New Features
+
+- **[NEW] IEnumerable Implementation** - this allows you to use `foreach` loops directly on ProbabilityList instances, making it easier to iterate through items in the list.
+- **[NEW] Methods for adding multiple items** - use these new methods to create and add multiple items to ProbabilityList from provided values:
+
+    - `void AddItems(IEnumerable<T> values, bool enabled = true, bool locked = false)` - adds multiple items from an enumerable collection of values
+    - `void AddItems(bool enabled, bool locked, params T[] values)` - adds multiple items from provided values
+
+- **New Color Palettes - Fireworks & Champagne** - let’s celebrate this release with two new thematic color palettes. Fireworks theme brings vibrant and dynamic colors, while the Champagne gradient offers a more elegant and refined palette.
+
+### Inspector Improvements
+
+- **[NEW]** Added the option to group the Display Option Buttons into a compact dropdown, greatly optimizing horizontal space of the drawer’s header. For all your narrow-inspector needs! This is a global setting found in RNGNeeds Preferences.
+- **[NEW]** Added the ability to adjust numerical values by dragging. Look for a small visual hint left of the value field, indicating that the value is numerical.
+- **Visual Polish** - optimized font sizes and inspector elements for a much more compact look & feel. This change improves the overall readability of the ProbabilityList inspector.
+- **Stripe Improvements** - the order of percentage and weight values is now reversed in the Weights Priority mode to make the important value stand out. In addition, added a weight icon to the value if percentages are hidden. These changes greatly improve the readability of the stripe when working with weights.
+- Improved the Color Palettes Import logic. Now, when importing custom palettes, you can choose to either append the new palettes to the existing ones or replace them entirely.
+
+### Other Changes & Fixes
+
+- Fixed an issue where a ProbabilityList of custom objects had the class foldout misaligned in some versions of Unity editor.
+- Warnings have been removed from default log level. By default, the logging is now set to Info & Hints.
+
+### BREAKING CHANGES
+
+- Removed the `PLCollection.PickFromAll` method. This method was marked obsolete and superseded with `PLCollection.PickValuesFromAll` in v0.9.6
+
+*Thanks to our Discord users **Jake Pine** & **Krptck** for feature suggestions implemented in this release!*
+
+---
+
+## 0.9.9 (Beta) Released 20 November 2024
+
+### New Major Feature - Weighted Distribution
+
+In addition to the default percentile-based workflow, you can now use weights to design probabilities. Weighted distribution has been a highly requested feature—a common RNG need our plugin aims to fulfill. Utilizing weights allows you to apply a tried-and-true approach to probability design, significantly expanding your game design options.
+
+### Bug Fixes
+
+- Fixed an issue where Reset All Probabilities inspector button would result in error spam in some situations
+- Fixed an issue where selection would fail if incoming probability influence of an item is NaN or Infinity
+
+---
+
+## 0.9.8 (Beta) Released 30 September 2024
+
+### Inspector Improvements
+
+- **[NEW] Hide List Entries** - Introduced the option to hide list entries in the inspector. When hidden, the button displays the number of entries in the list. This feature helps keep the inspectors simple and more readable once the lists are set up.
+- **[NEW] Variable Stripe Height Slider** - Added a variable stripe height slider to the Theme section of the inspector. The fixed height options have been removed in favor of variable height, allowing greater flexibility in customizing individual drawers.
+- **[NEW] Change Palette via Scroll Wheel** - Enabled the ability to change palettes using the scroll wheel. While hovering over the palette dropdown button, use Shift + Scroll Wheel to easily browse through palette options. This makes finding the right palette much less tedious.
+- **[NEW] Reverse Palette Option** - Introduced the option to reverse the palette. A new button next to the palette color preview toggles between normal and reversed color order, enhancing the usability of palettes, especially when using gradients for logical value progression.
+- **Improved Header Bar Buttons** - Enhanced the buttons in the header bar by changing all option buttons from text to icons, unifying the visuals for a cleaner and more consistent look.
+
+### Bug Fixes
+
+- **PLCollection Inspector Visual Issue** - Fixed a visual issue with the PLCollection inspector when using the Editor Light skin.
+- **Probability Lists Multi-Editing Issue** - Resolved an issue where items in Probability Lists would get disabled when multi-editing scriptable objects.
+
+---
+
+## 0.9.7 (Beta) Released 12 June 2024
+
+### New Major Feature - Depletable Lists
+
+Depletable Lists are a powerful feature that allows items to have limited availability. 
+By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics. 
+Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables.
+
+### Inspector Improvements
+
+- **[NEW]** Introduced **Option Buttons with Documentation links** for selected features. Shift-clicking these buttons will open online documentation or guide for that particular feature.
+- **[NEW]** Introduced the **Action Menu** for modifying all items in a list at once.
+- Removed the Stripe section button from the header. The Stripe Height options are now available in the Theme section.
+- Improved **TEST** button - Control-click (or Command-click on macOS) will refill units of depletable items before running the test.
+
+### Samples Improvements
+
+- **DeckBuilder** has been updated to work with depletable items.
+- **CardDeck** draw methods were updated to deplete units instead of removing drawn cards.
+
+### Bug Fixes
+
+- Fixed an issue where adjusting probabilities via the scroll wheel was inverted in some versions of Unity.
+- Fixed broken links in the Welcome Window.
+
+---
+
+## 0.9.6 (Beta) Released 13 May 2024
+
+### PLCollection Improvements
+
+- **[New]** Added the ability to name Probability Lists within a collection. The names are visible in the inspector and can be edited. List names can be used to retrieve lists or pick values.
+- **[New]** Added the ability to reorder Probability Lists within a collection.
+- **[New]** Added multiple convenience methods for selecting values from individual lists or the entire collection.
+
+### Updated PLCollection methods
+
+Changed AddList methods to take an additional optional parameter for setting the name of the added list
+- `void AddList(string name = "")`
+- `void AddList(ProbabilityList<T> list, string name = "")`
+
+Added a boolean return to RemoveList methods to indicate whether the list was found and removed
+- `bool RemoveList(int index)`
+
+Changed the return type of GetList method to return `ProbabilityList<T>` directly, instead of the `IProbabilityList` interface
+- `ProbabilityList<T> GetList(int index)`
+
+**BREAKING CHANGES**
+
+- Changed the signature of `PLCollection.IsListEmpty` method to make the call more explicit and informative. The method now returns a tuple of two booleans, indicating whether the list was found and whether it is empty.
+
+    - **old** `public bool IsListEmpty(int index)`
+    - **new** `public (bool ListFound, bool IsEmpty) IsListEmpty(int index)`
+
+- Marked `PLCollection.PickFromAll()` as obsolete. This method will be removed in v1.0 release. Please use the new `PickValuesFromAll()` instead.
+
+---
+
+## 0.9.5 (Beta) Released 28 Mar 2024
+
+- **[New]** Added the ability to **Invert Influence** on individual items. This feature enhances control over incoming influence, providing game designers with more options for dynamic probability adjustments based on external factors.
+- **[New]** ProbabilityItem Property:
+    - `public bool InvertInfluence` - Determines whether the incoming probability influence should be inverted. When set to true, the influence's effect on this item's probability is reversed.
+- **[New]** ProbabilityList Convenience Methods:
+    - `.SetItemInfluenceSpread(int index, Vector2 spread)` - Specifies the influence spread for an item in the list, identified by its index. This spread defines the range within which the item's probability can be adjusted due to influence.
+    - `.SetItemInvertInfluence(int index, bool invertInfluence)` - Determines whether the influence effect on a specific item's probability should be inverted. Inversion means that positive influence decreases the item's probability, while negative influence increases it.
+
+**Bug Fixes:**
+
+- Resolved an issue causing the graphical representation of influenced probabilities to be misaligned with those of non-influenced items.
+- Addressed multiple alignment issues related to probability preview bars and spread sliders.
+
+---
+
+## 0.9.4 (Beta) Released 23 Feb 2024
+
+- **[NEW]** Seed Specification in Drawer: The Seed can now be directly specified in the drawer. Activate the Keep Seed button to enable the Seed input field.
+- **[NEW]** ProbabilityList Convenience Properties:
+    - **.UnlockedItemsCount** - Retrieves the number of unlocked items in list.
+    - **.EnabledItemsCount** - Retrieves the number of enabled items in list.
+
+**Bug Fixes:**
+
+- Resolved an issue where removing an item from the list in the editor would sometimes cause a NullReferenceException.
+- Fixed an issue where the fail-safe warning about a very long selection process would stop selection in cases where it was not necessary.
+- Fixed an issue where selections would never pick items with very low probabilities.
+- Fixed an issue where Struct types were not identified as Influence Providers by the drawer.
+
+---
+
+## 0.9.3 (Beta) Released 12 Sept 2023
+
+- **[NEW]** Informative Section Buttons: Introducing a new mode for drawer section buttons that displays selected themes, stripe options, and pick count information directly inside the button. This enhancement improves the readability of Probability List settings without the need to expand the sections.
+- The "Maintain Pick Count" toggle has been relocated to the Basic drawer options level. As a result, this button will now be visible without the need to switch to the Advanced level.
+- **[New]** ProbabilityList Convenience Methods:
+    - `.SetAllItemsEnabled(bool enabled)` - This method allows you to set the enabled state for all items within the ProbabilityList at once.
+    - `.SetAllItemsLocked(bool locked)` - Use this method to set the locked state for all items in the ProbabilityList simultaneously.
+
+---
+
+## 0.9.2 (Beta) Released 23 Aug 2023
+
+- **Welcome Window -** We've added a Welcome window that pops up post-installation. It provides handy links to our documentation, a getting started guide, instructions for importing samples, and a direct shortcut to the RNGNeeds preferences window.
+- **Method Summaries -** Enhanced clarity in the summaries for the \`PickValues\` method and its overloads. It's now evident that these methods return a reference to a shared list.
+
+**Bug Fixes:**
+
+- Addressed an issue where the "Keep Seed" feature wasn't working correctly with variable pick counts.
+- Fixed a problem where adding items to large lists would result in items having a 0% probability.
+
+---
+
+## 0.9.1 (Beta) Released 07 Aug 2023
+
+- **AddItem** method and its overloads now return the newly created **ProbabilityItem**. This allows modifying the item’s properties right after adding it to the list, without the need to manually retrieve it.
+- Default Editor Log Level will now show Warning messages as well. This will be the default behavior during Beta, and will be reverted back to Info & Hints later on. This change only applies to the default settings. You can always change your current log level in the preferences.
+- Introduced an editor warning message when inspecting a ProbabilityList handling non-serializable custom types.
+- Updated method summaries for Repeat Prevention methods.
+
+**BREAKING CHANGES**
+
+- Updated **ProbabilityItem** Constructor - We've made some improvements to the ProbabilityItem constructor to enhance clarity and make the process of creating items more intentional. The parameters **T value** and **float baseProbability** are no longer optional, ensuring that each item is explicitly initialized with a value and a base probability. By removing the option to create empty items or items with 0% probability, we aim to increase transparency within ProbabilityList and reduce any ambiguity associated with its behavior. This change enables developers to have a clearer understanding of their probability distributions, promoting a more predictable and organized approach when using ProbabilityList.
+- The methods **SetItemProbability** and **AdjustItemProbability** have been renamed to **SetItemBaseProbability** and **AdjustItemBaseProbability**, respectively. This change clarifies the distinction between the unaltered "base" probability and the adjusted probability, ensuring a more intuitive and accurate representation for users when designing lists.
+
+---
+
+## 0.9.0 (Beta)
+
+Initial release of RNGNeeds.
+
+---

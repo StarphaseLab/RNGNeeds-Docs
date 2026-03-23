@@ -1,0 +1,40 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {
+    ChangelogPage, CustomizingListsPage, DepletableListsPage,
+    DesigningAListPage, NestingListsPage, PickHistoryPage,
+    ProbabilityInfluencePage,
+    RepeatPreventionPage, SeedingOptionsPage,
+    SelectingValuesPage, SupportPage,
+    TerminologyPage, TestingOutcomesPage
+} from "@/components/PageLinks";
+export const description =
+    '通过我们的文档概览，深入了解 RNGNeeds 的工作原理，掌握其核心功能与特性。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# 文档概览
+
+欢迎来到 RNGNeeds 的文档章节！本区域旨在帮助您全面理解插件的各项功能，以及如何在您的项目中有效地使用它们。
+
+在这里，我们将深入探讨 RNGNeeds 的细节，挖掘其底层概念，并详细解释其功能的方方面面。文档分为以下几个核心板块，每个板块专注于 RNGNeeds 的某一特定方面：
+
+- <a href={TerminologyPage.Link}>{TerminologyPage.Title}</a> - 熟悉 RNGNeeds 中使用的术语和概念。扎实掌握这些内容将有助于您更轻松地浏览其余文档及插件本身。
+- <a href={DesigningAListPage.Link}>{DesigningAListPage.Title}</a> - 学习如何创建和管理 Probability Lists——RNGNeeds 功能的核心所在。
+- <a href={SelectingValuesPage.Link}>{SelectingValuesPage.Title}</a> - 了解 RNGNeeds 中各种可用的选取方式，以及如何有效地使用它们。
+- <a href={DepletableListsPage.Link}>{DepletableListsPage.Title}</a> - 探索如何使用 Depletable Lists 管理物品的可用性，并确保项目中的选取结果唯一。
+- <a href={RepeatPreventionPage.Link}>{RepeatPreventionPage.Title}</a> - 了解 RNGNeeds 如何帮助您避免 Probability List 中同一物品的连续重复出现。
+- <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> - 探索如何借助 RNGNeeds 的 Influence Provider，根据外部因素动态修改概率。
+- <a href={TestingOutcomesPage.Link}>{TestingOutcomesPage.Title}</a> - 学习如何在 Inspector 中测试您的设置结果，并评估各种变化。
+- <a href={SeedingOptionsPage.Link}>{SeedingOptionsPage.Title}</a> - 探索 RNGNeeds 中的种子设置选项，或了解如何使用您自己的 Seed Provider。
+- <a href={PickHistoryPage.Link}>{PickHistoryPage.Title}</a> - 了解 RNGNeeds 如何追踪每个列表的历史选取记录，以及如何利用历史记录模拟确定性的概率行为。
+- <a href={NestingListsPage.Link}>{NestingListsPage.Title}</a> - 发现将多个 Probability Lists 嵌套于其他集合中的优势，提升组织性与功能性。
+- <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> - 深入了解 Probability Lists 的自定义选项，包括视觉定制与功能调整。
+
+[//]: # (- <a href={ChangelogPage.Link}>{ChangelogPage.Title}</a> - Stay up-to-date with the latest changes and improvements made to RNGNeeds.)
+
+请记住，如果您有任何疑问或遇到任何问题，随时可以通过
+<a href={SupportPage.Link}>{SupportPage.Title}</a>
+板块联系我们。我们随时为您提供帮助。开发愉快！
+
+---

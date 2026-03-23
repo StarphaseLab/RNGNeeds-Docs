@@ -1,0 +1,91 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import { API_RNGNeeds } from '@/components/PageLinks'
+
+export const description =
+  'RNGNeeds のシードプロバイダー、決定論的なワークフロー、グローバルシードプロバイダーとリストごとのシードの関係についてのリファレンスです。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# Seed Providers
+
+シードプロバイダーは、RNGNeeds が新しいシードを生成する方法を制御します。このページは、決定論的な動作、再現可能なデバッグ、自動テスト、またはカスタムのゲーム全体のランダム性ポリシーを必要とする場合に特に役立ちます。 {{ className: 'lead' }}
+
+## 理解すべき 2 つのレイヤー
+
+### グローバルシードプロバイダー
+
+<a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> を通じて設定します。これは、リストが新しいシードを要求するたびに RNGNeeds がグローバルで新しいシードを生成する方法を制御します。
+
+### リストごとのシード動作
+
+各 `ProbabilityList<T>` の `Seed`、`CurrentSeed`、`KeepSeed` で制御します。これは、リストが抽選間でシードを保持するか再生成するかを制御します。
+
+---
+
+## `ISeedProvider`
+
+<MemberGroup title="Seed provider contract" tone="sky">
+  <Member kind="INTERFACE" color="amber" name="ISeedProvider">
+    RNGNeeds がシードを生成するために使用するインターフェースです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="NewSeed" signature="uint">
+    新しいシード値を返します。
+  </Member>
+</MemberGroup>
+
+カスタムシードプロバイダーが必要なのは新しいシード値を供給することだけですが、その単純さがまさに有用な点です。選択コードの他の部分を変更することなく、独自の決定論的または集中管理されたシード戦略を組み込むことができます。
+
+---
+
+## デフォルトの動作
+
+RNGNeeds には、差し替えない限り `RNGNeedsCore` が使用するデフォルトのシードプロバイダーが付属しています。
+
+---
+
+## 典型的なワークフロー
+
+<MemberGroup title="Common seeding scenarios" tone="amber">
+  <Member kind="USE" color="zinc" name="Keep the same seed per list">
+    リストの <code>KeepSeed = true</code> を設定し、そのリスト設定から再現可能な抽選を繰り返したい場合は手動でシードを割り当てます。
+  </Member>
+  <Member kind="USE" color="zinc" name="Generate fresh seeds automatically">
+    <code>KeepSeed = false</code> のままにします。リストは現在のグローバルシードプロバイダーを使用して、各抽選前にシードを再生成します。
+  </Member>
+  <Member kind="USE" color="zinc" name="Replace global seed generation">
+    <code>RNGNeedsCore.SetSeedProvider(...)</code> を通じて独自のプロバイダーを登録します。
+  </Member>
+</MemberGroup>
+
+---
+
+## カスタムプロバイダーの例
+
+```csharp
+public class FixedSeedProvider : ISeedProvider
+{
+    private uint current = 12345;
+
+    public uint NewSeed => current++;
+}
+
+RNGNeedsCore.SetSeedProvider(new FixedSeedProvider());
+```
+
+---
+
+## 関連 API
+
+<MemberGroup title="Related members" tone="violet">
+  <Member kind="METHOD" color="emerald" name="RNGNeedsCore.SetSeedProvider" signature="void SetSeedProvider(ISeedProvider seedProvider)">
+    グローバルプロバイダーを差し替えます。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RNGNeedsCore.ResetSeedProvider" signature="void ResetSeedProvider()">
+    デフォルトの動作に戻します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="RNGNeedsCore.NewSeed" signature="uint">
+    アクティブなプロバイダーが生成した新しいシードを返します。
+  </Member>
+</MemberGroup>

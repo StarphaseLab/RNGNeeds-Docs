@@ -1,0 +1,326 @@
+import { HeroPattern } from '@/components/HeroPattern'
+import {
+  API_PickHistory,
+  API_ProbabilityItem,
+  API_RNGNeeds,
+  API_SelectionMethods,
+  GuidePLCollection,
+  ProbabilityInfluencePage,
+} from '@/components/PageLinks'
+
+export const description =
+  'ProbabilityList<T> のリファレンス。RNGNeeds のコア型であり、リストの作成、確率の管理、値の選択を行います。'
+
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# ProbabilityList&lt;T&gt;
+
+RNGNeeds をトップダウンで学習している場合は、まず <a href={GuidePLCollection.Link}>ガイド</a> と概念ドキュメントを参照し、メインのリスト型の正確なランタイム構造を確認したい場合にこちらに戻ってきてください。 {{ className: 'lead' }}
+
+`ProbabilityList<T>` は RNGNeeds のコアとなるランタイム型です。
+
+`ProbabilityItem<T>` エントリのリストを格納し、以下の API を提供します。
+
+- アイテムの追加と削除
+- 確率とウェイトの管理
+- 1 つまたは複数の値のピック
+- 繰り返しの防止
+- シードとピック履歴の操作
+- 消耗リストのサポート
+- インフルエンスプロバイダーの接続
+
+---
+
+## 重要な概念
+
+<Note>
+  <p><strong>基本確率と評価済み確率の違い。</strong></p>
+  <p><code>GetItemBaseProbability(...)</code> は保存されたベースライン値を返します。<code>GetItemProbability(...)</code> は、インフルエンスを含む、選択時に実際に使用される有効な確率を返します。</p>
+</Note>
+
+<Note>
+  <p><strong>ロックと無効化は異なります。</strong></p>
+  <p>無効化されたアイテムは選択時に無視されます。ロックされたアイテムはピックされる可能性がありますが、一部のリスト操作ではその確率が再配分されません。</p>
+</Note>
+
+<Note>
+  <p><strong>一部のピックメソッドは共有リストを返します。</strong></p>
+  <p><code>LastPickedValues</code> などのプロパティや共有リストを返すメソッドは、余分なアロケーションを避けるよう最適化されています。安定した所有権が必要な場合は、データを自分のリストにコピーしてください。</p>
+</Note>
+
+---
+
+## 基本的なワークフロー
+
+```csharp
+var lootTable = new ProbabilityList<string>();
+
+lootTable.AddItem("Potion", 0.5f);
+lootTable.AddItem("Gold", 0.3f);
+lootTable.AddItem("Rare Gem", 0.2f);
+
+string reward = lootTable.PickValue();
+```
+
+---
+
+## コアプロパティ
+
+<MemberGroup title="コアプロパティ" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="ListName" signature="string">
+    リストのオプション表示名です。リストが <code>PLCollection&lt;T&gt;</code> 内で使用される場合に特に便利で、コレクションが名前でリストを検索・管理できます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ItemCount" signature="int">
+    リスト内のアイテム数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="UnlockedItemsCount" signature="int">
+    ロックされていないアイテムの数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="EnabledItemsCount" signature="int">
+    有効なアイテムの数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="IsListInfluenced" signature="bool">
+    少なくとも 1 つのアイテムがインフルエンスプロバイダーの影響を受けている場合に <code>true</code> を返します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 選択の動作
+
+<MemberGroup title="選択設定" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="SelectionMethodID" signature="string">
+    このリストが使用する選択メソッドの識別子です。識別子は <a href={API_RNGNeeds.Link}>{API_RNGNeeds.Title}</a> を通じて解決されます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PreventRepeat" signature="PreventRepeatMethod">
+    繰り返しピックの処理方法を制御します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="ShuffleIterations" signature="int">
+    <code>PreventRepeatMethod.Shuffle</code> が使用するシャッフルパスの回数です。1 から 5 の間にクランプされます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountMin" signature="int">
+    マルチピックメソッドが選択する値の最小数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountMax" signature="int">
+    マルチピックメソッドが選択する値の最大数です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LinkPickCounts" signature="bool">
+    true の場合、有効なピック数は <code>PickCountMin</code> に固定されます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="MaintainPickCountIfDisabled" signature="bool">
+    無効なアイテムが干渉する場合でも、目的のピック数に達しようとし続けます。これにより結果の分布が変わる可能性があり、病的なケースに対する組み込みのフェイルセーフチェックがあります。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickCountCurve" signature="AnimationCurve">
+    ピック数が最小値と最大値の間でランダムに選択される際に使用するバイアスを制御します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 値のピック
+
+<MemberGroup title="ピックメソッド" tone="emerald">
+  <Member kind="METHOD" color="emerald" name="PickValue" signature="T PickValue()">
+    1 つの値をピックして返します。選択に失敗した場合、<code>T</code> のデフォルト値が返されます。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValue" signature="bool TryPickValue(out T value)">
+    失敗と有効なデフォルト値を区別する必要がある場合の最も安全なシングルピックメソッドです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValues" signature="List<T> PickValues() / overloads">
+    複数の値をピックし、結果の共有リストを返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="PickValueWithIndex" signature="(T Value, int Index) PickValueWithIndex()">
+    1 つの値をピックし、選択されたアイテムのインデックスも返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryPickValueWithIndex" signature="bool TryPickValueWithIndex(out T value, out int index)">
+    明示的な成功/失敗が必要な場合の <code>PickValueWithIndex()</code> の安全なバージョンです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RunTest" signature="TestResults RunTest()">
+    現在の設定を使用して選択テストを実行し、診断結果を返します。
+  </Member>
+</MemberGroup>
+
+---
+
+## アイテムの操作
+
+<MemberGroup title="アイテム管理" tone="sky">
+  <Member kind="METHOD" color="emerald" name="AddItem" signature="ProbabilityItem<T> AddItem(...) / overloads">
+    値、明示的な確率、明示的なウェイト、または既に作成された <code>ProbabilityItem&lt;T&gt;</code> を使用してアイテムを追加します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AddItems" signature="void AddItems(...) / overloads">
+    複数の値を一度に追加します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveItem" signature="bool RemoveItem(...) / overloads">
+    値またはアイテム参照でアイテムを削除します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RemoveItemAtIndex" signature="bool RemoveItemAtIndex(int index, bool normalize = true)">
+    インデックスでアイテムを削除します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearList" signature="void ClearList()">
+    すべてのアイテムを削除し、履歴をクリアします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetProbabilityItem" signature="ProbabilityItem<T> GetProbabilityItem(int index)">
+    特定のインデックスのアイテムを取得します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="TryGetProbabilityItem" signature="bool TryGetProbabilityItem(...) / overloads">
+    インデックスまたは値でアイテムを安全に取得します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 確率の操作
+
+<MemberGroup title="確率の操作" tone="violet">
+  <Member kind="METHOD" color="emerald" name="GetItemProbability" signature="float GetItemProbability(int index)">
+    選択時に現在使用されている有効な確率を返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetItemBaseProbability" signature="float GetItemBaseProbability(int index)">
+    保存されている生の基本確率を返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="AdjustItemBaseProbability" signature="void AdjustItemBaseProbability(int index, float amount)">
+    アイテムの基本確率に値を加算します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemBaseProbability" signature="bool SetItemBaseProbability(int index, float baseProbability, bool normalize = true)">
+    アイテムの基本確率を設定し、オプションでリストの残りを正規化します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetAllProbabilities" signature="void ResetAllProbabilities()">
+    すべてのロックされていないアイテムの確率を均等にします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="NormalizeProbabilities" signature="float NormalizeProbabilities()">
+    リストの合計が 1 になるようにロックされていないアイテムを正規化します。
+  </Member>
+</MemberGroup>
+
+---
+
+## ウェイト
+
+<MemberGroup title="ウェイトベースの分布ヘルパー" tone="neutral">
+  <Member kind="PROPERTY" color="sky" name="TotalWeight" signature="int">
+    リスト内のすべてのアイテムウェイトの合計です。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="BaseWeight" signature="int">
+    ヘルパーメソッドが使用する基準ウェイトです。1 から 10000 の間にクランプされます。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="WeightsPriority" signature="bool">
+    有効にすると、特定の操作中に確率がウェイトから導出された分数に戻ります。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetItemWeight" signature="int GetItemWeight(int index)">
+    アイテムの現在のウェイトを返します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemWeight" signature="void SetItemWeight(int index, int weight)">
+    アイテムのウェイトを設定し、必要に応じて再配分または再計算します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="CalculatePercentageFromWeights" signature="void CalculatePercentageFromWeights()">
+    ウェイトから確率を再構築します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ResetWeights" signature="void ResetWeights()">
+    現在の確率分布からウェイトを再構築します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RecalibrateWeights" signature="void RecalibrateWeights()">
+    合計ウェイトを可能な限り保持しながら、ロックされていないアイテムのウェイトを再バランスします。
+  </Member>
+</MemberGroup>
+
+---
+
+## アイテムの状態とインフルエンス
+
+<MemberGroup title="アイテムの状態とインフルエンスヘルパー" tone="amber">
+  <Member kind="METHOD" color="emerald" name="SetItemProperties" signature="bool SetItemProperties(int index, float baseProbability, bool enabled, bool locked)">
+    複数のコアアイテムプロパティをまとめて更新します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemEnabled / SetAllItemsEnabled" signature="bool SetItemEnabled(int index, bool enabled)">
+    1 つのアイテムまたはリスト全体を有効化または無効化します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemLocked / SetAllItemsLocked" signature="bool SetItemLocked(int index, bool locked)">
+    1 つのアイテムまたはリスト全体をロックまたはロック解除します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInfluenceProvider" signature="void SetItemInfluenceProvider(int index, IProbabilityInfluenceProvider influenceProvider)">
+    アイテムに外部インフルエンスプロバイダーを割り当てます。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInfluenceSpread" signature="void SetItemInfluenceSpread(int index, Vector2 spread)">
+    インフルエンス下で許可される確率の最小値と最大値の範囲を制御します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemInvertInfluence" signature="void SetItemInvertInfluence(int index, bool invertInfluence)">
+    そのアイテムへのインフルエンスの影響を反転します。
+  </Member>
+</MemberGroup>
+
+インフルエンスの概念的な説明については、<a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a> を参照してください。
+
+---
+
+## シードと履歴
+
+<MemberGroup title="シードと履歴" tone="sky">
+  <Member kind="PROPERTY" color="sky" name="CurrentSeed" signature="uint">
+    リストに現在保存されているシードです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="Seed" signature="uint">
+    リストのシードを取得または設定します。<code>KeepSeed</code> が false の場合、RNGNeeds は各ピックの前にシードを再生成します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="KeepSeed" signature="bool">
+    有効にすると、ピック間で同じシードを保持します。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="PickHistory" signature="PickHistory">
+    最近のピックの保存された履歴へのアクセスです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickCount / LastPickedIndex / LastPickedValue" signature="history helpers">
+    最新の選択結果への便利なアクセサーです。
+  </Member>
+  <Member kind="PROPERTY" color="sky" name="LastPickedIndices / LastPickedValues" signature="shared lists">
+    最後のピック操作を表す共有結果リストです。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetLastPickedIndices / GetLastPickedValues" signature="void GetLastPicked...(List<...> listToFill)">
+    共有の内部リストを使用する代わりに、自分のリストに値を格納します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetHistoryCapacity" signature="void SetHistoryCapacity(int capacity)">
+    履歴のサイズを変更します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="ClearHistory" signature="void ClearHistory()">
+    リストのピック履歴をクリアします。
+  </Member>
+</MemberGroup>
+
+<a href={API_PickHistory.Link}>{API_PickHistory.Title}</a> も参照してください。
+
+---
+
+## 消耗リスト
+
+<MemberGroup title="消耗リストヘルパー" tone="amber">
+  <Member kind="PROPERTY" color="sky" name="IsDepletable" signature="bool">
+    リストの消耗動作を有効にします。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="RefillItems" signature="void RefillItems()">
+    すべてのアイテムのユニットを最大値に補充します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsUnits" signature="void SetAllItemsUnits(int units)">
+    すべてのアイテムの現在のユニット数を設定します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsMaxUnits" signature="void SetAllItemsMaxUnits(int units)">
+    すべてのアイテムの最大ユニット数を設定します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetAllItemsDepletable / SetAllItemsDepletableProperties" signature="bulk depletion helpers">
+    すべてのアイテムにわたって消耗動作を設定します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="SetItemDepletable" signature="void SetItemDepletable(int index, bool depletable = true, int units = 1, int maxUnits = 1)">
+    1 つのアイテムの消耗動作を設定します。
+  </Member>
+  <Member kind="METHOD" color="emerald" name="GetTotalUnits / GetTotalMaxUnits" signature="int GetTotal...()">
+    有効な消耗アイテムの集約された消耗情報を返します。
+  </Member>
+</MemberGroup>
+
+---
+
+## 関連ページ
+
+- <a href={API_ProbabilityItem.Link}>{API_ProbabilityItem.Title}</a>
+- <a href={API_SelectionMethods.Link}>{API_SelectionMethods.Title}</a>
+- <a href={API_PickHistory.Link}>{API_PickHistory.Title}</a>

@@ -1,0 +1,94 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {ImageX} from "@/components/ImageX";
+import { SupportPage, SamplesDicePlaygroundPage, SamplesRandomAudioPage, SamplesMonsterSpawnerPage } from "@/components/PageLinks";
+import installingSamplesPackageManager from '@/images/screenshots/installing-samples-manager.png';
+import installingSamplesAssetsFolder from '@/images/screenshots/installing-samples-assets-folder.png';
+import {DISCORD_LINK} from "@/components/RLinks";
+import {Note} from "@/components/mdx";
+
+export const translationStatus = 'auto'
+
+export const description =
+    '了解如何在 Unity 中导入和探索 RNGNeeds 示例。从骰子投掷到战利品表，这些示例将指导您在项目中充分利用概率分布。'
+
+<HeroPattern />
+
+# 示例概览
+
+RNGNeeds 附带了多种示例，帮助您快速上手并探索插件的众多可能性。这些示例涵盖从简单的骰子投掷到复杂的战利品表等各种场景。在本节中，我们将指导您完成将这些示例导入 Unity 项目的过程。{{ className: 'lead' }}
+
+---
+
+## 导入示例
+
+由于 RNGNeeds 以包的形式发布，它不会出现在 Assets 文件夹中，而是位于 Packages 文件夹内。这种设计可使您的项目保持整洁有序。但是，示例需要单独导入。操作步骤如下：
+
+**第一步：打开 Package Manager**
+
+在 Unity 中，导航至 **Window &raquo; Package Manager**。这将打开 Package Manager 窗口，您可以通过该工具管理和安装项目中的各种 Unity 包。
+
+<ImageX className="w-full h-auto" src={installingSamplesPackageManager} alt="Package Manager Window" width="1000"/>
+
+**第二步：找到 RNGNeeds**
+
+在 Package Manager 窗口中，在"In Project"分区下找到 RNGNeeds。
+
+**第三步：导入示例**
+
+点击 RNGNeeds 旁边的箭头展开详细信息，您会看到一个"Import Samples"按钮。点击此按钮即可将示例导入您的项目。
+
+**第四步：在 Assets 文件夹中找到示例**
+
+示例导入完成后，您可以在项目的 Assets 文件夹中找到它们。现在可以随意探索和试验这些示例了。
+
+<ImageX className="w-full h-auto" src={installingSamplesAssetsFolder} alt="Samples in Assets Folder" width="1000"/>
+
+<Note>
+    **升级材质**
+
+    将示例导入 URP 或 HDRP 项目时，材质可能会显示为粉红色，需要进行转换。这是因为 RNGNeeds 使用内置渲染管线发布。
+
+    **升级到 URP** - 使用 *Render Pipeline Converter*，参照
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/features/rp-converter.html" target="_blank" rel="noopener noreferrer">此指南。</a>
+
+    **升级到 HDRP** - 请参照
+    <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@16.0/manual/Upgrading-To-HDRP.html" target="_blank" rel="noopener noreferrer">此处</a>提供的指南。
+
+</Note>
+
+---
+
+## 探索示例
+
+RNGNeeds 提供的示例涵盖各种使用场景。欢迎深入研究代码、调整设置，了解各部分的工作原理。这些示例旨在兼具教学性和启发性，为您提供坚实的基础，供您进一步构建。
+
+以下是部分示例的简要介绍：
+
+- <a href={SamplesDicePlaygroundPage.Link}>{SamplesDicePlaygroundPage.Title}</a> - 模拟各种骰子投掷和组合。
+- <a href={SamplesRandomAudioPage.Link}>{SamplesRandomAudioPage.Title}</a> - 设计具有不同概率的角色响应。
+- <a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> - 根据概率控制不同怪物的生成。
+- **Treasure Chest** - 创建具有不同稀有度等级的模块化战利品表。
+- **Card Deck Builder** - 管理一副牌，支持抽牌、洗牌等操作。
+
+欢迎修改这些示例并将其集成到您自己的项目中。它们的目的是帮助您理解 RNGNeeds 的强大功能和灵活性。
+
+您对这些示例的反馈对我们非常宝贵！如果您有改进建议或新示例的想法，欢迎与我们的社区分享。
+
+---
+
+## 路线图：精彩示例，激发灵感与探索
+
+我们致力于提供实践性示例，以启发并指导您使用 RNGNeeds。这些示例旨在展示我们插件在 Unity 游戏开发中的创意可能性和实际应用。以下是我们正在开发的两个精彩示例，更多内容即将推出：
+
+- **The Improbable Lab：** 一款冒险小游戏，专为突出游戏设计中 RNG 原理而设计。通过此示例，您将探索如何使用 RNGNeeds 创建引人入胜且难以预料的游戏元素。这是一个生动的演示，展示概率如何塑造独特而刺激的游戏体验。
+
+- **Battlefield of Odds：** 进入一个概率主宰一切的战场！这款动感十足的小游戏展示了与怪物群战斗的各个方面如何由 RNG 驱动——无论是战利品掉落、敌人行为还是攻击结果，这个示例让您亲身体验 RNG 所能创造的动态响应式世界。
+
+请持续关注，我们将继续开发和发布更多示例，每个示例都为游戏开发中的创新概率分布提供独特的视角。无论您是刚刚起步还是寻求新灵感，我们的示例都将激发您的创造力，增进您对 RNGNeeds 功能的理解！
+
+**需要帮助？**
+
+如果您在使用示例时遇到任何问题或有疑问，请随时通过我们的
+<a href={SupportPage.Link}>{SupportPage.Title}</a>寻求帮助，或加入我们的 <a href={DISCORD_LINK} target="_blank" rel="noopener noreferrer">Discord 社区</a>。我们随时为您提供支持！
+
+---

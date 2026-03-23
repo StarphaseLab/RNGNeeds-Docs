@@ -1,0 +1,151 @@
+import {Note} from "@/components/mdx";
+import {HeroPattern} from "@/components/HeroPattern";
+import {CustomizingListsPage, GettingStartedPage, SelectingValuesPage} from "@/components/PageLinks";
+import addingItems from '@/images/screenshots/adding-items.png';
+import assigningValuesObjects from '@/images/screenshots/assigning-values-objects.png';
+import assigningValuesCustom from '@/images/screenshots/assigning-values-custom.png';
+import adjustingProbabilities from '@/images/screenshots/adjusting-probabilities.gif';
+import pickCounts from '@/images/screenshots/pick-counts.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'ProbabilityList の作成と管理方法を学びましょう。これは RNGNeeds の機能の中核です。'
+
+<HeroPattern />
+
+# Probability List の設計
+このガイドでは、RNGNeeds プラグインを使用して Probability List を作成・カスタマイズする手順を説明します。 {{ className: 'lead' }}
+
+<Note>
+    RNGNeeds を初めて使用する方で、ProbabilityList をクラスに追加する方法を学びたい場合は、
+    <a href={GettingStartedPage.Link + '#quick-start'}>{GettingStartedPage.Title}</a>
+    ページをご覧ください。Probability List をプロジェクトに組み込むためのステップバイステップの手順が記載されています。
+</Note>
+
+---
+
+## アイテムの追加と削除
+
+Probability List にアイテムを追加するには、「Add」ボタンをクリックするだけです。追加した各エントリは、アイテムとそれに関連付けられた確率を表します。アイテムを削除する場合は、対応するエントリの横にある「X」ボタンをクリックしてください。
+
+<ImageX className="w-full h-auto" src={addingItems} alt="Adding Items" width="1000"/>
+
+アイテムを追加または削除すると、システムは元の比率を維持するために確率を自動的に再計算します。Inspector からアイテムを追加すると、そのアイテムは `1 / アイテム数` に等しい合計確率のシェアを受け取ります。このルールは、確率を指定せずにコードでアイテムを追加する場合にも適用されます。
+
+```csharp {{ title: 'Adding / Removing Items in code'}}
+// Manually add ProbabilityItems
+myProbabilityList.AddItem(new ProbabilityItem<string>("One", .5f));
+myProbabilityList.AddItem(new ProbabilityItem<string>("Two", .1f));
+myProbabilityList.AddItem(someProbabilityItem);
+myProbabilityList.NormalizeProbabilities();
+
+// Alternatively, let ProbabilityItems be created automatically
+myProbabilityList.AddItem("One", .5f);
+myProbabilityList.AddItem("Two", .1f);
+myProbabilityList.AddItem("Three", .3f);
+myProbabilityList.NormalizeProbabilities();
+
+// If you don't specify a probability, the list will be normalized automatically
+// to ensure the new item gets some share of the total probability
+myProbabilityList.AddItem("Four");
+
+// AddItem method and overloads return the newly created ProbabilityItem
+var newItem = myProbabilityList.AddItem("Five");
+newItem.Value = "New Value";
+newItem.BaseProbability = 0.2f;
+newItem.Enabled = false;
+// etc.
+
+// Removing items
+myProbabilityList.RemoveItem("One");
+myProbabilityList.RemoveItem(someProbabilityItem);
+myProbabilityList.RemoveItemAtIndex(1);
+```
+
+---
+
+## アイテムへの値の割り当て
+
+ProbabilityList の値は、標準のジェネリック `List` の値と同様に機能します。値型を扱う場合は、各エントリ内でそれぞれの型に応じて値を直接設定できます。
+
+Unity オブジェクト（MonoBehaviour や ScriptableObject など）の参照型の場合は、オブジェクトをエントリのオブジェクトフィールドにドラッグ＆ドロップできます。
+
+<ImageX className="w-full h-auto" src={assigningValuesObjects} alt="Assigning Objects" width="1000"/>
+
+カスタム型を扱う場合、その内容はエントリに直接表示されます。折りたたみ矢印を使用して展開・折りたたみができます。
+
+<ImageX className="w-full h-auto" src={assigningValuesCustom} alt="Assigning Custom Types" width="1000"/>
+
+```csharp {{ title: 'Assigning values in code'}}
+myProbabilityList.GetProbabilityItem(1).Value = "New Value";
+```
+
+<Note>
+    **名前と値の表示**
+
+    オブジェクト・クラス名や値型の値を視覚的に表示するため、ストライプは色付きブロックでそれらを表示します。
+    この機能により、Probability List 内でのすばやい識別と簡単な区別が可能になります。
+</Note>
+
+---
+
+## アイテムプロパティの設定
+
+Probability List のアイテムの確率を調整するには、ブロックの端またはブロック自体をドラッグしてストライプを操作します。
+
+<ImageX className="w-full h-auto" src={adjustingProbabilities} alt="Adding Items" width="1000"/>
+
+アイテムの有効状態は、エントリの左側にあるスイッチをクリックすることで切り替えられます。
+
+アイテムの確率が変更されないようにしたい場合（たとえば正規化中など）、パーセント値の横にある色付きの四角をクリックすることで確率をロックできます。
+
+<Note>
+- **Control & Shift**：これらのキーはストライプの操作に追加機能を提供します。ブロックの端を左クリックしながら Control キーを押すと、隣接する確率を均等に分配します。ブロック上にカーソルを合わせながら Control キーを押すと、スクロールホイールで確率を調整できます。スクロールホイール使用中に Shift と Control を一緒に押すと、より細かい調整が可能になります。
+- **確率の直接入力**：エントリのパーセント値をクリックすると入力フィールドが表示され、確率を直接指定できます。確率を確定すると、他のアイテムの確率が再計算されます。
+- **ピックと無効化されたアイテム**：無効化されたアイテムは選択プロセス中に選択されません。ただし、ピックが無効化されたアイテムを選択する結果になった場合、選択は空になります。無効化されたアイテムの動作について詳しくは、
+    <a href={SelectingValuesPage.Link + '#disabled-items'}>{SelectingValuesPage.Title}</a> ページをご覧ください。
+</Note>
+
+```csharp {{ title: 'Setting Item Properties in code'}}
+myProbabilityList.SetItemEnabled(1, false);
+myProbabilityList.SetItemLocked(2, true);
+myProbabilityList.SetItemBaseProbability(0, .3f);   // will normalize the list after change
+```
+
+---
+
+## ピック数
+
+ピック数機能を使用すると、1回の選択プロセスでリストから選ばれるアイテムの数を制御できます。
+デフォルトでは、選択はリストから1つの値を選びます。複数の値や値のランダムな範囲を選択する必要がある場合は、ドロワーの **PICK** セクションで設定をカスタマイズできます。
+
+<ImageX className="w-full h-auto" src={pickCounts} alt="Pick Counts" width="1000"/>
+
+デフォルトでは、最小ピック数と最大ピック数はリンクされており、ピック数は特定の値に固定されています。
+最小ピック数と最大ピック数のリンクを解除するには、入力フィールド間の **リンクアイコン** をクリックします。
+リンクを解除すると、最小ピック数と最大ピック数を独立して設定できます。ピック数は指定した最小値と最大値の間のランダムな数になります。
+
+**カーブフィールド** を使用してランダムなピック数にバイアスをかけることもできます。カーブを調整することで、ピック数の確率分布に影響を与えられます。
+カスタムピック数とカーブ機能を使用すると、RNG の制御と変動性にさらなる層が加わります。各ピックで選択されるアイテムの数に影響を与えることで、より動的で多様なゲームプレイ体験を生み出せます。
+
+```csharp {{ title: 'Setting Pick Counts in code'}}
+// Setting a random pick count range between 2 and 5
+myProbabilityList.LinkPickCounts = false;
+myProbabilityList.PickCountMin = 2;
+myProbabilityList.PickCountMax = 5;
+myProbabilityList.PickCountCurve = myCustomCurve;
+
+// From this point, the selection will pick 2 values
+myProbabilityList.LinkPickCounts = true;
+```
+
+---
+
+## リストのカスタマイズ
+
+Probability List をさらにカスタマイズしたい場合（カスタム情報や色の追加など）、カスタムクラスに特別なインターフェース `IProbabilityItemInfoProvider` および `IProbabilityItemColorProvider` を実装することで実現できます。リストのカスタマイズ方法の詳細については、ドキュメントの
+<a href={CustomizingListsPage.Link + '#advanced-customization'}>{CustomizingListsPage.Title}</a> ページをご参照ください。
+
+これらのガイドラインを踏まえて、RNGNeeds を使った Probability List の設計を始める準備が整いました。創造力を発揮して、ゲームメカニクスに確率分布の力を活かしましょう！
+
+---

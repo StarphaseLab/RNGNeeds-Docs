@@ -1,0 +1,222 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Note} from "@/components/mdx";
+import {
+    CustomizingListsPage,
+    SamplesMonsterSpawnerPage,
+    GuideProbabilityInfluence,
+    PreferencesPage
+} from "@/components/PageLinks";
+import probabilityInfluenceFloatValue from '@/images/screenshots/probability-influence-float-value.png';
+import probabilityInfluenceSpreadMapping from '@/images/screenshots/probability-influence-spread-mapping.gif';
+import probabilityInfluencePercentagePreview from '@/images/screenshots/probability-influence-percentage-preview.png';
+import probabilityInfluenceHealthGlobeMaximumSpread from '@/images/screenshots/probability-influence-health-globe-maximum-spread.png';
+import probabilityInfluenceHealthGlobeInverted from '@/images/screenshots/probability-influence-health-globe-inverted.png';
+import probabilityInfluenceExternalProvider from '@/images/screenshots/probability-influence-external-provider.png';
+import probabilityInfluenceSpawnLocationsProviders from '@/images/screenshots/probability-influence-spawn-locations-providers.png';
+import {ImageX} from "@/components/ImageX";
+export const translationStatus = 'auto'
+export const description =
+    'RNGNeeds の Probability Influence を使用して、外部要因に基づいて確率を動的に変更する方法を学びましょう。'
+
+<HeroPattern />
+
+# Probability Influence
+
+動的な確率の世界へ飛び込みましょう。RNGNeeds は、魅力的でリアクティブなゲームプレイ体験を作り上げるためのツールキットです。
+Probability Influence を使用すると、外部要因に基づいてさまざまなゲームイベントの発生確率を細かく調整し、展開するゲームの状況にリアルタイムで適応させることができます。 {{ className: 'lead' }}
+
+<Note>
+    Probability Influence の実装に関する詳細なガイドや例については、
+    <a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> ページをご覧ください。
+</Note>
+
+---
+
+## Probability Influence とは？
+
+Probability Influence の本質は、**あらかじめ設定された確率への調整**です。
+
+たとえば、プレイヤーがレアアイテムを見つける確率を 3% に設定したとします。Probability Influence を使用すると、ゲームプレイの要因に基づいてこの確率を動的に変更できます。
+たとえば、優秀なパフォーマンスへの報酬としてドロップ率を上昇させたり、レアアイテムが最近入手された場合に下げたりすることができます。
+
+この概念はゲームプレイに**動的な確率**をもたらし、革新的なメカニクスの幅広い応用を可能にします。
+イベントは、ほぼあらゆるゲーム要素によって影響を受けることができます。
+クリティカルヒット率をプレイヤーのステータスに連動させること、派閥の関係に基づいて NPC とのインタラクションを調整すること、ゲーム内時間が深夜に近づくにつれてレアな生物のスポーン率を変化させること、
+あるいはプレイヤーが音楽のボリュームを上げたときに戦闘を激化させることなど、可能性は無限大です。そして私たちはこれを簡単に実装できるようにしました。
+
+**Influence Provider** が鍵となります。これらは固定された確率に動的な調整値を提供するためにコーディングされたオブジェクトです。たとえば、Health Manager はプレイヤーの体力の割合を追跡することができます。
+ゲームデザイナーはこの情報をどのように適用するかを決定し、これらの Provider を Probability List のアイテムに割り当て、**Influence Spread** を使用して各確率への影響を微調整します。
+
+<Note>
+    リスト内の各アイテムには独自の Influence Provider を割り当てることができ、外部要因の豊かで動的な相互作用を実現します。この設定により、さまざまな影響を組み合わせて確率や結果を動的に調整できます。プレイヤーの体力、時間帯、その他のゲーム状態など、各アイテムへの影響を変化する条件に合わせてカスタマイズし、ニュアンスのあるレスポンシブなゲームプレイ体験を提供できます。
+</Note>
+
+---
+
+## Influence と Spread
+
+Influence は `-1 から 1` の間の `float` 値であり、**ゼロ**は**影響なし**を意味します。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceFloatValue} alt="Probability Influence - Float Value" width="1000"/>
+
+この値は **Influence Provider**（特別なインターフェースを利用するスクリプトまたはオブジェクト）によって Probability List に提供されます。詳細については後ほど説明します。
+
+-1 から 1 の範囲を持つ Influence 値は、リスト内の個々のアイテムをどのように調整するかを制御するメカニズムなしには特に有用ではありません。
+ここで **Influence Spread** が役割を果たし、ゲームデザイナーが設計された確率に対する Influence の実際の影響を微調整できるようにします。
+
+Spread は Influence の範囲を確率の実際の調整にマッピングします。Spread を使用することで、ゲームデザイナーは受け取った Influence が個々の確率をどれだけ調整するかの上限を設定できます。
+
+以下の例では、モンスターが Health Globe をドロップする確率は 20% に設計されています。
+ゲームデザイナーは、プレイヤーの体力レベルによってこの確率が影響を受けるようにしたいと考えています。プレイヤーが傷ついているときは Health Globe のドロップ率を上げ、プレイヤーが健康なときは下げます。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpreadMapping} alt="Probability Influence - Spread Mapping" width="1000"/>
+
+曲線が Influence の範囲を Influence Spread にマッピングする様子を観察してください。**最大負の Influence**（-1）はアイテムの確率を 10% に下げ、**最大正の Influence**（1）は確率を 40% に上げます。-1 と 1 の間の値は Spread 範囲に比例してマッピングされ、0 の Influence は設計された 20% の確率にマッピングされます。
+
+### 影響を受けるアイテムとリスト
+
+リスト内のいずれかのアイテムが Influence を受けると、リスト全体も Influence を受けているとみなされます。つまり、各選択の前に確率を再計算します。
+1 つのアイテムの確率が動的に変化する可能性がある場合、他のアイテムの確率も自然に応答して調整されるため、この再調整が必要です。
+
+このような動的な環境での結果を予測しやすくするために、Probability List の Inspector は影響を受けた確率の結果パーセンテージを表示します。
+
+確率バーの左側のパーセンテージは**すべての入力 Influence が -1 のときの結果確率**を表し、右側のパーセンテージは**すべての入力 Influence が 1 の場合のシナリオ**を示します。
+結果は色分けされています。デフォルトでは、結果の確率が設計値より低い場合は赤、高い場合は青になります。
+
+<ImageX className="w-full h-auto" src={probabilityInfluencePercentagePreview} alt="Probability Influence - Percentage Preview" width="1000"/>
+
+上の例では、4 つの方向がそれぞれ 25% の等しい設計確率を持っています。**South** 方向が Influence を受けています。最大負の Influence はその確率を 0% に下げます。
+このシナリオでは、選択できる方向が 3 つだけになるため、プレビューはそれらの確率を等しく表示します。South 方向のプレビューパーセンテージは赤で表示され、設計された 25% の確率より低いことを示しています。
+残りの方向は、設計値より確率が高くなるため青で色分けされています。
+
+逆に、Influence が最大正の場合、South 方向の確率が増加し、アイテムの合計確率が 100% を超えます。そのため、結果確率のプレビューは正規化されます。
+
+<Note>
+    色分けのグラデーションは、
+    <a href={PreferencesPage.Link + "#preferences-window"}>{PreferencesPage.Title}</a> ウィンドウでグローバルにカスタマイズできます。
+    ***Spread Color Gradient*** 設定を探してください。
+
+    さらに、各個別ドロワーの差に対する色付けの感度を微調整できます。
+    <a href={CustomizingListsPage.Link + "#additional-drawer-options"}>Additional Drawer Options</a>
+    を開き、***Spread Color Bias*** スライダーを調整してください。
+</Note>
+
+### 影響を受けるアイテムの選択ロジック
+
+値が選択されるたびに、Probability List はまずそのアイテムのいずれかが Influence を受けているかどうかを確認します。
+受けている場合、RNGNeeds は提供された Influence に基づいて調整された確率を計算します。
+この調整の後、選択プロセスはこれらの新しい確率で進みます。
+
+<Note>
+    選択直前に Influence を計算することで、外部要因のロジックに基づいてリアルタイムで確率が調整される動的な環境が生まれます。
+    例については、<a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a> サンプルをご覧ください。このサンプルでは、プレイヤーの距離によって影響を受けながら、モンスターが 3 つの場所からランダムにスポーンします。
+</Note>
+
+---
+
+## Influence Provider
+
+RNGNeeds では、Influence のメカニズムは `IProbabilityInfluenceProvider` インターフェースを通じて確立されます。このインターフェースにより、Provider オブジェクトは Probability List 内のアイテムの確率を動的に調整できます。Provider には主に 2 種類あります。
+
+- **External Provider**：`MonoBehaviour` や `ScriptableObject` などの特定の Unity オブジェクトで、インターフェースを実装し、リスト内のアイテムに直接割り当てて確率に影響を与えることができます。
+- **Value as Provider**：このアプローチは、ProbabilityList 内の Unity オブジェクトやカスタムクラスの固有の値を使用して確率に影響を与えます。
+
+### External Provider
+
+`IProbabilityInfluenceProvider` インターフェースを実装する `MonoBehaviour` や `ScriptableObject` などの Unity オブジェクトは、**External Influence Provider** として機能できます。
+これらの Provider は、外部の条件や状態に基づいて -1 から 1 の値の範囲を提供し、アイテムの確率を動的に調整するための柔軟な方法を提供します。
+
+先ほどの Health Globe の例を考えてみましょう。シンプルな Health Manager Component がインターフェースを実装してプレイヤーの残り体力の割合を反映します。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceExternalProvider} alt="Probability Influence - External Provider" width="1000"/>
+
+このコンポーネントは Health Globe アイテムの **External Provider** になります。
+コーダーは **Influence Info** を提供することで、Provider がリンクされたときに Inspector に表示される基礎となるロジックをゲームデザイナーに伝えることもできます。
+
+```csharp
+public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    public float maxHealth;
+    public float currentHealth;
+    public float HealthPercentage => currentHealth / maxHealth;
+    
+    public float ProbabilityInfluence => HealthPercentage.Remap(0, 1, 1, -1);
+    public string InfluenceInfo => $"Based on health percentage: {HealthPercentage:P2} = {ProbabilityInfluence} Influence";
+}
+```
+
+上記のコードスニペットでは、インターフェースの `ProbabilityInfluence` プロパティが体力の割合を逆の Influence 値にリマップしています。100% の体力は -1 の Influence に相当し、体力が十分なプレイヤーのドロップ率を下げます。
+このロジックは `InfluenceInfo` プロパティを通じてゲームデザイナーに透明性をもって伝えられます。
+
+### Value as Influence Provider
+
+値自体も Influence Provider として機能できます。
+<a href={SamplesMonsterSpawnerPage.Link}>{SamplesMonsterSpawnerPage.Title}</a>
+サンプルでは、`SpawnLocation` MonoBehaviour が Provider として機能し、Influence のロジックはスポーン場所からプレイヤーの距離に基づいています。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceSpawnLocationsProviders} alt="Probability Influence - Spawn Locations Providers" width="1000"/>
+
+```csharp {{ title: 'Spawn Location Code'}}
+public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
+{
+    // code not relevant for this guide was omitted
+    
+    public Transform playerLocation;
+    public float DistanceToPlayer => Vector3.Distance(transform.position, playerLocation.position);
+    
+    // Remaps the distance to player into an influence value
+    public float ProbabilityInfluence => DistanceToPlayer.Remap(0f, 30f, 1f, -1f);
+    public string InfluenceInfo => $"Distance to player: {DistanceToPlayer} = {ProbabilityInfluence}";
+}
+```
+
+この実装では、プレイヤーまでの距離がリマップされ、距離がゼロの場合は確率への最大正の Influence（1）となります。
+逆に、30 ユニットの距離は最大負の Influence（-1）となります。
+
+<Note>
+    External Provider が割り当てられ、Value 自体が Influence Provider に指定されている場合、Value の Influence が優先され、External Provider の Influence を事実上上書きすることに注意してください。
+</Note>
+
+---
+
+## Influence の反転
+
+受け取った Influence を反転（または逆転）させることが有益なシナリオがあります。この機能は、ゲームデザイナーとして、コーダーによって確立されたロジックを逆転させたい場合、1 つのリスト内で通常のロジックと逆転したロジックを混在させる必要がある場合、または特定のアイテムへの Influence の効果を増幅させたい場合に特に役立ちます。
+
+Influence の反転は、動的な確率調整に依存するゲームメカニクスのデザイン可能性を大幅に広げる汎用的なツールです。
+
+### ユースケースの検討
+
+先ほどの Health Globe の例を考えてみましょう。Spread を 100% に設定しても、最大正の Influence では Health Globe のドロップ率は 56% に制限されます。
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeMaximumSpread} alt="Probability Influence - Maximum Spread" width="1000"/>
+
+実際には、Spread を最大に設定するとアイテムの確率は 100% に増加します。しかし、リスト内の別のアイテムが 80% の設計確率を持っている場合、リストの合計確率は 180% になります。その結果、選択前にリストが正規化されます。
+
+- **Item 0 -** 80 / 180 = 0.44
+- **Item 1 -** 100 / 180 = 0.56
+
+これらの数値は Spread バーの横に正確に反映され、最大正の Influence 下での正規化された確率のプレビューを提供します。
+
+**Health Globe のドロップ率を高めるには**、他のアイテムの確率を下げる必要があります。ここで Influence の反転が活躍します。最初のアイテムに同じ Influence Provider を割り当て、**Invert Influence** トグルを有効にすることで目標を達成できます。
+
+<Note>
+    アイテムの Inverted Influence を有効にすると、そのアイテムの **Designed Probability Indicator**（Spread スライダー内の白い線）がハイライトされます。これにより、Provider オプションが折りたたまれているときに反転したアイテムを識別しやすくなります。
+</Note>
+
+<ImageX className="w-full h-auto" src={probabilityInfluenceHealthGlobeInverted} alt="Probability Influence - Inverted Influence" width="1000"/>
+
+すぐに、最大**正の Influence** での Health Globe のドロップ率が 100% に跳ね上がることが確認できます。
+この増加は、**負の Influence**（本質的に**正の Influence**の逆）が同時に上のアイテムの確率に影響を与えるために起こります。
+
+本質的に、Health Globe を**ドロップする**可能性が増加し、Health Globe を**ドロップしない**確率が減少します。どちらも同じ要因（プレイヤーの体力）によって影響を受けます。
+
+---
+
+### まとめ
+
+Probability Influence をしっかりと理解したので、その実践的な応用を深く探求する準備が整いました。
+動的で魅力的なゲームプレイメカニクスを作成する旅は、
+<a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a> ページで続きます。そこでは、実装のインスピレーションとガイドとなる詳細なガイドと例が見つかります。
+
+---

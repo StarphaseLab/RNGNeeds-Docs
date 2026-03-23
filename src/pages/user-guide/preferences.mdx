@@ -1,0 +1,109 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Col, Note, Row} from "@/components/mdx";
+import {ImageX} from "@/components/ImageX";
+import {CustomizingListsPage} from "@/components/PageLinks";
+import preferencesWindow from '@/images/screenshots/preferences-window.png';
+export const description =
+  'Understand and customize your user experience in the RNGNeeds plugin. Learn about options for drawer interaction, button displays, scroll direction, and theme-based visual preferences.'
+
+<HeroPattern />
+
+# Preferences
+
+In the "Preferences" section of the RNGNeeds plugin, you have the freedom to fine-tune how you interact with the tool. These options allow you to choose between compact and full button displays, invert scroll direction for a more natural feel, and more. Plus, you have the ability to set visual preferences based on your editor's theme, whether it's dark or light. It's all about making your experience as user-friendly as possible, so you can focus on crafting perfect probability lists for your game elements. {{ className: 'lead' }}
+
+<Note>
+    To open RNGNeeds Preferences ...
+    - **On Windows** - click on the **Editor Menu Bar &raquo; Edit &raquo; Preferences**.
+    - **On Mac** - in the top bar, click on **Unity &raquo; Settings**
+    
+    In the window that appears, click on **RNGNeeds** in the left part.
+</Note>
+
+---
+
+### Understanding RNGNeeds Preferences
+
+RNGNeeds has three types of preferences.
+
+- **Global Preferences** - these options are shared among all drawers and define their high-level behavior, such as the level of options, scroll direction, colorize gradients or logger settings.
+- **Default Drawer Settings** - these preferences are drawer-specific and applied to each new drawer when it is first initialized (viewed). This is handy if you find yourself changing the same settings for each new drawer to suite your needs. Simply change the defaults in the Preferences Window under **Drawer Options &raquo; Default Drawer Settings**
+- **Color Palettes** - a list of color themes shared by all drawers. Palettes are not applied to drawers. Drawers only keep reference to the palette name. This way you can customize existing palettes and drawers will reflect the change.
+
+---
+
+## Preferences Window
+
+The RNGNeeds preferences are located next to other Editor preferences in your Unity Project. To open the preferences window, go to  **Editor Menu Bar &raquo; Edit &raquo; Preferences &raquo; RNGNeeds**
+
+<Row>
+  <Col>
+      ### Global Preferences
+      **Drawer Options Level** - Choose between 'Basic' and 'Advanced' options in the drawer. Advanced will show additional features in the drawer such as Seeding options, Depletable List controls, Selection Method dropdown and more.
+      
+      **Drawer Option Buttons** - Show Full, Compact or Informative buttons in drawer Header. Use Compact if you have limited inspector space. Informative mode (recommended) will display settings right within the button.
+      
+      **Drawer Display Options Buttons** - Choose whether to show individual display options buttons in the drawer header, or group them under a compact dropdown menu. Dropdown menu helps to save space in narrow inspectors.
+      
+      **Inspector Refresh Mode** - To achieve responsive visual-authoring drawer, the inspector has to repaint frequently. If you are experiencing editor slowdowns, try 'Optimized' option, which will repaint only during mouse drag. However, other actions, such as changing settings might feel less responsive.
+      
+      **Invert Scroll Direction** - Use this to compensate system settings. For example on MacOS, the 'natural' scroll direction might feel inversed when using scroll to adjust probabilities.
+      
+      **Default Monochrome Color** - This will become the default Monochrome color for every new initialized drawer.
+      
+      **Test Color Gradient** - This gradient will be used to colorize test result variation from desired probability.
+      
+      **Spread Color Gradient** - This gradient will be used to colorize probability spread in an influenced list.
+
+      ### Depletable List Options
+
+      **Scroll Wheel Units Adjustment** - Enables unit adjustments using the scroll wheel for quick and easy modification.
+
+      **Units Adjustment Multiplier** - Sets the increment or decrement multiplier for units when using the Multiply Units Modifier key.
+
+      **Units Adjustment Shortcuts** - Expand this setting group to customize the keyboard shortcuts used for adjusting units of depletable items.
+
+      
+      **Editor Log Level** - Select the message types to be displayed in the editor console.
+      
+      **Allow Log Colors** - Enable or disable color-coded messages in the editor console.
+      
+      **Open RNGNeeds Welcome Window** - This button will display the Welcome Window that pops up after the installation.
+      
+      ### Default Drawer Settings
+      **Default Drawer Settings** - New drawers will be initialized with these settings. Expanding this will reveal the default settings for new drawers.
+      
+      ### Palette Options
+      **Export Palettes** - Current list of palettes can be exported as XML.
+      
+      **Import Palettes** - Import list of palettes from XML. Note that the current list will be overwritten.
+      
+      **Reset to Defaults** - Clears the current list of palettes and imports the factory-defaults.
+      
+      **Color Palettes** - Expand this list to modify the palettes. You can change existing or add new ones.
+  </Col>
+  <Col sticky>
+      <ImageX className="w-full h-auto" src={preferencesWindow} alt="RNGNeeds Inspectors" width={830} />
+  </Col>
+</Row>
+
+You can learn how to adjust individual options for each drawer on our <a href={CustomizingListsPage.Link}>{CustomizingListsPage.Title}</a> page.
+
+---
+
+## Persistent Drawer Settings
+
+RNGNeeds silently tracks preferences for each drawer individually, allowing you to stay organized when dealing with large number of objects you design. With this approach, you can easily change appearance of the drawers as you design your Probability Lists and come back to them later with settings unchanged. All options should persist with your commits and version control.
+
+<Note>
+    The preferences window offers options to reset all preferences to defaults, which also resets the default drawer settings.<br/>
+    The preferences are stored in your project folder under **\/ProjectSettings\/RNGNeedsSettings.asset**.<br/>
+    Changes to this file will frequently show up in your version control. This is by design and is to ensure all your settings are carried over as you work.<br/>
+    In case you don't want to commit preferences of RNGNeeds, add these lines to your `.gitignore` file:
+    ```
+    # Ignore RNGNeedsSettings Asset
+    /[Pp]roject[Ss]ettings/RNGNeedsSettings.*
+    ```
+</Note>
+
+---
