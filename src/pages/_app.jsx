@@ -10,6 +10,12 @@ import '@/styles/tailwind.css'
 import 'focus-visible'
 import Script from 'next/script';
 
+const SITE_URL = 'https://docs.rngneeds.com'
+const SITE_NAME = 'RNGNeeds'
+const SITE_SUFFIX = 'RNGNeeds | Unity Probability Plugin'
+const DEFAULT_DESCRIPTION = 'RNGNeeds — a powerful Unity plugin for probability distribution. Design weighted loot tables, dice systems, item drops, and more with an intuitive visual inspector.'
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
+
 function onRouteChange() {
   useMobileNavigationStore.getState().close()
 }
@@ -37,6 +43,12 @@ export default function App({ Component, pageProps }) {
     )
   }
 
+  const pageTitle = pageProps.title
+    ? `${pageProps.title} - ${SITE_SUFFIX}`
+    : `Documentation - ${SITE_SUFFIX}`
+  const pageDescription = pageProps.description || DEFAULT_DESCRIPTION
+  const canonicalUrl = `${SITE_URL}${router.asPath.split('?')[0].split('#')[0]}`
+
   return (
     <>
         <Analytics />
@@ -56,8 +68,28 @@ export default function App({ Component, pageProps }) {
         {/*    }}*/}
         {/*/>*/}
       <Head>
-        <title>{pageProps.title ? `${pageProps.title} - RNGNeeds Documentation` : 'RNGNeeds Documentation'}</title>
-        <meta name="description" content={pageProps.description} />
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+
+        {/* Canonical */}
+        <link rel="canonical" href={canonicalUrl} />
+
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content={SITE_NAME} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={DEFAULT_OG_IMAGE} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@StarphaseLab" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
       </Head>
       <MDXProvider components={mdxComponents}>
         <Layout {...pageProps}>
