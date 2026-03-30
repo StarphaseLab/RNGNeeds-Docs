@@ -210,16 +210,27 @@ function SmallPrint() {
       <p className="text-xs text-zinc-600 dark:text-zinc-400">
           &copy; {new Date().getFullYear()} <a href={STARPHASELAB_LINK} target="_blank" rel="noopener noreferrer">Starphase Lab</a>, All rights reserved.
       </p>
-      <div className="flex gap-4">
-        <SocialLink href={TWITTER_LINK} icon={TwitterIcon}>
-          Follow us on Twitter
-        </SocialLink>
-        <SocialLink href={REDDIT_LINK} icon={RedditIcon}>
-          Follow us on Reddit
-        </SocialLink>
-        <SocialLink href={DISCORD_LINK} icon={DiscordIcon}>
-          Join our Discord server
-        </SocialLink>
+      <div className="flex flex-col items-center gap-3 sm:items-end">
+        <Link
+          href={TWITTER_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center gap-1.5 text-xs text-zinc-600 transition hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white"
+        >
+          <TwitterIcon className="h-4 w-4 fill-zinc-500 transition group-hover:fill-zinc-900 dark:group-hover:fill-white" />
+          Follow @StarphaseLab for dev updates &amp; Unity tips
+        </Link>
+        <div className="flex gap-4">
+          <SocialLink href={TWITTER_LINK} icon={TwitterIcon}>
+            Follow us on Twitter
+          </SocialLink>
+          <SocialLink href={REDDIT_LINK} icon={RedditIcon}>
+            Follow us on Reddit
+          </SocialLink>
+          <SocialLink href={DISCORD_LINK} icon={DiscordIcon}>
+            Join our Discord server
+          </SocialLink>
+        </div>
       </div>
     </div>
   )

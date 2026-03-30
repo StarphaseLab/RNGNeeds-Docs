@@ -8,6 +8,7 @@ import { Navigation } from '@/components/Navigation'
 import { Prose } from '@/components/Prose'
 import { SectionProvider } from '@/components/SectionProvider'
 import { TranslationBanner } from '@/components/TranslationBanner'
+import { AnnouncementBanner } from '@/components/AnnouncementBanner'
 import logoRNG from '@/images/rngn-logo-2color.png'
 import Image from "next/image";
 import { useLocale, localizedPath } from '@/lib/locale'
@@ -39,6 +40,7 @@ export function Layout({ children, sections = [], translationStatus, draft }) {
             <Navigation className="hidden lg:mt-10 lg:block" />
           </div>
         </motion.header>
+        <AnnouncementBanner />
         <div className="relative px-4 pt-14 sm:px-6 lg:px-8">
           <main className="py-16">
             {draft && process.env.NODE_ENV !== 'production' && (
