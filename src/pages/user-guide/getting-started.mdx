@@ -73,6 +73,12 @@ To start using probability distribution in your project, add the generic `Probab
 For this example, we will create a biased die that rolls the six a bit more often. Name the script `Die` and open it.<br/>
 Inherit from `ScriptableObject` and add a Probability List of type `int`.
 
+<Note>
+    We are using a `ScriptableObject` in this example because it is a convenient way to create reusable data assets directly in your project.
+    Once this script is created, you can make many different die assets from the same class, each with its own values and probabilities.
+    If you prefer working with `MonoBehaviour` scripts attached to GameObjects, the same `ProbabilityList<int>` field works there as well — only the surrounding class setup is different.
+</Note>
+
 ```csharp {{ title: 'Adding the ProbabilityList'}}
 using UnityEngine;
 using RNGNeeds;
@@ -125,6 +131,7 @@ public class Die : ScriptableObject
 Now, whenever you call Roll() on one of your dice, you will get a single `int` value based on probability distribution.
 <Note>
     Using this approach, you can now create multiple dice for your project, such as `d10` or `d20` and roll them easily. Each of the Die ScriptableObjects can have its own number of items (sides of a die) and probability distributions.
+    The same workflow also applies when using `ProbabilityList` inside `MonoBehaviour` scripts, for example on spawners, loot tables, enemy behaviors, or dialogue systems.
     Speaking of which, now would be a good idea to rename our six sided die to `D6 Die (biased)`.
 </Note>
 
