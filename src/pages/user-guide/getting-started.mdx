@@ -6,7 +6,6 @@ import exampleAddedSides from '@/images/screenshots/example-die-addedsides.png';
 import exampleDirectInput from '@/images/screenshots/example-die-directinput.png';
 import {HeroPattern} from "@/components/HeroPattern";
 import {SUPPORT_EMAIL_LINK} from "@/components/RLinks";
-import {AssetStoreLink} from "@/components/AssetStoreLink";
 import { SamplesOverviewPage, PreferencesPage, TerminologyPage, UserInterfacePage} from "@/components/PageLinks";
 export const description =
   'Install RNGNeeds from the Unity Asset Store and create your first weighted probability list. Step-by-step setup guide for the RNGNeeds Unity plugin.'
@@ -17,31 +16,24 @@ export const description =
 
 This section will guide you through the process of installing RNGNeeds from the Unity Asset Store and quickly setting up your first probability list. {{ className: 'lead' }}
 
-<Note>
-    You can install RNGNeeds either by visiting <AssetStoreLink>the plugin page on the Asset Store</AssetStoreLink>
-    or by opening the store inside the Unity Editor (Toolbar Menu &raquo; Window &raquo; Asset Store).
-</Note>
-
 ---
 
 ## Installation
 
-**1. Open the Unity Editor**<br/>
-Start by opening your Unity Editor. Make sure you have a project open, or create a new one if necessary.<br/><br/>
-**2. Access the Unity Asset Store**<br/>
-Navigate to the Unity Asset Store from within the Unity Editor. You can do this by clicking on **Window** from the menu bar and selecting **Asset Store** from the dropdown menu.<br/><br/>
-**3. Search for RNGNeeds**<br/>
-In the search bar of the Asset Store, type in "RNGNeeds" and hit Enter. The RNGNeeds plugin should appear in the search results.<br/><br/>
-**4. Download and Import the Plugin**<br/>
-Click on the RNGNeeds plugin from the search results to open its page.
-Here, click on the **Download** or **Import** button (the button's label will depend on whether you have downloaded the plugin before).
-If a window appears asking you to upgrade, you can just click Continue.<br/><br/>
-Once the download is complete, Unity will automatically prompt you to import the plugin into your project.
-Make sure all the files are checked in the Import Unity Package window and click Import.<br/><br/>
+Make sure RNGNeeds is already available in your Unity account. Open your Unity project and follow these steps to import it.
+
+**1. Open the Package Manager**<br/>
+In the Unity Editor, go to **Window &raquo; Package Management &raquo; Package Manager**.<br/><br/>
+**2. Find RNGNeeds in My Assets**<br/>
+In the Package Manager window, select **My Assets** from the left sidebar under Sources.
+You should see **RNGNeeds - Probability Distribution** listed among your assets. Click on it to select it.<br/><br/>
+**3. Import the Plugin**<br/>
+With RNGNeeds selected, click the **Import** button on the right side of the Package Manager window.
+If prompted, make sure all files are checked in the Import Unity Package dialog and click **Import**.<br/><br/>
 
 <Row>
     <Col>
-        **5. Verify the Installation**<br/>
+        **4. Verify the Installation**<br/>
         After the import is complete, a Welcome Window should pop up.
         It provides handy links to our documentation, a getting started guide, instructions for importing samples, and a direct shortcut to the RNGNeeds preferences window.
 
