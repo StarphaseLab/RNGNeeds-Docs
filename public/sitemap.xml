@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- User Guide -->
-  <url><loc>https://docs.rngneeds.com/user-guide/introduction</loc><lastmod>2026-03-23</lastmod></url>
-  <url><loc>https://docs.rngneeds.com/user-guide/getting-started</loc><lastmod>2026-03-23</lastmod></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/introduction</loc><lastmod>2026-04-09</lastmod></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/getting-started</loc><lastmod>2026-04-09</lastmod></url>
   <url><loc>https://docs.rngneeds.com/user-guide/user-interface</loc><lastmod>2026-03-23</lastmod></url>
   <url><loc>https://docs.rngneeds.com/user-guide/preferences</loc><lastmod>2026-03-23</lastmod></url>
-  <url><loc>https://docs.rngneeds.com/user-guide/faq</loc><lastmod>2026-03-23</lastmod></url>
-  <url><loc>https://docs.rngneeds.com/user-guide/support</loc><lastmod>2026-03-23</lastmod></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/ai-agents</loc><lastmod>2026-04-09</lastmod></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/faq</loc><lastmod>2026-04-09</lastmod></url>
+  <url><loc>https://docs.rngneeds.com/user-guide/support</loc><lastmod>2026-04-09</lastmod></url>
 
   <!-- Documentation -->
   <url><loc>https://docs.rngneeds.com/documentation/docs-overview</loc><lastmod>2026-03-23</lastmod></url>

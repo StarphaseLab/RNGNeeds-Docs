@@ -6,54 +6,46 @@ import exampleAddedSides from '@/images/screenshots/example-die-addedsides.png';
 import exampleDirectInput from '@/images/screenshots/example-die-directinput.png';
 import {HeroPattern} from "@/components/HeroPattern";
 import {SUPPORT_EMAIL_LINK} from "@/components/RLinks";
-import {AssetStoreLink} from "@/components/AssetStoreLink";
 import { SamplesOverviewPage, PreferencesPage, TerminologyPage, UserInterfacePage} from "@/components/PageLinks";
 export const translationStatus = 'auto'
 export const description =
-  '本指南将帮助您完成所有设置，让您准备好使用 RNGNeeds。我们将介绍如何安装插件并创建您的第一个概率分布列表。'
+  '从 Unity Asset Store 安装 RNGNeeds 并创建您的第一个加权概率列表。RNGNeeds Unity 插件的分步设置指南。'
 
 <HeroPattern />
 
 # 入门指南
 
-本节将引导您完成从 Unity Asset Store 安装 RNGNeeds 的流程，并快速设置您的第一个概率列表。{{ className: 'lead' }}
-
-<Note>
-    您可以通过访问 <AssetStoreLink>Asset Store 上的插件页面</AssetStoreLink>来安装 RNGNeeds，
-    或者在 Unity Editor 内部打开商店（工具栏菜单 &raquo; Window &raquo; Asset Store）。
-</Note>
+本节将引导您完成从 Unity Asset Store 安装 RNGNeeds 的流程,并快速设置您的第一个概率列表。{{ className: 'lead' }}
 
 ---
 
 ## 安装
 
-**1. 打开 Unity Editor**<br/>
-首先打开您的 Unity Editor。确保您已打开一个项目，或者在必要时创建一个新项目。<br/><br/>
-**2. 访问 Unity Asset Store**<br/>
-在 Unity Editor 内导航至 Unity Asset Store。您可以通过点击菜单栏中的 **Window**，然后从下拉菜单中选择 **Asset Store** 来完成此操作。<br/><br/>
-**3. 搜索 RNGNeeds**<br/>
-在 Asset Store 的搜索栏中输入"RNGNeeds"并按 Enter。RNGNeeds 插件应会出现在搜索结果中。<br/><br/>
-**4. 下载并导入插件**<br/>
-从搜索结果中点击 RNGNeeds 插件以打开其页面。
-在此，点击 **Download** 或 **Import** 按钮（按钮的标签将取决于您之前是否已下载过该插件）。
-如果出现要求升级的窗口，只需点击 Continue 即可。<br/><br/>
-下载完成后，Unity 将自动提示您将插件导入到项目中。
-确保 Import Unity Package 窗口中所有文件均已勾选，然后点击 Import。<br/><br/>
+确保 RNGNeeds 已在您的 Unity 账户中可用。打开您的 Unity 项目,按以下步骤进行导入。
+
+**1. 打开 Package Manager**<br/>
+在 Unity Editor 中,前往 **Window &raquo; Package Management &raquo; Package Manager**。<br/><br/>
+**2. 在 My Assets 中找到 RNGNeeds**<br/>
+在 Package Manager 窗口中,从左侧栏 Sources 下选择 **My Assets**。
+您应能在资产列表中看到 **RNGNeeds - Probability Distribution**。点击它进行选择。<br/><br/>
+**3. 导入插件**<br/>
+选中 RNGNeeds 后,点击 Package Manager 窗口右侧的 **Import** 按钮。
+如果出现提示,请确保 Import Unity Package 对话框中所有文件均已勾选,然后点击 **Import**。<br/><br/>
 
 <Row>
     <Col>
-        **5. 验证安装**<br/>
-        导入完成后，Welcome Window 应会弹出。
-        它提供了指向我们文档的便捷链接、入门指南、导入示例的说明，以及 RNGNeeds 首选项窗口的直接快捷方式。
-        
-        要验证安装，请通过点击快捷按钮或在 Unity 菜单中导航来打开 RNGNeeds Preferences Window：
-        
-        - **在 Windows 上** - 点击 **Editor Menu Bar &raquo; Edit &raquo; Preferences**。
-        - **在 Mac 上** - 在顶部栏中，点击 **Unity &raquo; Settings**
+        **4. 验证安装**<br/>
+        导入完成后,Welcome Window 应会弹出。
+        它提供了指向我们文档的便捷链接、入门指南、导入示例的说明,以及 RNGNeeds 首选项窗口的直接快捷方式。
 
-        在出现的窗口中，点击左侧部分的 **RNGNeeds**。
-        
-        打开 RNGNeeds 首选项窗口后，控制台中应会出现有关加载默认首选项和颜色调色板的消息。
+        要验证安装,请通过点击快捷按钮或在 Unity 菜单中导航来打开 RNGNeeds Preferences Window:
+
+        - **在 Windows 上** - 点击 **Editor Menu Bar &raquo; Edit &raquo; Preferences**。
+        - **在 Mac 上** - 在顶部栏中,点击 **Unity &raquo; Settings**
+
+        在出现的窗口中,点击左侧部分的 **RNGNeeds**。
+
+        打开 RNGNeeds 首选项窗口后,控制台中应会出现有关加载默认首选项和颜色调色板的消息。
     </Col>
     <Col sticky>
         <ImageX className="w-80 h-auto" src={welcomeWindow} alt="RNGNeeds Inspectors" width={425} />
@@ -61,26 +53,32 @@ export const description =
 </Row>
 
 <Note>
-    RNGNeeds 插件以 **Package** 形式安装。这意味着其内容不会像往常一样出现在您的 Assets 文件夹中，而是出现在 **Packages/** 文件夹中。
-    这种方法有助于减少 Assets 文件夹中的杂乱内容，并允许 RNGNeeds 通过 Package Manager 运行。<br/><br/>
-    打开 **Package Manager &raquo; In Project &raquo; Packages - Starphase Lab**。您将在此部分看到列出的两个包：<br/>
+    RNGNeeds 插件以 **Package** 形式安装。这意味着其内容不会像往常一样出现在您的 Assets 文件夹中,而是出现在 **Packages/** 文件夹中。
+    这种方法有助于减少 Assets 文件夹中的杂乱内容,并允许 RNGNeeds 通过 Package Manager 运行。<br/><br/>
+    打开 **Package Manager &raquo; In Project &raquo; Packages - Starphase Lab**。您将在此部分看到列出的两个包:<br/>
     - **RNGNeeds** - *这是此插件的主要包。*
-    - **Starphase Core** - *这是 RNGNeeds 的依赖项，是一个小型常用工具集合。*
+    - **Starphase Core** - *这是 RNGNeeds 的依赖项,是一个小型常用工具集合。*
 </Note>
 
 ---
 
 ## 快速开始
 
-要在您的项目中开始使用概率分布，请将泛型 `ProbabilityList<T>` 类添加到您的某个类中，或者通过在 Project 面板中右键单击并选择 **Create &raquo; C# Script** 来创建一个新脚本。
+要在您的项目中开始使用概率分布,请将泛型 `ProbabilityList<T>` 类添加到您的某个类中,或者通过在 Project 面板中右键单击并选择 **Create &raquo; C# Script** 来创建一个新脚本。
 
 <Note>
-    您可以在任何 `MonoBehaviour` 或 `ScriptableObject` 类中使用多个 **ProbabilityList**，并使用 Inspector 设计概率分布。
-    您也可以在任何其他类中使用它，并通过 API 控制列表及其概率分布。
+    您可以在任何 `MonoBehaviour` 或 `ScriptableObject` 类中使用多个 **ProbabilityList**,并使用 Inspector 设计概率分布。
+    您也可以在任何其他类中使用它,并通过 API 控制列表及其概率分布。
 </Note>
 
 在本示例中，我们将创建一个更频繁地掷出六点的有偏骰子。将脚本命名为 `Die` 并打开它。<br/>
 继承自 `ScriptableObject` 并添加一个 `int` 类型的 Probability List。
+
+<Note>
+    本示例使用 `ScriptableObject`，因为它是在项目中创建可重复使用的数据资产的便捷方式。
+    创建此脚本后，您可以基于同一个类创建许多不同的骰子资产，每个都有自己的值和概率。
+    如果您更喜欢使用挂载在 GameObject 上的 `MonoBehaviour` 脚本，同样的 `ProbabilityList<int>` 字段也可以直接使用 — 只是周围的类设置不同。
+</Note>
 
 ```csharp {{ title: 'Adding the ProbabilityList'}}
 using UnityEngine;
@@ -93,27 +91,27 @@ public class Die : ScriptableObject
 }
 ```
 
-在 Unity Editor 中，右键单击 **Assets** 文件夹并选择 **Create &raquo; My Die**。
-这将创建一个建议名称为 `dXX` 的新 Scriptable Object。我们将创建一个六面骰子，因此将对象命名为 `D6 Die`。
-点击该对象将在 Inspector 中显示其属性，您将在那里看到 Probability List Drawer。
+在 Unity Editor 中,右键单击 **Assets** 文件夹并选择 **Create &raquo; My Die**。
+这将创建一个建议名称为 `dXX` 的新 Scriptable Object。我们将创建一个六面骰子,因此将对象命名为 `D6 Die`。
+点击该对象将在 Inspector 中显示其属性,您将在那里看到 Probability List Drawer。
 
 <ImageX className="w-full h-auto" src={exampleEmptyList} alt="Empty ProbabilityList" width={1000} />
 
-要向列表中添加项目，请点击右侧的 `Add` 按钮。这些项目将代表骰子的各个面。添加六个面并指定它们的值。
+要向列表中添加项目,请点击右侧的 `Add` 按钮。这些项目将代表骰子的各个面。添加六个面并指定它们的值。
 
 <ImageX className="w-full h-auto" src={exampleAddedSides} alt="ProbabilityList with items" width={1000} />
 
-目前，各项目的概率是均等的。我们想让骰子更频繁地掷出六点，但保留其他面之间的均等概率。
+目前,各项目的概率是均等的。我们想让骰子更频繁地掷出六点,但保留其他面之间的均等概率。
 
 <Note>
-    您可以通过在条带上拖动矩形或其边缘来调整项目概率，也可以直接输入数值。直接输入将根据各项目的分布比例重新计算其他项目的概率。
+    您可以通过在条带上拖动矩形或其边缘来调整项目概率,也可以直接输入数值。直接输入将根据各项目的分布比例重新计算其他项目的概率。
 </Note>
 
-点击"第 6 面"的概率 `16.67%`，输入 `0.2`（即 20%），然后按 `Enter`。其他项目的概率将降至 16%。
+点击"第 6 面"的概率 `16.67%`,输入 `0.2`(即 20%),然后按 `Enter`。其他项目的概率将降至 16%。
 
 <ImageX className="w-full h-auto" src={exampleDirectInput} alt="Direct Input" width={1000} />
 
-现在是掷骰子的时候了。在 RNGNeeds 中，您可以通过调用 `.PickValue()` 轻松从 ProbabilityList 中选择一个值。让我们通过添加一个返回掷骰结果的函数来使骰子对象变得有用。
+现在是掷骰子的时候了。在 RNGNeeds 中,您可以通过调用 `.PickValue()` 轻松从 ProbabilityList 中选择一个值。让我们通过添加一个返回掷骰结果的函数来使骰子对象变得有用。
 
 ```csharp {{ title: 'Selecting values from list' }}
 using UnityEngine;
@@ -123,7 +121,7 @@ using RNGNeeds;
 public class Die : ScriptableObject
 {
     public ProbabilityList<int> die;
-    
+
     public int Roll()
     {
         return die.PickValue();
@@ -131,19 +129,20 @@ public class Die : ScriptableObject
 }
 ```
 
-现在，每当您对某个骰子调用 Roll() 时，您将根据概率分布获得一个 `int` 值。
+现在,每当您对某个骰子调用 Roll() 时,您将根据概率分布获得一个 `int` 值。
 <Note>
     使用这种方法，您现在可以为您的项目创建多个骰子，例如 `d10` 或 `d20`，并轻松掷骰。每个 Die ScriptableObject 都可以拥有自己的项目数量（骰子面数）和概率分布。
+    同样的工作流也适用于在 `MonoBehaviour` 脚本中使用 `ProbabilityList`，例如用于生成器、掉落表、敌人行为或对话系统等。
     说到这里，现在是将我们的六面骰子重命名为 `D6 Die (biased)` 的好时机。
 </Note>
 
 ---
 
-## 下一步是什么？
-恭喜您完成 RNGNeeds 的设置，并迈出进入高级概率控制世界的第一步！然而，还有更多内容等待您去探索。为了帮助您导航并充分利用 RNGNeeds，我们建议您深入了解以下资源：
+## 下一步是什么?
+恭喜您完成 RNGNeeds 的设置,并迈出进入高级概率控制世界的第一步!然而,还有更多内容等待您去探索。为了帮助您导航并充分利用 RNGNeeds,我们建议您深入了解以下资源:
 
 ### 探索基础知识
-从牢固掌握基础知识开始。这些文章将引导您了解用户界面，介绍关键术语，并帮助您通过 Preferences Window 自定义设置：
+从牢固掌握基础知识开始。这些文章将引导您了解用户界面,介绍关键术语,并帮助您通过 Preferences Window 自定义设置:
 
 - <a href={UserInterfacePage.Link}>了解用户界面</a>
 - <a href={PreferencesPage.Link}>使用 Preferences Window 自定义 RNGNeeds</a>

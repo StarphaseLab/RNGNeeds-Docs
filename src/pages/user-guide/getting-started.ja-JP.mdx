@@ -6,10 +6,9 @@ import exampleAddedSides from '@/images/screenshots/example-die-addedsides.png';
 import exampleDirectInput from '@/images/screenshots/example-die-directinput.png';
 import {HeroPattern} from "@/components/HeroPattern";
 import {SUPPORT_EMAIL_LINK} from "@/components/RLinks";
-import {AssetStoreLink} from "@/components/AssetStoreLink";
 import { SamplesOverviewPage, PreferencesPage, TerminologyPage, UserInterfacePage} from "@/components/PageLinks";
 export const description =
-  'このガイドでは、RNGNeeds のセットアップをすべて完了し、すぐに使用できる状態にします。プラグインのインストール方法と、最初の確率分布リストの作成方法を説明します。'
+  'Unity Asset Store から RNGNeeds をインストールし、初めての重み付き確率リストを作成しましょう。RNGNeeds Unity プラグインのステップバイステップのセットアップガイドです。'
 export const translationStatus = 'auto'
 
 <HeroPattern />
@@ -18,30 +17,24 @@ export const translationStatus = 'auto'
 
 このセクションでは、Unity Asset Store から RNGNeeds をインストールし、最初の確率リストを素早くセットアップするプロセスをご案内します。{{ className: 'lead' }}
 
-<Note>
-    RNGNeeds は、<AssetStoreLink>Asset Store のプラグインページ</AssetStoreLink>にアクセスするか、Unity Editor 内でストアを開く（ツールバーメニュー &raquo; Window &raquo; Asset Store）ことでインストールできます。
-</Note>
-
 ---
 
 ## インストール
 
-**1. Unity Editor を開く**<br/>
-まず Unity Editor を開きます。プロジェクトが開いていることを確認するか、必要に応じて新しいプロジェクトを作成してください。<br/><br/>
-**2. Unity Asset Store にアクセスする**<br/>
-Unity Editor 内から Unity Asset Store に移動します。メニューバーの **Window** をクリックし、ドロップダウンメニューから **Asset Store** を選択することでアクセスできます。<br/><br/>
-**3. RNGNeeds を検索する**<br/>
-Asset Store の検索バーに「RNGNeeds」と入力し、Enter キーを押します。検索結果に RNGNeeds プラグインが表示されます。<br/><br/>
-**4. プラグインをダウンロードしてインポートする**<br/>
-検索結果から RNGNeeds プラグインをクリックして、そのページを開きます。
-**Download** または **Import** ボタンをクリックします（ボタンのラベルは、以前にプラグインをダウンロードしたかどうかによって異なります）。
-アップグレードを求めるウィンドウが表示された場合は、Continue をクリックするだけで続行できます。<br/><br/>
-ダウンロードが完了すると、Unity は自動的にプラグインをプロジェクトにインポートするように促します。
-Import Unity Package ウィンドウですべてのファイルにチェックが入っていることを確認し、Import をクリックします。<br/><br/>
+RNGNeeds が Unity アカウントで利用可能な状態であることを確認してください。Unity プロジェクトを開いて、以下の手順でインポートします。
+
+**1. Package Manager を開く**<br/>
+Unity Editor で **Window &raquo; Package Management &raquo; Package Manager** に移動します。<br/><br/>
+**2. My Assets から RNGNeeds を見つける**<br/>
+Package Manager ウィンドウで、左サイドバーの Sources の下にある **My Assets** を選択します。
+アセット一覧に **RNGNeeds - Probability Distribution** が表示されます。クリックして選択してください。<br/><br/>
+**3. プラグインをインポートする**<br/>
+RNGNeeds を選択した状態で、Package Manager ウィンドウ右側の **Import** ボタンをクリックします。
+プロンプトが表示された場合は、Import Unity Package ダイアログですべてのファイルがチェックされていることを確認し、**Import** をクリックしてください。<br/><br/>
 
 <Row>
     <Col>
-        **5. インストールを確認する**<br/>
+        **4. インストールを確認する**<br/>
         インポートが完了すると、Welcome Window がポップアップ表示されます。
         このウィンドウには、ドキュメント、はじめ方ガイド、サンプルのインポート手順、RNGNeeds の Preferences ウィンドウへの直接ショートカットへの便利なリンクが記載されています。
 
@@ -80,6 +73,12 @@ Import Unity Package ウィンドウですべてのファイルにチェック�
 
 この例では、6 が少し多く出るバイアスのかかったダイスを作成します。スクリプトの名前を `Die` にして開いてください。<br/>
 `ScriptableObject` を継承し、`int` 型の Probability List を追加します。
+
+<Note>
+    この例では、プロジェクト内で再利用可能なデータアセットを作成する便利な方法として `ScriptableObject` を使用しています。
+    このスクリプトを作成すると、同じクラスからそれぞれ異なる値と確率を持つ多くのダイスアセットを作成できます。
+    GameObject にアタッチされた `MonoBehaviour` スクリプトで作業したい場合でも、同じ `ProbabilityList<int>` フィールドがそのまま使えます — 周囲のクラス構成が異なるだけです。
+</Note>
 
 ```csharp {{ title: 'Adding the ProbabilityList'}}
 using UnityEngine;
@@ -133,6 +132,7 @@ public class Die : ScriptableObject
 これで、ダイスの Roll() を呼び出すたびに、確率分布に基づいた単一の `int` 値が返されます。
 <Note>
     このアプローチを使用すると、`d10` や `d20` など、プロジェクトのために複数のダイスを作成して簡単に振ることができます。各 Die ScriptableObject は独自のアイテム数（ダイスの面数）と確率分布を持つことができます。
+    同じワークフローは `MonoBehaviour` スクリプト内で `ProbabilityList` を使用する場合にも適用されます。例えばスポナー、ルートテーブル、敵の行動、会話システムなどです。
     ところで、6 面のダイスの名前を `D6 Die (biased)` に変更するのに良いタイミングです。
 </Note>
 

@@ -6,7 +6,7 @@ import rngnShape from '@/images/rngn-shape.png';
 import {Col, Row} from "@/components/mdx";
 import {DISCORD_LINK} from "@/components/RLinks";
 import {AssetStoreLink} from "@/components/AssetStoreLink";
-import {GettingStartedPage} from "@/components/PageLinks";
+import {AIAgentsPage, GettingStartedPage} from "@/components/PageLinks";
 export const description = 'RNGNeeds は、確率分布を管理するための多用途な Unity プラグインです。ダイスロール、モンスタースポーン、アイテムドロップなど、ゲーム開発に最適です。動的でユーザーフレンドリー、そして高速なパフォーマンスをぜひお試しください。'
 export const translationStatus = 'auto'
 
@@ -21,6 +21,7 @@ RNGNeeds があなたの Unity プロジェクトに最適な選択肢である�
 <div className="mb-1 mt-6 flex gap-3 flex-wrap">
     <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
     <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
+    <Button href={AIAgentsPage.Link} variant="secondary" children={AIAgentsPage.Title} />
     <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="Join our Discord" />
 </div>
 

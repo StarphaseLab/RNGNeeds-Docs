@@ -1,5 +1,6 @@
 ﻿import {HeroPattern} from "@/components/HeroPattern";
 import {
+    AIAgentsPage,
     GettingStartedPage, NestingListsPage,
     PreferencesPage, SamplesOverviewPage,
     ProbabilityInfluencePage,
@@ -56,6 +57,12 @@ RNGNeeds の設定は Editor Preferences パネル内にあります。設定の
 RNGNeeds には ***Probability Influence Providers*** という概念が導入されています。これを使用することで、外部の要因に基づいて確率を動的に変更するルールを設計できます。詳細については、ドキュメントの
 <a href={ProbabilityInfluencePage.Link}>{ProbabilityInfluencePage.Title}</a>
 セクションをご覧ください。
+
+## RNGNeeds を AI コーディングエージェントと一緒に使えますか？
+
+はい。RNGNeeds には、対応する AI コーディングエージェントが RNGNeeds に特化した回答、サンプル、デバッグガイダンスを提供できるようにするオプションの AI スキルがあります。
+
+使い方に興味がある方は、<a href={AIAgentsPage.Link}>{AIAgentsPage.Title}</a> で初心者向けの概要、インストール方法、より良い結果を得るためのヒントをご覧ください。
 
 ## 重複しない値のみを選択するにはどうすればよいですか？
 ユニークな値を選択するには、RNGNeeds の **Depletable Lists** 機能を活用した

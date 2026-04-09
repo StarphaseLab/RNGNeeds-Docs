@@ -6,7 +6,7 @@ import rngnShape from '@/images/rngn-shape.png';
 import {Col, Row} from "@/components/mdx";
 import {DISCORD_LINK} from "@/components/RLinks";
 import {AssetStoreLink} from "@/components/AssetStoreLink";
-import {GettingStartedPage} from "@/components/PageLinks";
+import {AIAgentsPage, GettingStartedPage} from "@/components/PageLinks";
 export const translationStatus = 'auto'
 export const description = '借助 RNGNeeds，释放概率的力量。RNGNeeds 是一款功能多样的 Unity 插件，专为管理概率分布而设计，非常适合游戏开发中的骰子投掷、怪物生成、道具掉落等场景。体验 RNGNeeds 带来的动态、易用且闪电般高效的性能。'
 
@@ -21,6 +21,7 @@ export const description = '借助 RNGNeeds，释放概率的力量。RNGNeeds �
 <div className="mb-1 mt-6 flex gap-3 flex-wrap">
     <AssetStoreLink as={Button} arrow="right">从 Asset Store 获取插件</AssetStoreLink>
     <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
+    <Button href={AIAgentsPage.Link} variant="secondary" children={AIAgentsPage.Title} />
     <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="加入我们的 Discord" />
 </div>
 
