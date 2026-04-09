@@ -1,0 +1,106 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Button, Note} from "@/components/mdx";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+import {
+  GuideDepletableList,
+  GuidePLCollection,
+  GuideProbabilityInfluence,
+  GuideSelectingDistinctValues,
+  SupportPage
+} from "@/components/PageLinks";
+
+export const CLAWHUB_LINK = "https://clawhub.ai/starphaselab/rngneeds-unity";
+export const SKILLS_SH_LINK = "https://skills.sh/starphaselab/rngneeds-unity-skill";
+export const GITHUB_REPO_LINK = "https://github.com/StarphaseLab/rngneeds-unity-skill";
+
+export const description =
+  'RNGNeeds 提供了一个免费的 Agent 技能包，帮助 AI 编程助手正确理解插件的使用方式——更精准的建议、正确的术语、更少的泛泛之谈。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# RNGNeeds Agent 技能包
+
+Codex、Claude Code、Cursor 等 AI 编程助手了解 Unity 的基础知识，但它们不了解 RNGNeeds。在没有额外上下文的情况下询问加权掉落，你大概率会得到一个用 `Random.Range` 手动实现的方案，完全无视插件的存在。RNGNeeds Agent 技能包解决了这个问题。只需安装一次，你的 AI 助手就能理解插件的功能、术语和设计模式，从而给出真正用到这些特性的回答。 {{ className: 'lead' }}
+
+---
+
+## 技能包带来的区别
+
+Agent 技能包相当于一份背景资料。你在对话开始前交给 AI 助手，之后每当你的问题涉及相关主题时，它都会参考这份资料。可以把它理解为：向一个从没见过 RNGNeeds 的同事请教，和向一个花了一下午读过文档的同事请教，效果是完全不同的。
+
+举个具体例子：没有技能包时，你问 *"我需要宝箱的加权掉落"*，AI 会从零开始写一个自定义加权随机函数。安装了技能包之后，同样的问题会得到 `ProbabilityList<T>` 的配置方案、正确的 API 调用、Inspector 配置建议，以及在需要不重复掉落时使用重复防止或消耗型列表的提示。
+
+技能包不会让 AI 变得完美——它只是让 AI 有了相关知识。和对待任何同事的建议一样，你仍然应该审查生成的代码并在 Unity 中测试。
+
+---
+
+## 安装技能包
+
+### ClawHub（适用于 OpenClaw 用户）
+
+如果你已经在使用 OpenClaw，这是最快捷的方式。
+
+<div className="mb-1 mt-4 flex gap-3 flex-wrap">
+  <Button href={CLAWHUB_LINK} target="_blank" rel="noopener noreferrer" children="在 ClawHub 获取" />
+</div>
+
+### skills.sh（适用于其他 AI 助手）
+
+如果你的编程助手支持 skills.sh 生态系统（Codex、Claude Code、Cursor 等），可以通过以下命令安装：
+
+```bash
+npx skills add StarphaseLab/rngneeds-unity-skill --skill rngneeds-unity
+```
+
+<div className="mb-1 mt-4 flex gap-3 flex-wrap">
+  <Button href={SKILLS_SH_LINK} target="_blank" rel="noopener noreferrer" variant="secondary" children="在 skills.sh 查看" />
+  <Button href={GITHUB_REPO_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="GitHub 仓库" />
+</div>
+
+---
+
+## 如何获得更好的回答
+
+技能包为 AI 提供了知识，但回答的质量仍然取决于你的提问方式。最有效的改进方法是描述你的游戏玩法目标，而不是要求某个具体的 API 调用。
+
+例如，与其问 *"怎么调用 PickValue？"*，不如这样问：
+
+> *我在做一个宝箱系统，打开时掉落三件物品。同一次开箱中不能重复掉落，稀有物品的概率应该更低。用 RNGNeeds 怎么实现最好？*
+
+仅这一条提示，AI 就能建议合适的功能、解释原因并编写可运行的示例代码。如果你还说明了约束条件——物品是否永久消耗、概率是否需要在运行时变化、是在 Inspector 中还是纯代码中配置——回答会更加精准。
+
+以下是一些效果不错的提示词示例：
+
+- *"我有按区域分组的刷怪表：森林、洞穴和遗迹，每个区域有独立的加权敌人列表。应该用 PLCollection 吗？"*
+- *"我的 PickValue() 有时返回默认值，不知道为什么。这是我的配置——应该检查什么？"*
+- *"我想让敌人的攻击概率随着血量下降而变化。RNGNeeds 的哪个功能适合这个需求？能给个小例子吗？"*
+- *"我需要一个卡牌抽取系统，抽出的卡从牌堆中移除，直到重新洗牌。这是消耗型列表吗？"*
+
+如果回答过于笼统，或者没有提到 RNGNeeds 的具体功能名称，通常说明技能包未正确加载——请检查安装状态。
+
+---
+
+## 务必验证
+
+AI 助手很有用，但并非万无一失。养成好习惯：提交前审查生成的代码，对照官方文档核实 API 细节，在编辑器和运行模式下测试概率行为。如果感觉有不对的地方，提出追问——当你指出具体的问题所在时，AI 很擅长修正方向。
+
+---
+
+## 延伸阅读
+
+如果 AI 建议了以下功能，完整指南是深入了解的好选择：
+
+- <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a>
+- <a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a>
+- <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>
+- <a href={GuideDepletableList.Link}>{GuideDepletableList.Title}</a>
+
+更希望获得真人帮助？请访问我们的<a href={SupportPage.Link}>{SupportPage.Title}</a>页面。
+
+<div className="mb-1 mt-4 flex gap-3 flex-wrap">
+  <Button href={SUPPORT_EMAIL_LINK} variant="secondary" children="联系支持" />
+  <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="加入 Discord" />
+</div>
+
+---

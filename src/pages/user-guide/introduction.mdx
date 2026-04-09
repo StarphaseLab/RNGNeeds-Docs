@@ -6,7 +6,7 @@ import rngnShape from '@/images/rngn-shape.png';
 import {Col, Row} from "@/components/mdx";
 import {DISCORD_LINK} from "@/components/RLinks";
 import {AssetStoreLink} from "@/components/AssetStoreLink";
-import {GettingStartedPage} from "@/components/PageLinks";
+import {AIAgentsPage, GettingStartedPage} from "@/components/PageLinks";
 export const description = 'RNGNeeds is a Unity plugin for weighted probability distribution. Design loot tables, dice rolls, and monster spawns visually in the Unity Inspector.'
 
 <HeroPattern />
@@ -20,6 +20,7 @@ We invite you to learn more and see for yourself why RNGNeeds could be the perfe
 <div className="mb-1 mt-6 flex gap-3 flex-wrap">
     <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
     <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
+    <Button href={AIAgentsPage.Link} variant="secondary" children={AIAgentsPage.Title} />
     <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="Join our Discord" />
 </div>
 

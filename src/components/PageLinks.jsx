@@ -10,6 +10,7 @@
 
 export const IntroductionPage = createPage("Introduction", "/introduction");
 export const GettingStartedPage = createPage("Getting Started", "/getting-started");
+export const AIAgentsPage = createPage("Agent Skill for RNGNeeds", "/ai-agents");
 export const UserInterfacePage = createPage("User Interface", "/user-interface");
 export const PreferencesPage = createPage("Preferences", "/preferences");
 export const FAQPage = createPage("FAQ", "/faq");
@@ -73,6 +74,7 @@ export const sections = [
         pages: [
             IntroductionPage,
             GettingStartedPage,
+            AIAgentsPage,
             UserInterfacePage,
             PreferencesPage,
             FAQPage,

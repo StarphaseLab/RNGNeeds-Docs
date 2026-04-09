@@ -1,0 +1,106 @@
+import {HeroPattern} from "@/components/HeroPattern";
+import {Button, Note} from "@/components/mdx";
+import {DISCORD_LINK, SUPPORT_EMAIL_LINK} from "@/components/RLinks";
+import {
+  GuideDepletableList,
+  GuidePLCollection,
+  GuideProbabilityInfluence,
+  GuideSelectingDistinctValues,
+  SupportPage
+} from "@/components/PageLinks";
+
+export const CLAWHUB_LINK = "https://clawhub.ai/starphaselab/rngneeds-unity";
+export const SKILLS_SH_LINK = "https://skills.sh/starphaselab/rngneeds-unity-skill";
+export const GITHUB_REPO_LINK = "https://github.com/StarphaseLab/rngneeds-unity-skill";
+
+export const description =
+  'RNGNeeds は、AI コーディングエージェントにプラグインの正しい使い方を教える無料のエージェントスキルを提供しています。より的確な提案、正しい用語、汎用的でない回答が得られます。'
+export const translationStatus = 'auto'
+
+<HeroPattern />
+
+# RNGNeeds エージェントスキル
+
+Codex、Claude Code、Cursor などの AI コーディングエージェントは Unity の基本を理解していますが、RNGNeeds については知りません。追加のコンテキストなしに重み付きドロップについて質問すると、プラグインを無視した `Random.Range` による自前の実装が返ってくることがほとんどです。RNGNeeds エージェントスキルはこの問題を解決します。一度インストールするだけで、エージェントがプラグインの機能、用語、設計パターンを理解し、それらを実際に活用した回答を返せるようになります。 {{ className: 'lead' }}
+
+---
+
+## スキルが生む違い
+
+エージェントスキルはブリーフィング資料のようなものです。会話の開始前にエージェントに渡しておくと、関連する質問のたびにその知識を参照します。RNGNeeds を見たことがない同僚に聞くのと、ドキュメントを一通り読んだ同僚に聞くのとの違いだと考えてください。
+
+具体的な例を挙げます。スキルなしで *「チェストの重み付きドロップが必要です」* と聞くと、エージェントは重み付きランダム関数をゼロから書きます。スキルをインストールしていれば、同じ質問に対して `ProbabilityList<T>` のセットアップ、正しい API の使い方、Inspector の設定のコツ、さらにユニークなドロップが必要な場合のリピート防止やデプリータブルリストの活用についてのアドバイスが返ってきます。
+
+スキルはエージェントを完璧にするものではなく、知識を与えるものです。同僚からのアドバイスと同じように、生成されたコードをレビューし、Unity でテストしてください。
+
+---
+
+## スキルのインストール
+
+### ClawHub（OpenClaw ユーザー向け）
+
+OpenClaw をお使いなら、最も手軽な方法です。
+
+<div className="mb-1 mt-4 flex gap-3 flex-wrap">
+  <Button href={CLAWHUB_LINK} target="_blank" rel="noopener noreferrer" children="ClawHub で入手する" />
+</div>
+
+### skills.sh（その他のエージェント向け）
+
+お使いのコーディングエージェントが skills.sh エコシステム（Codex、Claude Code、Cursor など）に対応している場合、次のコマンドでインストールできます：
+
+```bash
+npx skills add StarphaseLab/rngneeds-unity-skill --skill rngneeds-unity
+```
+
+<div className="mb-1 mt-4 flex gap-3 flex-wrap">
+  <Button href={SKILLS_SH_LINK} target="_blank" rel="noopener noreferrer" variant="secondary" children="skills.sh で見る" />
+  <Button href={GITHUB_REPO_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="GitHub リポジトリ" />
+</div>
+
+---
+
+## 良い結果を得るために
+
+スキルはエージェントに知識を与えますが、回答の質は質問の内容に左右されます。最も効果的な改善方法は、特定の API コールを求めるのではなく、ゲームプレイの目的を説明することです。
+
+例えば、*「PickValue の呼び方を教えて」* ではなく、次のように聞いてみてください：
+
+> *チェストを開けると 3 つのアイテムがドロップする仕組みを作っています。同じ開封内でドロップが重複しないようにし、レアアイテムは出にくくしたいです。RNGNeeds でのベストな実装方法は？*
+
+このワンプロンプトで、エージェントは適切な機能の提案、理由の説明、動作するサンプルコードの提示まで行えます。制約条件 — アイテムが恒久的に消費されるか、ランタイムで確率が変化するか、Inspector とコードのどちらで設定するか — も加えると、回答はさらに的確になります。
+
+他にも効果的なプロンプトの例をいくつか紹介します：
+
+- *「森、洞窟、遺跡のスポーンテーブルをグループ化しています。各バイオームに独自の重み付き敵リストがあります。PLCollection を使うべきですか？」*
+- *「PickValue() がデフォルト値を返すことがあり、原因がわかりません。セットアップはこうです — 何をチェックすべきですか？」*
+- *「敵の攻撃確率を HP 低下に応じて変化させたいです。RNGNeeds のどの機能が適していますか？小さな例も見せてください。」*
+- *「引いたカードがデッキをリシャッフルするまでプールから除外されるカードドローシステムが必要です。これはデプリータブルリストですか？」*
+
+回答が汎用的すぎたり、RNGNeeds の機能名が含まれていない場合は、スキルが読み込まれていない可能性があります。インストールを再確認してください。
+
+---
+
+## 必ず検証しましょう
+
+エージェントは便利ですが、完璧ではありません。生成されたコードはコミット前にレビューし、API の詳細は公式ドキュメントと照合し、確率の挙動はエディタとプレイモードの両方でテストすることを習慣にしましょう。何か違和感があれば、フォローアップの質問をしてください — おかしい箇所を具体的に指摘すると、エージェントは軌道修正が得意です。
+
+---
+
+## さらに読む
+
+エージェントが以下の機能を提案した場合、詳細なガイドが次のステップとして役立ちます：
+
+- <a href={GuideSelectingDistinctValues.Link}>{GuideSelectingDistinctValues.Title}</a>
+- <a href={GuideProbabilityInfluence.Link}>{GuideProbabilityInfluence.Title}</a>
+- <a href={GuidePLCollection.Link}>{GuidePLCollection.Title}</a>
+- <a href={GuideDepletableList.Link}>{GuideDepletableList.Title}</a>
+
+人によるサポートをご希望ですか？<a href={SupportPage.Link}>{SupportPage.Title}</a> ページをご覧ください。
+
+<div className="mb-1 mt-4 flex gap-3 flex-wrap">
+  <Button href={SUPPORT_EMAIL_LINK} variant="secondary" children="サポートに連絡" />
+  <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="Discord に参加" />
+</div>
+
+---
