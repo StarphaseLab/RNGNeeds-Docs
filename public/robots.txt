@@ -4,6 +4,11 @@
 User-agent: *
 Allow: /
 
+# Machine-readable discovery
+# AI manifest: https://docs.rngneeds.com/.well-known/ai-plugin.json
+# llms.txt: https://docs.rngneeds.com/llms.txt
+# llms-full.txt: https://docs.rngneeds.com/llms-full.txt
+
 # AI crawlers - explicitly welcome
 User-agent: GPTBot
 Allow: /

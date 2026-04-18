@@ -5,16 +5,18 @@ import { Analytics } from '@vercel/analytics/react';
 import { Layout } from '@/components/Layout'
 import * as mdxComponents from '@/components/mdx'
 import { useMobileNavigationStore } from '@/components/MobileNavigation'
+import { getLocaleFromPath } from '@/lib/locale'
+import {
+  SITE_NAME,
+  SITE_SUFFIX,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  buildCanonicalUrl,
+  buildStructuredData,
+} from '@/lib/siteMetadata'
 
 import '@/styles/tailwind.css'
 import 'focus-visible'
-import Script from 'next/script';
-
-const SITE_URL = 'https://docs.rngneeds.com'
-const SITE_NAME = 'RNGNeeds'
-const SITE_SUFFIX = 'RNGNeeds | Unity Probability Plugin'
-const DEFAULT_DESCRIPTION = 'RNGNeeds — a powerful Unity plugin for probability distribution. Design weighted loot tables, dice systems, item drops, and more with an intuitive visual inspector.'
-const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`
 
 function onRouteChange() {
   useMobileNavigationStore.getState().close()
@@ -43,11 +45,19 @@ export default function App({ Component, pageProps }) {
     )
   }
 
+  const pathname = router.asPath.split('?')[0].split('#')[0] || '/'
+  const locale = getLocaleFromPath(pathname)
   const pageTitle = pageProps.title
     ? `${pageProps.title} - ${SITE_SUFFIX}`
     : `Documentation - ${SITE_SUFFIX}`
   const pageDescription = pageProps.description || DEFAULT_DESCRIPTION
-  const canonicalUrl = `${SITE_URL}${router.asPath.split('?')[0].split('#')[0]}`
+  const canonicalUrl = buildCanonicalUrl(pathname)
+  const structuredData = buildStructuredData({
+    pathname,
+    title: pageProps.title,
+    description: pageDescription,
+    locale,
+  })
 
   return (
     <>
@@ -70,6 +80,7 @@ export default function App({ Component, pageProps }) {
       <Head>
         <title>{pageTitle}</title>
         <meta name="description" content={pageDescription} />
+        <meta name="robots" content={pageProps.draft ? 'noindex, nofollow' : 'index, follow'} />
 
         {/* Canonical */}
         <link rel="canonical" href={canonicalUrl} />
@@ -83,6 +94,7 @@ export default function App({ Component, pageProps }) {
         <meta property="og:image" content={DEFAULT_OG_IMAGE} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content={locale} />
 
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
@@ -90,6 +102,11 @@ export default function App({ Component, pageProps }) {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
         <meta name="twitter:image" content={DEFAULT_OG_IMAGE} />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </Head>
       <MDXProvider components={mdxComponents}>
         <Layout {...pageProps}>

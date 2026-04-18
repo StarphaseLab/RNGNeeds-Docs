@@ -1,0 +1,24 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "RNGNeeds Documentation",
+  "name_for_model": "rngneeds_docs",
+  "description_for_human": "Official RNGNeeds documentation for Unity developers and AI agents.",
+  "description_for_model": "Read-only documentation for the RNGNeeds Unity probability plugin. Use this source to learn concepts, terminology, guides, API reference, samples, and agent-skill setup.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "none"
+  },
+  "capabilities": {
+    "documentation": true,
+    "read_only": true,
+    "llms_txt": "https://docs.rngneeds.com/llms.txt",
+    "llms_full_txt": "https://docs.rngneeds.com/llms-full.txt",
+    "sitemap": "https://docs.rngneeds.com/sitemap.xml",
+    "robots": "https://docs.rngneeds.com/robots.txt"
+  },
+  "contact_email": "support@rngneeds.com",
+  "legal_info_url": "https://docs.rngneeds.com/user-guide/support",
+  "documentation_url": "https://docs.rngneeds.com/user-guide/introduction"
+}
