@@ -3,7 +3,12 @@
 > RNGNeeds is a probability distribution plugin for Unity. It lets developers design and manage weighted probability lists for any type directly in the Unity Inspector, with a full C# API for runtime control. Features include visual probability editing (the Stripe), multiple selection methods (burst-compiled), probability influence providers, depletable lists, repeat prevention, pick history, seeding, and nested list support.
 
 - [Documentation entrypoint](https://docs.rngneeds.com/user-guide/introduction): Recommended starting page for agents and readers
+- [Introduction (markdown)](https://docs.rngneeds.com/user-guide/introduction.md): Markdown mirror of the product overview page
+- [Getting Started (markdown)](https://docs.rngneeds.com/user-guide/getting-started.md): Markdown mirror of installation and first-setup guide
 - [Agent skill page](https://docs.rngneeds.com/user-guide/ai-agents): How AI coding agents should learn RNGNeeds concepts and terminology
+- [Agent skill page (markdown)](https://docs.rngneeds.com/user-guide/ai-agents.md): Markdown mirror of the AI-agent onboarding page
+- [Documentation Overview (markdown)](https://docs.rngneeds.com/documentation/docs-overview.md): Markdown mirror of the concept map
+- [API Overview (markdown)](https://docs.rngneeds.com/api-reference/api-overview.md): Markdown mirror of the API map
 - [Full documentation as single file](https://docs.rngneeds.com/llms-full.txt): Complete docs in one markdown file for LLM ingestion
 - [AI discovery manifest](https://docs.rngneeds.com/.well-known/ai-plugin.json): Lightweight machine-readable discovery file for agent tooling
 

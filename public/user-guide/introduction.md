@@ -1,47 +1,25 @@
-import { HeroPattern } from '@/components/HeroPattern'
-import { Button } from "@/components/Button"
-import { ImageX } from "@/components/ImageX"
-import overviewInspectors from '@/images/screenshots/overview_inspectors_med.png';
-import rngnShape from '@/images/rngn-shape.png';
-import {Col, Row} from "@/components/mdx";
-import {DISCORD_LINK} from "@/components/RLinks";
-import {AssetStoreLink} from "@/components/AssetStoreLink";
-import {AIAgentsPage, GettingStartedPage} from "@/components/PageLinks";
-export const description = 'RNGNeeds is a Unity plugin for weighted probability distribution. Design loot tables, dice rolls, and monster spawns visually in the Unity Inspector.'
-
-<HeroPattern />
-
 # Introduction
 
-RNGNeeds is a Unity plugin for weighted randomness, probability-driven gameplay systems, and inspector-friendly probability lists. Use it when you want loot tables, enemy spawns, dialogue picks, card draws, dice systems, or any other random selection workflow to be easier to design, easier to debug, and more flexible than hand-rolled `Random.Range` logic. {{ className: 'lead' }}
+> Source: https://docs.rngneeds.com/user-guide/introduction
+> Description: High-level overview of RNGNeeds and where it fits best in Unity workflows.
+
+---
+# Introduction
+
+RNGNeeds is a Unity plugin for weighted randomness, probability-driven gameplay systems, and inspector-friendly probability lists. Use it when you want loot tables, enemy spawns, dialogue picks, card draws, dice systems, or any other random selection workflow to be easier to design, easier to debug, and more flexible than hand-rolled `Random.Range` logic. 
 
 In practice, RNGNeeds sits in the space between simple weighted-random snippets and fully custom probability frameworks. It is especially useful when you want both a strong Unity Inspector workflow for designers and a capable C# API for runtime control.
 
-<div className="mb-1 mt-6 flex gap-3 flex-wrap">
     <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
-    <Button href={GettingStartedPage.Link} variant="secondary" children={GettingStartedPage.Title} />
-    <Button href={AIAgentsPage.Link} variant="secondary" children={AIAgentsPage.Title} />
-    <Button href={DISCORD_LINK} target="_blank" rel="noopener noreferrer" variant="outline" children="Join our Discord" />
-</div>
-
-<ImageX className="w-full h-auto" src={overviewInspectors} priority={true} alt="RNGNeeds Inspectors" width={1000} />
 
 ---
 
-<Row>
-    <Col>
-        ## Preface
-        Every game thrives on an element of surprise, that tantalizing unpredictability that hooks players in. But managing this randomness, these 'RNG needs', is often more art than science. With RNGNeeds, you have a Unity plugin that redefines randomness, transforming it from a wild variable into a finely-tuned instrument of creativity.{{ className: 'lead' }}
+## Preface
+Every game thrives on an element of surprise, that tantalizing unpredictability that hooks players in. But managing this randomness, these 'RNG needs', is often more art than science. With RNGNeeds, you have a Unity plugin that redefines randomness, transforming it from a wild variable into a finely-tuned instrument of creativity.
 
-        Beyond the dice rolls and item drops, RNGNeeds offers you a canvas of opportunity. Imagine dynamically adjusting the frequency of in-game storms as your player progresses through the storyline, modulating NPC behavior based on time of day, or making the battle more intense if the music volume is loud.{{ className: 'lead' }}
+Beyond the dice rolls and item drops, RNGNeeds offers you a canvas of opportunity. Imagine dynamically adjusting the frequency of in-game storms as your player progresses through the storyline, modulating NPC behavior based on time of day, or making the battle more intense if the music volume is loud.
 
-        RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.{{ className: 'lead' }}        
-    </Col>
-    <Col>
-        <ImageX src={rngnShape} alt="RNGNeeds" width="256"/>        
-    </Col>
-</Row>
-
+RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.        
 
 ## What is RNGNeeds?
 RNGNeeds is a powerful plugin that enables you to design and manage probability lists for any value, type, or custom object directly within the Unity Inspector. With this plugin, you can take control of your dice rolls, monster spawns, card decks, item drops, damage modifiers, or even organic animations using probability distribution with unparalleled simplicity and ease-of-use. Whether you want to design your lists, variable pick counts, and seeding right in the inspector, or harness the powerful API to control everything from code, RNGNeeds has you covered.
