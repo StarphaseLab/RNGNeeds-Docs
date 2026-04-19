@@ -13,9 +13,9 @@ export const description = 'RNGNeeds is a Unity plugin for weighted probability 
 
 # Introduction
 
-RNGNeeds is a Unity plugin for weighted randomness, probability-driven gameplay systems, and inspector-friendly probability lists. Use it when you want loot tables, enemy spawns, dialogue picks, card draws, dice systems, or any other random selection workflow to be easier to design, easier to debug, and more flexible than hand-rolled `Random.Range` logic. {{ className: 'lead' }}
+Welcome to RNGNeeds, a Unity plugin designed to make probability-driven systems feel more creative, more controllable, and far easier to work with. Whether you're shaping loot tables, enemy spawns, dialogue choices, card draws, or other gameplay moments built around chance, RNGNeeds helps you design them with clarity and confidence. {{ className: 'lead' }}
 
-In practice, RNGNeeds sits in the space between simple weighted-random snippets and fully custom probability frameworks. It is especially useful when you want both a strong Unity Inspector workflow for designers and a capable C# API for runtime control.
+At its heart, RNGNeeds is about giving both designers and developers a better way to work with randomness in Unity, one that feels visual, flexible, and practical from the very start.
 
 <div className="mb-1 mt-6 flex gap-3 flex-wrap">
     <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
@@ -46,19 +46,12 @@ In practice, RNGNeeds sits in the space between simple weighted-random snippets 
 ## What is RNGNeeds?
 RNGNeeds is a powerful plugin that enables you to design and manage probability lists for any value, type, or custom object directly within the Unity Inspector. With this plugin, you can take control of your dice rolls, monster spawns, card decks, item drops, damage modifiers, or even organic animations using probability distribution with unparalleled simplicity and ease-of-use. Whether you want to design your lists, variable pick counts, and seeding right in the inspector, or harness the powerful API to control everything from code, RNGNeeds has you covered.
 
-### Why use it instead of hand-rolled weighted random code?
-Because most weighted-random systems become messy as soon as they need to do more than a single pick from a hard-coded table.
+### Why use RNGNeeds?
+Because randomness in games is rarely just randomness. Very quickly, it becomes part of **pacing**, **balance**, **variety**, and the overall **player experience**.
 
-RNGNeeds gives you a reusable structure for:
-- designer-friendly probability editing in the Inspector
-- multiple selection methods
-- repeat prevention
-- depletable lists
-- seed control and deterministic workflows
-- probability influence from runtime conditions
-- reusable grouped list setups such as PLCollection
+RNGNeeds gives you a structured and designer-friendly way to shape that experience without losing flexibility as your project grows. It makes it easier to work visually in the Inspector, experiment with different selection styles, prevent unwanted repetition, and build systems that respond naturally to changing game conditions. It also helps keep larger setups organized through reusable grouped collections such as **PLCollection**, so your probability design stays clear instead of becoming difficult to manage.
 
-If your needs are tiny, a custom snippet may be enough. If your randomness system needs to grow with the project, RNGNeeds is usually the more maintainable option.
+In short, RNGNeeds is built for projects where probability should remain **expressive**, **manageable**, and **practical** from the first prototype to a much larger game.
 
 With RNGNeeds, you're not just getting a powerful tool, but also a user-friendly and adaptable solution. It's designed to cater to both coders and designers, with all features accessible via the Inspector and an easy-to-use API. The plugin supports all LTS versions of Unity and offers a range of powerful features. You can pick multiple items at once using various probability methods, including pure random selection. It also offers an easy way to retain a preferred seed, set a custom one, or implement your own Seed Provider. Furthermore, you can easily implement and register your custom Selection Methods or seeding options.
 

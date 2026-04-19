@@ -6,7 +6,9 @@
 ---
 # API Overview
 
-New to this section? Start with the Documentation Overview if you want the bigger picture first, then use this page as your quick map of the runtime types and extension points in the API. 
+This page is the shortest path to understanding the shape of the RNGNeeds runtime API. If you are asking questions like *which type owns the real list state?*, *where do custom selection methods plug in?*, or *what should I read before extending the plugin?*, start here. 
+
+New to this section? Start with the Documentation Overview if you want the bigger picture first, then use this page as your quick map of the runtime types and extension points in the API.
 
 The API Reference is the code-facing companion to the rest of the docs.
 
