@@ -12,6 +12,42 @@ Once a new version is approved by the Asset Store, we'll promptly update the doc
 
 ---
 
+## v1.1.0 Submitted 22 April 2026 [Pending Asset Store Review]
+
+*RNGNeeds v1.1 is a major update. As always, make a backup of your project before updating.*
+
+### New Major Feature - Card Deck Extensions
+
+RNGNeeds v1.1 adds a large new set of extension methods that let you use `ProbabilityList` more naturally as a card deck, pile, hand, or discard stack.
+
+Highlights include:
+
+- **Draw** from the top, bottom, specific index, or a random position
+- **Peek** without removing items
+- **Place** cards on top, bottom, specific index, or random position
+- **Move** and **Deal** cards between decks
+- **Swap** cards, **Cut** decks, **Reverse** order, and **Shuffle**
+
+Deck shuffling now also supports an **extensible shuffle-method workflow** built around creating and executing **shuffle plans and steps**.
+
+### New Samples
+
+- **Intermediate Sample: Card Game Basics** - a new sample demonstrating a straightforward card flow: draw pile -> hand -> table -> discard.
+- **Advanced Sample: Card Battle** - a more advanced sample exploring a Hearthstone-like card battle concept built with RNGNeeds and the new deck extensions.
+
+### Bug Fixes
+
+- Fixed an issue where the drawer could throw errors with some special enum setups.
+- Fixed external influence provider serialization in `ProbabilityItem` to use standard Unity object references, matching the intended MonoBehaviour / ScriptableObject workflow.
+- Reducing pick history capacity now trims existing entries safely.
+
+### Notes
+
+- Some advanced deck-extension areas may evolve in future updates as they get broader production use.
+- More deck- and gameplay-focused improvements are planned for future releases.
+
+---
+
 ## v1.0.0 Released 02 December 2025
 
 ### New Features
