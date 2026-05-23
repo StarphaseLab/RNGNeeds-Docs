@@ -6,7 +6,7 @@
 ---
 # Agent Skill for RNGNeeds
 
-AI coding agents like Codex, Claude Code, and Cursor know Unity — but they do not know RNGNeeds. Ask one about weighted loot drops without any extra context and you will likely get a hand-rolled `Random.Range` solution that ignores the plugin entirely. The RNGNeeds agent skill fixes that. It is a small knowledge package you install once, and from that point on your agent understands the plugin’s features, terminology, and patterns well enough to give you answers that actually use them. 
+AI coding agents like Codex, Claude Code, and Cursor know Unity — but they do not know RNGNeeds. Ask one about weighted loot drops without any extra context and you will likely get a hand-rolled `Random.Range` solution that ignores the plugin entirely. The RNGNeeds agent skill fixes that. It is a small knowledge package you install once, and from that point on your agent understands the plugin’s features, terminology, and patterns well enough to give you answers that actually use them.
 
 ---
 

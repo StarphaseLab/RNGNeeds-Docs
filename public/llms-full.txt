@@ -17,9 +17,9 @@ Source: https://docs.rngneeds.com/user-guide/introduction
 
 # Introduction
 
-Welcome to RNGNeeds, your key to unlocking a world of possibility within Unity.
-We're excited to introduce you to our tool, designed to revolutionize your approach to randomness in your projects.
-We invite you to learn more and see for yourself why RNGNeeds could be the perfect fit for your Unity projects. 
+Welcome to RNGNeeds, a Unity plugin designed to make probability-driven systems feel more creative, more controllable, and far easier to work with. Whether you're shaping loot tables, enemy spawns, dialogue choices, card draws, or other gameplay moments built around chance, RNGNeeds helps you design them with clarity and confidence.
+
+At its heart, RNGNeeds is about giving both designers and developers a better way to work with randomness in Unity, one that feels visual, flexible, and practical from the very start.
 
     <AssetStoreLink as={Button} arrow="right">Get the Plugin from Asset Store</AssetStoreLink>
 
@@ -30,10 +30,17 @@ Every game thrives on an element of surprise, that tantalizing unpredictability 
 
 Beyond the dice rolls and item drops, RNGNeeds offers you a canvas of opportunity. Imagine dynamically adjusting the frequency of in-game storms as your player progresses through the storyline, modulating NPC behavior based on time of day, or making the battle more intense if the music volume is loud.
 
-RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.        
+RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.
 
 ## What is RNGNeeds?
 RNGNeeds is a powerful plugin that enables you to design and manage probability lists for any value, type, or custom object directly within the Unity Inspector. With this plugin, you can take control of your dice rolls, monster spawns, card decks, item drops, damage modifiers, or even organic animations using probability distribution with unparalleled simplicity and ease-of-use. Whether you want to design your lists, variable pick counts, and seeding right in the inspector, or harness the powerful API to control everything from code, RNGNeeds has you covered.
+
+### Why use RNGNeeds?
+Because randomness in games is rarely just randomness. Very quickly, it becomes part of **pacing**, **balance**, **variety**, and the overall **player experience**.
+
+RNGNeeds gives you a structured and designer-friendly way to shape that experience without losing flexibility as your project grows. It makes it easier to work visually in the Inspector, experiment with different selection styles, prevent unwanted repetition, and build systems that respond naturally to changing game conditions. It also helps keep larger setups organized through reusable grouped collections such as **PLCollection**, so your probability design stays clear instead of becoming difficult to manage.
+
+In short, RNGNeeds is built for projects where probability should remain **expressive**, **manageable**, and **practical** from the first prototype to a much larger game.
 
 With RNGNeeds, you're not just getting a powerful tool, but also a user-friendly and adaptable solution. It's designed to cater to both coders and designers, with all features accessible via the Inspector and an easy-to-use API. The plugin supports all LTS versions of Unity and offers a range of powerful features. You can pick multiple items at once using various probability methods, including pure random selection. It also offers an easy way to retain a preferred seed, set a custom one, or implement your own Seed Provider. Furthermore, you can easily implement and register your custom Selection Methods or seeding options.
 
@@ -50,31 +57,27 @@ Source: https://docs.rngneeds.com/user-guide/getting-started
 
 # Getting Started
 
-This section will guide you through the process of installing RNGNeeds from the Unity Asset Store and quickly setting up your first probability list. 
+This page shows the fastest path from installing RNGNeeds to making your first working weighted list in Unity. If you are evaluating the plugin, this is the best page to confirm what the setup flow actually looks like and how little code you need to get value from it.
 
-> **Note:**
-    You can install RNGNeeds either by visiting <AssetStoreLink>the plugin page on the Asset Store</AssetStoreLink>
-    or by opening the store inside the Unity Editor (Toolbar Menu &raquo; Window &raquo; Asset Store).
+By the end of this guide, you will have RNGNeeds imported, a `ProbabilityList<int>` visible in the Inspector, and a small reusable die example that demonstrates how weighted picks work in practice.
 
 ---
 
 ## Installation
 
-**1. Open the Unity Editor**<br/>
-Start by opening your Unity Editor. Make sure you have a project open, or create a new one if necessary.<br/><br/>
-**2. Access the Unity Asset Store**<br/>
-Navigate to the Unity Asset Store from within the Unity Editor. You can do this by clicking on **Window** from the menu bar and selecting **Asset Store** from the dropdown menu.<br/><br/>
-**3. Search for RNGNeeds**<br/>
-In the search bar of the Asset Store, type in "RNGNeeds" and hit Enter. The RNGNeeds plugin should appear in the search results.<br/><br/>
-**4. Download and Import the Plugin**<br/>
-Click on the RNGNeeds plugin from the search results to open its page. 
-Here, click on the **Download** or **Import** button (the button's label will depend on whether you have downloaded the plugin before). 
-If a window appears asking you to upgrade, you can just click Continue.<br/><br/>
-Once the download is complete, Unity will automatically prompt you to import the plugin into your project. 
-Make sure all the files are checked in the Import Unity Package window and click Import.<br/><br/>
+Make sure RNGNeeds is already available in your Unity account. Open your Unity project and follow these steps to import it.
 
-**5. Verify the Installation**<br/>
-After the import is complete, a Welcome Window should pop up. 
+**1. Open the Package Manager**<br/>
+In the Unity Editor, go to **Window &raquo; Package Management &raquo; Package Manager**.<br/><br/>
+**2. Find RNGNeeds in My Assets**<br/>
+In the Package Manager window, select **My Assets** from the left sidebar under Sources.
+You should see **RNGNeeds - Probability Distribution** listed among your assets. Click on it to select it.<br/><br/>
+**3. Import the Plugin**<br/>
+With RNGNeeds selected, click the **Import** button on the right side of the Package Manager window.
+If prompted, make sure all files are checked in the Import Unity Package dialog and click **Import**.<br/><br/>
+
+**4. Verify the Installation**<br/>
+After the import is complete, a Welcome Window should pop up.
 It provides handy links to our documentation, a getting started guide, instructions for importing samples, and a direct shortcut to the RNGNeeds preferences window.
 
 To verify the installation, open RNGNeeds Preferences Window by either clicking on the shortcut button, or navigate through the Unity Menu:
@@ -106,7 +109,12 @@ To start using probability distribution in your project, add the generic `Probab
 For this example, we will create a biased die that rolls the six a bit more often. Name the script `Die` and open it.<br/>
 Inherit from `ScriptableObject` and add a Probability List of type `int`.
 
-```csharp 
+> **Note:**
+    We are using a `ScriptableObject` in this example because it is a convenient way to create reusable data assets directly in your project.
+    Once this script is created, you can make many different die assets from the same class, each with its own values and probabilities.
+    If you prefer working with `MonoBehaviour` scripts attached to GameObjects, the same `ProbabilityList<int>` field works there as well — only the surrounding class setup is different.
+
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
@@ -132,7 +140,7 @@ Click on the 'side 6' probability `16.67%` and type in `0.2` (for 20%) and hit `
 
 Now it's time to roll the die. In RNGNeeds, you can select a value from the ProbabilityList easily by calling `.PickValue()`. Let's make our die object useful by adding a function that returns the roll.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
@@ -151,6 +159,7 @@ return die.PickValue();
 Now, whenever you call Roll() on one of your dice, you will get a single `int` value based on probability distribution.
 > **Note:**
     Using this approach, you can now create multiple dice for your project, such as `d10` or `d20` and roll them easily. Each of the Die ScriptableObjects can have its own number of items (sides of a die) and probability distributions.
+    The same workflow also applies when using `ProbabilityList` inside `MonoBehaviour` scripts, for example on spawners, loot tables, enemy behaviors, or dialogue systems.
     Speaking of which, now would be a good idea to rename our six sided die to `D6 Die (biased)`.
 
 ---
@@ -174,7 +183,7 @@ Source: https://docs.rngneeds.com/user-guide/user-interface
 
 # User Interface
 
-Welcome to the User Interface guide for RNGNeeds! As a Unity plugin designed with ease-of-use in mind, we've made sure our UI is intuitive and user-friendly. This guide will help you navigate through the interface and make the most out of RNGNeeds' powerful features. From understanding the Probability List Drawer to using our dynamic Stripe widget, we'll cover all you need to know to confidently manage and design your probability lists within the Unity Inspector. Let's dive in and explore the user interface of RNGNeeds, your essential tool for managing randomness in your game design. 
+Welcome to the User Interface guide for RNGNeeds! As a Unity plugin designed with ease-of-use in mind, we've made sure our UI is intuitive and user-friendly. This guide will help you navigate through the interface and make the most out of RNGNeeds' powerful features. From understanding the Probability List Drawer to using our dynamic Stripe widget, we'll cover all you need to know to confidently manage and design your probability lists within the Unity Inspector. Let's dive in and explore the user interface of RNGNeeds, your essential tool for managing randomness in your game design.
 
 ## Basic Anatomy
 
@@ -186,7 +195,7 @@ The Header Bar is your control panel in the RNGNeeds Inspector drawer. It allows
 
 ### The Stripe
 
-A visual tool in the RNGNeeds Inspector that represents your items as colored blocks, with their width proportional to their probability. 
+A visual tool in the RNGNeeds Inspector that represents your items as colored blocks, with their width proportional to their probability.
 It allows you to visually adjust the probabilities of each item by dragging their edges or the blocks themselves.
 
 ### The List
@@ -214,7 +223,7 @@ There are three settings for the appearance of these Option Buttons that you can
 - **Compact** - useful if you have limited inspector space. Only the expanded section will display the full name.
 - **Informative** - with this setting, the Option Buttons will display the settings of the section directly within the button.
 
-With Informative Option Buttons, the color palette, stripe height, and the pick settings are shown within the button. 
+With Informative Option Buttons, the color palette, stripe height, and the pick settings are shown within the button.
 
 The **Pick** button provides a concise overview of the list's selection logic, clearly displaying the current settings without the need to open the **Pick** section:
 
@@ -251,7 +260,7 @@ Source: https://docs.rngneeds.com/user-guide/preferences
 
 # Preferences
 
-In the "Preferences" section of the RNGNeeds plugin, you have the freedom to fine-tune how you interact with the tool. These options allow you to choose between compact and full button displays, invert scroll direction for a more natural feel, and more. Plus, you have the ability to set visual preferences based on your editor's theme, whether it's dark or light. It's all about making your experience as user-friendly as possible, so you can focus on crafting perfect probability lists for your game elements. 
+In the "Preferences" section of the RNGNeeds plugin, you have the freedom to fine-tune how you interact with the tool. These options allow you to choose between compact and full button displays, invert scroll direction for a more natural feel, and more. Plus, you have the ability to set visual preferences based on your editor's theme, whether it's dark or light. It's all about making your experience as user-friendly as possible, so you can focus on crafting perfect probability lists for your game elements.
 
 > **Note:**
     To open RNGNeeds Preferences ...
@@ -346,18 +355,18 @@ Source: https://docs.rngneeds.com/user-guide/faq
 
 # Frequently Asked Questions
 
-Welcome to the FAQ section of RNGNeeds documentation. 
-This space is dedicated to addressing the most common questions and concerns related to the usage and functionality of the RNGNeeds plugin. 
-While we've provided a set of initial questions and answers based on our understanding of potential inquiries, 
-we understand that this is just the beginning. As we gather real user questions and feedback, 
-this section will be regularly updated to reflect the evolving needs of our user base. 
+Welcome to the FAQ section of RNGNeeds documentation.
+This space is dedicated to addressing the most common questions and concerns related to the usage and functionality of the RNGNeeds plugin.
+While we've provided a set of initial questions and answers based on our understanding of potential inquiries,
+we understand that this is just the beginning. As we gather real user questions and feedback,
+this section will be regularly updated to reflect the evolving needs of our user base.
 
 ---
 
 ## How do I install RNGNeeds?
 
-RNGNeeds is installed as a Package through Unity's Asset Store. Please visit our 
-(see related page) 
+RNGNeeds is installed as a Package through Unity's Asset Store. Please visit our
+(see related page)
 section and follow the installation guide.
 
 ## Does RNGNeeds work with my version of Unity?
@@ -366,9 +375,9 @@ RNGNeeds is developed in Unity 2020 LTS and tested up to Unity 6. Minimum Unity 
 
 ## Are there samples included with RNGNeeds?
 
-Yes, RNGNeeds includes a collection of demo scenes and samples to help you get started. 
-These samples demonstrate various applications of the plugin, providing a hands-on way to explore its features. 
-You can find an import guide on our 
+Yes, RNGNeeds includes a collection of demo scenes and samples to help you get started.
+These samples demonstrate various applications of the plugin, providing a hands-on way to explore its features.
+You can find an import guide on our
 Samples (see related page) page.
 
 ## Can I use RNGNeeds with my custom objects?
@@ -388,9 +397,15 @@ RNGNeeds introduces the concept of ***Probability Influence Providers***. With t
 (see related page)
 section of Documentation to learn more.
 
+## Can I use RNGNeeds with AI coding agents?
+
+Yes. RNGNeeds has an optional AI skill that helps compatible coding agents give more RNGNeeds-specific answers, examples, and debugging guidance.
+
+If you are curious about using it, please visit (see related page) for a beginner-friendly overview, installation options, and tips for getting better results.
+
 ## How can I select distinct values only?
-To select unique values, please follow the method outlined in 
-this guide, utilizing the **Depletable Lists** feature of RNGNeeds. 
+To select unique values, please follow the method outlined in
+this guide, utilizing the **Depletable Lists** feature of RNGNeeds.
 
 ## Can I prevent the same item from being selected consecutively?
 
@@ -400,23 +415,23 @@ section of Documentation to learn more.
 
 ## Can I nest multiple Probability Lists?
 
-Certainly! However, please note that nesting a ProbabilityList within a generic List or Array may not be fully supported in the editor and can potentially cause repaint issues. 
+Certainly! However, please note that nesting a ProbabilityList within a generic List or Array may not be fully supported in the editor and can potentially cause repaint issues.
 To conveniently handle nested lists, we recommend using our special class `PLCollection<T>`.
-For more information on how to effectively nest Probability Lists, please refer to the 
-(see related page) 
+For more information on how to effectively nest Probability Lists, please refer to the
+(see related page)
 section in our Documentation.
 
 ## Why don't my scripts compile after following the guides?
 
-In our documentation, we sometimes omit namespaces in code snippets to keep things concise. 
-If you're facing compilation issues, ensure you've added the necessary namespace. 
+In our documentation, we sometimes omit namespaces in code snippets to keep things concise.
+If you're facing compilation issues, ensure you've added the necessary namespace.
 Simply include `using RNGNeeds;` at the beginning of your script to resolve any related issues.
 
 ---
 
 ## What kind of support is available if I run into issues?
 
-Your satisfaction is our top priority. If you're having difficulties, please visit our 
+Your satisfaction is our top priority. If you're having difficulties, please visit our
 (see related page)
 to find receive guidance and options to get in touch.
 
@@ -424,7 +439,7 @@ to find receive guidance and options to get in touch.
 
 We welcome your feedback and suggestions! Feel free to share them with us via
 email
-or on our 
+or on our
 <a href= target="_blank" rel="noopener noreferrer">Discord server</a>.
 We're always looking for ways to make RNGNeeds even better!
 
@@ -437,9 +452,9 @@ Source: https://docs.rngneeds.com/user-guide/support
 
 # Support
 
-Welcome to the support section of our documentation. RNGNeeds is designed with a user-first approach, 
-prioritizing ease of use and a polished user experience. However, questions and issues can sometimes come up, 
-and when they do, we're here to help. 
+Welcome to the support section of our documentation. RNGNeeds is designed with a user-first approach,
+prioritizing ease of use and a polished user experience. However, questions and issues can sometimes come up,
+and when they do, we're here to help.
 
 ---
 
@@ -449,6 +464,7 @@ Before reaching out for direct support, you might find it useful to check out th
 - Understanding the User Interface
 - Customizing RNGNeeds with the Preferences Window
 - Key Terminology in RNGNeeds
+- (see related page)
 
 ## Email Support
 
@@ -463,7 +479,6 @@ Discord is a vibrant platform that allows for real-time discussion and sharing. 
 Your feedback is invaluable. If you have suggestions for improvements or features you'd like to see in RNGNeeds, don't hesitate to share them with us. Together, we can make RNGNeeds even better!
 
 ---
-
 ---
 
 Source: https://docs.rngneeds.com/documentation/docs-overview
@@ -472,9 +487,20 @@ Source: https://docs.rngneeds.com/documentation/docs-overview
 
 # Documentation Overview
 
+This page is the concept map for RNGNeeds. If you already understand the basic idea of weighted randomness but need to know how RNGNeeds organizes its features, start here.
+
 Welcome to the Documentation section of RNGNeeds! This space is designed to provide you with a comprehensive understanding of the plugin's features and how to use them effectively in your projects.
 
-Here, we dive into the details of RNGNeeds, exploring the underlying concepts and explaining the finer points of its functionality. The Documentation is divided into several key areas, each dedicated to a specific aspect of RNGNeeds:
+Here, we dive into the details of RNGNeeds, exploring the underlying concepts and explaining the finer points of its functionality. The Documentation is divided into several key areas, each dedicated to a specific aspect of RNGNeeds.
+
+A simple way to think about the docs structure is:
+- **User Guide** for setup and orientation
+- **Documentation** for concepts and deeper behavior
+- **Guides** for practical workflows
+- **Samples** for concrete examples
+- **API Reference** for code-facing details
+
+The Documentation section itself covers these key areas:
 
 - (see related page) - Get acquainted with the terms and concepts used in RNGNeeds. A solid understanding of these will make it easier to navigate the rest of the Documentation and the plugin itself.
 - (see related page) - Learn how to create and manage Probability Lists, the heart of RNGNeeds' functionality.
@@ -491,7 +517,7 @@ Here, we dive into the details of RNGNeeds, exploring the underlying concepts an
 [//]: # (- (see related page) - Stay up-to-date with the latest changes and improvements made to RNGNeeds.)
 
 Remember, if you have any questions or encounter any issues, you can always reach out to us through the
-(see related page) 
+(see related page)
 section. We're here to help. Happy developing!
 
 ---
@@ -500,8 +526,8 @@ section. We're here to help. Happy developing!
 Source: https://docs.rngneeds.com/documentation/terminology
 
 # Terminology
-To make the most out of RNGNeeds, it's essential to understand the key terms and concepts used within the plugin. 
-This page provides definitions for the primary terms you'll encounter. 
+To make the most out of RNGNeeds, it's essential to understand the key terms and concepts used within the plugin.
+This page provides definitions for the primary terms you'll encounter.
 
 ---
 
@@ -532,11 +558,11 @@ This page provides definitions for the primary terms you'll encounter.
 Source: https://docs.rngneeds.com/documentation/designing-a-list
 
 # Designing a Probability List
-This guide will walk you through the process of creating and customizing Probability Lists using the RNGNeeds plugin. 
+This guide will walk you through the process of creating and customizing Probability Lists using the RNGNeeds plugin.
 
 > **Note:**
-    If you're new to RNGNeeds and want to learn how to add a ProbabilityList to your class, we recommend checking out the 
-    (see related page) 
+    If you're new to RNGNeeds and want to learn how to add a ProbabilityList to your class, we recommend checking out the
+    (see related page)
     page. It provides step-by-step instructions to help you integrate Probability Lists into your project.
 
 ---
@@ -547,7 +573,7 @@ To add items to your Probability List, simply click the "Add" button. Each entry
 
 When you add or remove items, the system automatically recalculates their probabilities proportionally to maintain the original ratios. When you add an item through the inspector, it receives a share of the total probability equal to `1 / number of items`. This rule also applies when you add an item via code without specifying the probability.
 
-```csharp 
+```csharp
 // Manually add ProbabilityItems
 myProbabilityList.AddItem(new ProbabilityItem<string>("One", .5f));
 myProbabilityList.AddItem(new ProbabilityItem<string>("Two", .1f));
@@ -587,14 +613,14 @@ For reference types that are Unity objects (such as MonoBehaviours or Scriptable
 
 If you're working with custom types, their contents will be displayed directly in the entry. You can expand or collapse them using the foldout arrow.
 
-```csharp 
+```csharp
 myProbabilityList.GetProbabilityItem(1).Value = "New Value";
 ```
 
 > **Note:**
     **Displaying Names and Values**
 
-    To provide a visual representation of the object/class name or the value for value types, the stripe displays them in colored blocks. 
+    To provide a visual representation of the object/class name or the value for value types, the stripe displays them in colored blocks.
     This feature allows for quick identification and easy differentiation within the Probability List.
 
 ---
@@ -613,7 +639,7 @@ If you want to prevent an item from changing its probability (e.g., during norma
 - **Picks and Disabled Items**: Disabled items will not be selected during the selection process. However, if a pick would have resulted in selecting a disabled item, the selection would be empty. You can learn more about how disabled items behave on
     (see related page) page.
 
-```csharp 
+```csharp
 myProbabilityList.SetItemEnabled(1, false);
 myProbabilityList.SetItemLocked(2, true);
 myProbabilityList.SetItemBaseProbability(0, .3f);   // will normalize the list after change
@@ -633,7 +659,7 @@ Once unlinked, you can set the minimum and maximum pick counts independently. Th
 You can also use the **Curve field** to bias the random pick count. By adjusting the curve, you can influence the probability distribution of the pick counts.
 Using custom pick counts and the curve feature adds an extra layer of control and variability to your RNG needs. It allows you to create more dynamic and diverse gameplay experiences by influencing how many items are selected in each pick.
 
-```csharp 
+```csharp
 // Setting a random pick count range between 2 and 5
 myProbabilityList.LinkPickCounts = false;
 myProbabilityList.PickCountMin = 2;
@@ -648,8 +674,8 @@ myProbabilityList.LinkPickCounts = true;
 
 ## Customizing the List
 
-If you wish to further customize your Probability List, including adding custom information and colors, you can do so by implementing the special interfaces `IProbabilityItemInfoProvider` and `IProbabilityItemColorProvider` 
-in your custom class. For more details on how to customize your list, refer to the 
+If you wish to further customize your Probability List, including adding custom information and colors, you can do so by implementing the special interfaces `IProbabilityItemInfoProvider` and `IProbabilityItemColorProvider`
+in your custom class. For more details on how to customize your list, refer to the
 (see related page) page in our documentation.
 
 With these guidelines, you're now ready to start designing your Probability Lists with RNGNeeds. Unleash your creativity and leverage the power of probability distribution in your game mechanics!
@@ -662,7 +688,7 @@ Source: https://docs.rngneeds.com/documentation/selecting-values
 # Selecting Values
 
 On this page, you'll learn how to select values from your Probability List of items. Whether you're a game designer, coder, or both,
-this guide will help you and your team decide how RNGNeeds returns your values. 
+this guide will help you and your team decide how RNGNeeds returns your values.
 
 ---
 
@@ -671,7 +697,7 @@ this guide will help you and your team decide how RNGNeeds returns your values.
 Whether you design your Probability Lists in the inspector, or set it's values, probabilities, and other properties in code, selecting values
 is a simple process.
 
-```csharp 
+```csharp
 public ProbabilityList<string> myProbabilityList;
 
 List<string> results = myProbabilityList.PickValues();
@@ -686,7 +712,7 @@ This flexibility allows the designer to easily adjust the game's RNG elements, t
 
 Now let's look at the code:
 
-```csharp 
+```csharp
 public ProbabilityList<int> dice;
 
 int sumOfRolls = dice.PickValues().Sum();
@@ -704,7 +730,7 @@ if the designer adds three items to the list, with values of 1, 2 and 3, and set
 
 Alternatively, the coder may take control of the dice, overriding the setup of the list:
 
-```csharp 
+```csharp
 public ProbabilityList<int> dice;
 
 // This will pick only one value
@@ -761,7 +787,7 @@ These methods refrain from creating a new List. Instead, they return a reference
 
 However, since the list is shared between picks, and you're only receiving the reference, the subsequent pick will alter its contents. Consider the following example:
 
-```csharp 
+```csharp
 public ProbabilityList<int> myProbabilityList;
 
 var firstResult = myProbabilityList.PickValues(3);
@@ -788,11 +814,11 @@ If you wish to retain the values in lists, you can employ the methods that, inst
 - `bool PickValues(List<T> listToFill, int pickCount)`
 - `bool PickValues(List<T> listToFill, int pickCountMin, int pickCountMax)`
 
-These methods operate similarly, but instead of returning the shared list, they add values to the list you provide. 
-They don't clear the list and add values via `listToFill.AddRange(LastPickedValues)`. 
+These methods operate similarly, but instead of returning the shared list, they add values to the list you provide.
+They don't clear the list and add values via `listToFill.AddRange(LastPickedValues)`.
 This approach is handy if you need to select multiple sets of results and allows you to manage the list creation.
 
-```csharp 
+```csharp
 public ProbabilityList<int> myProbabilityList;
 
 List<int> myResults = new List<int>();
@@ -822,7 +848,7 @@ Disabling items in the list is a convenient method for preventing certain values
     **Enabling the 'Maintain Pick Count' feature:**
 
     - Open the **PICK** section of the drawer and switch on the Maintain Pick Count button located just below the pick count settings.
-    - Alternatively, you can set `MaintainPickCountIfDisabled` to true in code. 
+    - Alternatively, you can set `MaintainPickCountIfDisabled` to true in code.
 
     *Note that the option is set for each Probability List individually.*
 
@@ -830,14 +856,14 @@ Disabling items in the list is a convenient method for preventing certain values
 
 Maintaining pick counts is straightforward in standard Probability Lists, where items are always available. However, in **Depletable Lists**, items can become unavailable due to depletion. Under these circumstances, maintaining the intended pick counts is feasible only if at least one item in the list is non-depletable (infinite).
 
-For a deeper understanding of how Depletable Lists function and their impact on game dynamics, visit 
+For a deeper understanding of how Depletable Lists function and their impact on game dynamics, visit
 this page.
 
 ### Determining the Success of a Pick
 
 Selecting multiple values from a list with disabled items is quite easy to maintain, because the resulting `List<T>` will only contain successfully selected values.
 
-```csharp 
+```csharp
 public ProbabilityList<string> myProbabilityList;
 
 myProbabilityList.AddItem("Enabled Item 1", .33f);
@@ -859,7 +885,7 @@ On the other hand, if you are working with `value types`, the result of an unsuc
 
 If you need to determine the success of a single value pick, you can use `.TryPickValue(out T value)`
 
-```csharp 
+```csharp
 if(myProbabilityList.TryPickValue(out var selectedValue))
 {
     // do something with selectedValue
@@ -870,7 +896,7 @@ myProbabilityList.MaintainPickCountIfDisabled = true;
 var result = myProbabilityList.PickValue();
 ```
 
-Disabling items can also be a powerful design choice that brings flexibility to modular selections. Please explore our 
+Disabling items can also be a powerful design choice that brings flexibility to modular selections. Please explore our
 (see related page) sample for ideas on how to create a modular and easy-to-maintain selection systems.
 
 ### Edge Cases with Disabled Items and Maintaining Pick Counts
@@ -892,9 +918,9 @@ Source: https://docs.rngneeds.com/documentation/depletable-lists
 
 # Depletable Lists
 
-Depletable Lists are a powerful feature that allows items to have limited availability. 
-By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics. 
-Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables. 
+Depletable Lists are a powerful feature that allows items to have limited availability.
+By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics.
+Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables.
 
 ---
 
@@ -902,14 +928,14 @@ Depletable items can be utilized in various ways, such as ensuring unique select
 
 Simply put, a Depletable List enables the **management of items with limited availability**.
 
-Imagine a scenario where you have a card deck that may contain multiple copies of the same card. 
-In standard RNGNeeds usage, identical cards would be represented by multiple identical entries of the same item. 
+Imagine a scenario where you have a card deck that may contain multiple copies of the same card.
+In standard RNGNeeds usage, identical cards would be represented by multiple identical entries of the same item.
 With Depletable Lists, however, the card is represented by a single item with **multiple units**.
 
 When values are picked (cards are drawn) from this list, the units are **consumed** one by one with each pick. Once all units are used, the item becomes **depleted**, i.e., no longer selectable.
 Essentially, the card appears to no longer exist in the deck.
 
-Another common scenario involves selecting distinct values, such as picking unique game rewards from a pool. 
+Another common scenario involves selecting distinct values, such as picking unique game rewards from a pool.
 With Depletable Lists, achieving this is straightforward: simply set the list to Depletable and assign each item a single unit (`1`).
 
 > **Note:**
@@ -921,22 +947,22 @@ With Depletable Lists, achieving this is straightforward: simply set the list to
 
 ## Getting Started
 
-By default, Probability Lists are created as **not depletable**, meaning you can think of them as having *infinite units*. 
+By default, Probability Lists are created as **not depletable**, meaning you can think of them as having *infinite units*.
 While this is the standard behavior for RNGNeeds, toggling a list between depletable and infinite is straightforward.
 
 1. **Activate Advanced Drawer Options Level**: Navigate to the
-(see related page) 
+(see related page)
 window and switch Drawer Options Level to **Advanced**. Activating this global setting will reveal advanced features across all your Probability List inspectors.
 
 2. Open the **PICK** section of the drawer and click the **Depletable** button to toggle its state.
 
 Alternatively, Depletable Lists can be enabled in code:
 
-```csharp 
+```csharp
 myDepletableList.IsDepletable = true;
 ```
 
-Setting a `ProbabilityList` as **depletable** enables it to consume units of individual items, provided those items are also set as **depletable**. 
+Setting a `ProbabilityList` as **depletable** enables it to consume units of individual items, provided those items are also set as **depletable**.
 Essentially, the list can contain a mix of depletable and non-depletable items, but only the units of depletable items will be consumed.
 
 ### Depletable Items
@@ -948,7 +974,7 @@ Likewise, toggling the list to a non-depletable state will not affect the deplet
 Additionally, since each item's depletable status can be individually set, it's possible to mix depletable and infinite items within the same list, offering flexibility in how resources are managed.
 
 > **Note:**
-    Note that any `ProbabilityItem` created before the introduction of the Depletable Lists feature (in version 0.9.7) will be infinite by default and will have its units and maximum units set to `0`. 
+    Note that any `ProbabilityItem` created before the introduction of the Depletable Lists feature (in version 0.9.7) will be infinite by default and will have its units and maximum units set to `0`.
     These items will have to be manually set up, but both the Probability List drawer and API provide convenient methods for adjusting these properties for all items in the list.
 
     **In Inspector** - click on the **Action Menu** and chose **Reset**, then click the **Execute Action Button** (orange arrow).
@@ -995,7 +1021,7 @@ These shortcuts can be customized in the RNGNeeds (see related page) Window.
 
 You can also programmatically adjust the units of individual items or the entire list.
 
-```csharp 
+```csharp
 // Set Units of a single item
 var item = myDepletableList.GetProbabilityItem(1);
 item.Units = 15;
@@ -1082,14 +1108,14 @@ Source: https://docs.rngneeds.com/documentation/repeat-prevention
 
 # Repeat Prevention
 
-In many scenarios, you may want to prevent or reduce the repetition of consecutive item selections from your Probability List. 
-RNGNeeds offers a flexible and powerful way to handle repeat prevention, allowing you to tailor the behavior to your specific needs. 
+In many scenarios, you may want to prevent or reduce the repetition of consecutive item selections from your Probability List.
+RNGNeeds offers a flexible and powerful way to handle repeat prevention, allowing you to tailor the behavior to your specific needs.
 
 ---
 
 ## Overview
 
-Repeat prevention can be essential in various game mechanics, such as ensuring that the same random event doesn't occur back-to-back or that a player doesn't receive the same item repeatedly. 
+Repeat prevention can be essential in various game mechanics, such as ensuring that the same random event doesn't occur back-to-back or that a player doesn't receive the same item repeatedly.
 RNGNeeds provides three methods to handle repeat prevention, each with its trade-offs between speed, bias, and the degree of repeat prevention.
 
 > **Note:**
@@ -1132,16 +1158,16 @@ RNGNeeds provides three methods to handle repeat prevention, each with its trade
 
 ## How Does Repeat Prevention Work?
 
-The **Spread** and **Repick** methods work *during the actual selection process*. Whenever an item is randomly selected twice in a row, the new selection is either *spread* to the nearest enabled item, 
+The **Spread** and **Repick** methods work *during the actual selection process*. Whenever an item is randomly selected twice in a row, the new selection is either *spread* to the nearest enabled item,
 or *re-picked* until a non-repeated item is selected. This process works when selecting a number of items at once, and since it takes Pick History into consideration, it works between consecutive selections as well.
 
-The **Shuffle** method works a bit differently, as it is executed *after the selection*. The result of the selection is shuffled a number of times, based on the iterations you set in the inspector or in code. 
-Shuffle cannot eliminate all repeats, but it can greatly reduce them. The upside is that the probability distribution will not change and will reflect the designed settings. 
+The **Shuffle** method works a bit differently, as it is executed *after the selection*. The result of the selection is shuffled a number of times, based on the iterations you set in the inspector or in code.
+Shuffle cannot eliminate all repeats, but it can greatly reduce them. The upside is that the probability distribution will not change and will reflect the designed settings.
 
 > **Note:**
     **Notes on Shuffle**
 
-    - Because shuffle operates after the selection and doesn't consider pick history, it may not prevent repeats between consecutive selections. 
+    - Because shuffle operates after the selection and doesn't consider pick history, it may not prevent repeats between consecutive selections.
     The last item picked in one selection might be the same as the first item picked in the next. However, since shuffle can't completely eliminate all repeats, this is usually not a concern.
     - Shuffle is not effective when selecting fewer than 3 items at once. It's designed to return a number of items in one pick, reducing repeats while respecting the original probability distribution.
 
@@ -1149,8 +1175,8 @@ Shuffle cannot eliminate all repeats, but it can greatly reduce them. The upside
 
 ## Setting up Repeat Prevention
 
-Like most other features of RNGNeeds, Repeat Prevention is set individually for each ProbabilityList. By default, the prevention is turned off. 
-You can enable repeat prevention in the inspector of your list by expanding the *PICK* section. Locate the button for choosing a Selection Method (Linear Search by default). 
+Like most other features of RNGNeeds, Repeat Prevention is set individually for each ProbabilityList. By default, the prevention is turned off.
+You can enable repeat prevention in the inspector of your list by expanding the *PICK* section. Locate the button for choosing a Selection Method (Linear Search by default).
 Clicking will show a dropdown with the Repeat Prevention methods.
 
 > **Note:**
@@ -1158,14 +1184,14 @@ Clicking will show a dropdown with the Repeat Prevention methods.
 
 You can also define the method for preventing repeated item selections by using the PreventRepeat property:
 
-```csharp 
+```csharp
 myProbabilityList.PreventRepeat = PreventRepeatMethod.Spread;
 ```
 
 **Shuffle Iterations**
 If you choose the Shuffle method, you can specify the number of shuffle iterations used to reduce repeat selections. More iterations enhance the prevention of repeats, and the value is always constrained between 1 and 5.
 
-```csharp 
+```csharp
 myProbabilityList.ShuffleIterations = 3;
 ```
 
@@ -1173,8 +1199,8 @@ myProbabilityList.ShuffleIterations = 3;
 
 ## Examples
 
-Repeat prevention is a powerful feature that can add depth, realism, and unpredictability to various aspects of your game. 
-By ensuring that certain elements don't repeat consecutively, you can create a more engaging and immersive experience for players. 
+Repeat prevention is a powerful feature that can add depth, realism, and unpredictability to various aspects of your game.
+By ensuring that certain elements don't repeat consecutively, you can create a more engaging and immersive experience for players.
 Here are some inspiring examples of where repeat prevention can be applied:
 
 - **Unit Responses:** Ensuring characters don't repeat the same lines consecutively, adding realism and immersion.
@@ -1190,8 +1216,8 @@ Here are some inspiring examples of where repeat prevention can be applied:
 - **Skill or Ability Activation:** Ensuring diversity in combat by preventing consecutive activation of the same skill.
 - **Randomized Animations:** Adding fluidity by avoiding the same animation from playing consecutively.
 
-Repeat prevention may be a design choice that can add depth and variety to your game mechanics. 
-By understanding the different methods and how to apply them, you can create engaging and unpredictable experiences for your players. 
+Repeat prevention may be a design choice that can add depth and variety to your game mechanics.
+By understanding the different methods and how to apply them, you can create engaging and unpredictable experiences for your players.
 Experiment with the different methods to find the one that best fits your specific needs and enjoy the creative possibilities that RNGNeeds opens up for you.
 
 ---
@@ -1201,8 +1227,8 @@ Experiment with the different methods to find the one that best fits your specif
 
     - Repeat prevention may alter the probability distribution results by reducing the chance of selecting recently picked items.
     - The repeat prevention setting is ignored if there's only one enabled item in the list.
-    - While the **Spread** and **Repick** methods work between selections, this does not apply when testing outcomes in the inspector. This is because the test does not write to the Probability List's Pick History. 
-    Therefore, if you are testing subsequent selections of a single value, the test may produce the same value twice in a row even if repeat prevention is turned on. 
+    - While the **Spread** and **Repick** methods work between selections, this does not apply when testing outcomes in the inspector. This is because the test does not write to the Probability List's Pick History.
+    Therefore, if you are testing subsequent selections of a single value, the test may produce the same value twice in a row even if repeat prevention is turned on.
     However, testing with these methods still works when selecting a number of values in one pick, as they operate during the selection process.
 
 ---
@@ -1213,7 +1239,7 @@ Source: https://docs.rngneeds.com/documentation/probability-influence
 # Probability Influence
 
 Dive into the world of dynamic probability where RNGNeeds becomes your toolkit for crafting engaging and reactive gameplay experiences.
-Probability Influence allows you to fine-tune the likelihood of various game events based on external factors, adapting in real-time to the unfolding game dynamics. 
+Probability Influence allows you to fine-tune the likelihood of various game events based on external factors, adapting in real-time to the unfolding game dynamics.
 
 > **Note:**
     For detailed guides and examples on implementing Probability Influence, please visit the
@@ -1225,15 +1251,15 @@ Probability Influence allows you to fine-tune the likelihood of various game eve
 
 At its core, Probability Influence is an **adjustment to predetermined probabilities**.
 
-Imagine you've set a 3% chance for a player to find a rare item. Probability Influence allows you to dynamically modify this chance based on gameplay factors. 
+Imagine you've set a 3% chance for a player to find a rare item. Probability Influence allows you to dynamically modify this chance based on gameplay factors.
 For example, you could boost the drop rate as a reward for excellent performance, or lower it if a rare item was recently acquired.
 
-This concept introduces **dynamic probability** into gameplay, enabling a vast array of innovative mechanics. 
-Events can now be influenced by virtually any game element. 
-From linking critical hit chances to player stats, adjusting NPC interactions based on faction relationships, to varying the spawn rate of rare creatures as the in-game time approaches midnight, 
+This concept introduces **dynamic probability** into gameplay, enabling a vast array of innovative mechanics.
+Events can now be influenced by virtually any game element.
+From linking critical hit chances to player stats, adjusting NPC interactions based on faction relationships, to varying the spawn rate of rare creatures as the in-game time approaches midnight,
 or intensifying combat when the player cranks up the music volume. The possibilities are endless, and we've made it straightforward to implement.
 
-**Influence Providers** are the key. These are objects coded to supply dynamic adjustments to your fixed probabilities. For example, a Health Manager might track the player's health percentage. 
+**Influence Providers** are the key. These are objects coded to supply dynamic adjustments to your fixed probabilities. For example, a Health Manager might track the player's health percentage.
 The game designer then decides how to apply this information, assigning these providers to items in Probability Lists and using **Influence Spread** to fine-tune the impact on each probability.
 
 > **Note:**
@@ -1305,12 +1331,12 @@ In RNGNeeds, influence mechanisms are established through the `IProbabilityInflu
 
 ### External Providers
 
-Any Unity Object, whether it's a `MonoBehaviour` or a `ScriptableObject`, that implements the `IProbabilityInfluenceProvider` interface can serve as an **External Influence Provider**. 
+Any Unity Object, whether it's a `MonoBehaviour` or a `ScriptableObject`, that implements the `IProbabilityInfluenceProvider` interface can serve as an **External Influence Provider**.
 These providers offer a flexible way to adjust item probabilities dynamically, supplying a value range from -1 to 1 based on external conditions or states.
 
 Consider the Health Globe example mentioned earlier, where a simple Health Manager Component implements the interface to reflect the player's remaining health percentage.
 
-This component then becomes an **external provider** for the Health Globe item. 
+This component then becomes an **external provider** for the Health Globe item.
 Coders can also communicate the underlying logic to game designers by providing **Influence Info**, which is displayed in the inspector when the provider is linked.
 
 ```csharp
@@ -1325,16 +1351,16 @@ public class HealthManager : MonoBehaviour, IProbabilityInfluenceProvider
 }
 ```
 
-In the code snippet above, the `ProbabilityInfluence` property of the interface remaps the health percentage to inverse influence values, where 100% health equates to -1 influence, thereby reducing the drop chance for players in good health. 
+In the code snippet above, the `ProbabilityInfluence` property of the interface remaps the health percentage to inverse influence values, where 100% health equates to -1 influence, thereby reducing the drop chance for players in good health.
 This logic is made transparent to game designers through the `InfluenceInfo` property.
 
 ### Value as Influence Provider
 
 Values themselves can also act as influence providers. In the
-(see related page) 
+(see related page)
 sample, the `SpawnLocation` MonoBehaviour serves as the provider, with the influence logic based on the player's distance from the spawn location.
 
-```csharp 
+```csharp
 public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
 {
     // code not relevant for this guide was omitted
@@ -1348,7 +1374,7 @@ public class SpawnLocation : MonoBehaviour, IProbabilityInfluenceProvider
 }
 ```
 
-In this implementation, the distance to the player is remapped so that a zero distance results in the maximum positive influence (1) on the probability. 
+In this implementation, the distance to the player is remapped so that a zero distance results in the maximum positive influence (1) on the probability.
 Conversely, a distance of 30 units results in the maximum negative influence (-1).
 
 > **Note:**
@@ -1387,7 +1413,7 @@ In essence, the likelihood **to drop** a Health Globe increases, and the chance 
 
 ### Conclusion
 
-With a solid understanding of Probability Influence under your belt, you're well-equipped to dive deeper into its practical applications. 
+With a solid understanding of Probability Influence under your belt, you're well-equipped to dive deeper into its practical applications.
 The journey towards creating dynamic and engaging gameplay mechanics continues on the
 (see related page) page, where you'll find detailed guides and examples to inspire and guide your implementation.
 
@@ -1398,20 +1424,20 @@ Source: https://docs.rngneeds.com/documentation/testing-outcomes
 
 # Testing Outcomes
 
-Dive into this guide to discover the tools and techniques RNGNeeds offers for testing. 
-By simulating various scenarios, you can gain a deeper understanding of the outcomes shaped by your crafted probabilities and configurations. 
+Dive into this guide to discover the tools and techniques RNGNeeds offers for testing.
+By simulating various scenarios, you can gain a deeper understanding of the outcomes shaped by your crafted probabilities and configurations.
 
 ---
 
 ## Testing in the Inspector
 
-When designing probability distributions, it's often essential to visualize outcomes without constantly entering play mode. 
+When designing probability distributions, it's often essential to visualize outcomes without constantly entering play mode.
 The testing feature in RNGNeeds allows you to simulate selections, turning abstract percentages into tangible statistics, aiding in understanding and refining your setups.
 
-**Consider this scenario**: You're developing an endless runner game where random obstacles appear. 
+**Consider this scenario**: You're developing an endless runner game where random obstacles appear.
 The code attempts to select an obstacle from a list of six, with varying probabilities, and one of them is disabled.
 
-```csharp 
+```csharp
 public class ObstacleSpawner : MonoBehaviour
 {
     public ProbabilityList<GameObject> obstacles;
@@ -1426,10 +1452,10 @@ if (obstacles.TryPickValue(out var obstacle))
 }
 ```
 
-Imagine you anticipate around 180 obstacles to spawn in a minute of gameplay. To visualize the distribution of these spawns, open the **PICK** section of the drawer, 
+Imagine you anticipate around 180 obstacles to spawn in a minute of gameplay. To visualize the distribution of these spawns, open the **PICK** section of the drawer,
 set the pick count to 180, and hit the **TEST** button.
 
-The inspector will then display the results for each item: the number of times it was picked and its resulting probability. 
+The inspector will then display the results for each item: the number of times it was picked and its resulting probability.
 The **percentage is color-coded** to highlight deviations between the designed and actual outcomes. By default, underrepresented items are tinted orange, while overrepresented ones are green.
 
 > **Note:**
@@ -1447,13 +1473,13 @@ For a comprehensive breakdown, results are also logged in the console, detailing
 
 ### Testing Depletable Lists
 
-It's crucial to remember that **testing depletable lists consumes units of items** just as it would during actual gameplay. 
-As items are selected during tests, their units will decrease, setting a new state of the list each time. 
+It's crucial to remember that **testing depletable lists consumes units of items** just as it would during actual gameplay.
+As items are selected during tests, their units will decrease, setting a new state of the list each time.
 While you may intentionally design your lists to be partially depleted as part of the gameplay experience, if your aim is simply to test the outcomes without permanent changes, consider refilling the items after testing.
 
 > **Note:**
-    Tip: Frequent testing is recommended to gain more accurate insights. 
-    To avoid the need to manually refill items after each test, you can **Control + Click** (or **Command + Click** on macOS) the **TEST** button. 
+    Tip: Frequent testing is recommended to gain more accurate insights.
+    To avoid the need to manually refill items after each test, you can **Control + Click** (or **Command + Click** on macOS) the **TEST** button.
     This shortcut refills the items automatically before each test.
 
 ---
@@ -1469,13 +1495,13 @@ However, it's essential to note that 180 picks might not provide a comprehensive
 
 Once you've finished testing, you can reset the results by clicking the X button adjacent to the TEST button. This step isn't obligatory, as test results aren't stored with the list. They're part of the drawer data, which resets when switching inspectors.
 
---- 
+---
 
 ## Testing in Code
 
 For scenarios where you need to evaluate your configurations during runtime or if you're keen on analyzing test statistics directly from your code, RNGNeeds provides a way to execute tests and retrieve the `TestResults`.
 
-```csharp 
+```csharp
 var testResults = myProbabilityList.RunTest();
 testResults.Print();
 ```
@@ -1513,22 +1539,22 @@ Source: https://docs.rngneeds.com/documentation/seeding-options
 
 # Seeding Options
 
-Seeding is a fundamental concept in random number generation. By providing a seed, you can ensure that a sequence of random numbers is reproducible. 
-This is invaluable in scenarios where you want to recreate a specific sequence of events, like replaying a game level with the same random challenges. 
-Let's dive into how RNGNeeds handles seeding. 
+Seeding is a fundamental concept in random number generation. By providing a seed, you can ensure that a sequence of random numbers is reproducible.
+This is invaluable in scenarios where you want to recreate a specific sequence of events, like replaying a game level with the same random challenges.
+Let's dive into how RNGNeeds handles seeding.
 
 ---
 
 ## Seeding in RNGNeeds
 
-At its core, the plugin leverages the **Unity.Mathematics Random** object for all random number generation tasks. This object requires initialization with a `uint` seed. 
+At its core, the plugin leverages the **Unity.Mathematics Random** object for all random number generation tasks. This object requires initialization with a `uint` seed.
 RNGNeeds features an extensible **Seed Provider**, responsible for providing the `uint` value. Later in this section, you'll learn how to make your own Seed Provider.
 
 Here's a step-by-step breakdown of how our selection methods utilize seeds:
 
 1. At the start of a selection process, the Probability List generates a new seed using the `ProbabilityList.Seed` property.
 2. This generated seed determines the random pick count, either supplied via parameters or derived from the List's `PickCountMin` and `PickCountMax` properties, depending on the `PickValues()` overload used.
-3. The Probability List is subsequently passed to the chosen Selection Method. 
+3. The Probability List is subsequently passed to the chosen Selection Method.
 As the Seed is included with the List, the selection method retrieves it through the `ProbabilityList.CurrentSeed` property to initialize a new Random object.
 4. This newly initialized Random object is then used to generate random numbers for the entire selection process.
 
@@ -1543,7 +1569,7 @@ After the selection process, the list retains the newly generated seed that was 
 
 RNGNeeds comes with a built-in seed provider named `DefaultSeedProvider`. This provider uses the .NET `System.Random` class in conjunction with the current UTC time's ticks to generate a seed. The combination ensures a high degree of randomness. To prevent potential threading issues, the seed generation is thread-safe, using a lock mechanism.
 
-```csharp 
+```csharp
 public class DefaultSeedProvider : ISeedProvider
 {
     private readonly System.Random _random = new System.Random();
@@ -1566,13 +1592,13 @@ get
 
 ## Keep Seed
 
-The "Keep Seed" feature allows you to maintain the same seed between selections, by disabling the seed automatic generation. To enable "Keep Seed", navigate to the **PICK** section of the drawer. 
+The "Keep Seed" feature allows you to maintain the same seed between selections, by disabling the seed automatic generation. To enable "Keep Seed", navigate to the **PICK** section of the drawer.
 Ensure that the *Drawer Options Level* is set to Advanced in the
 (see related page) window.
 
 The **Seed Readout Field** shows the last used seed of that particular Probability List. If you enable Keep Seed, the field becomes editable, allowing you to specify your custom seed.
 
-```csharp 
+```csharp
 var result = myProbabilityList.PickValue();     // a new seed is generated
 myProbabilityList.KeepSeed = true;
 var newResult = myProbabilityList.PickValue();  // produces the same results
@@ -1591,7 +1617,7 @@ Once you enable the **Keep Seed** option (effectively disabling the auto-seed fu
 
 The seed is a `uint` value ranging from `1 to 4294967295`.
 
-```csharp 
+```csharp
 myProbabilityList.KeepSeed = true;
 myProbabilityList.Seed = 1337;
 ```
@@ -1608,7 +1634,7 @@ Here's a step-by-step guide:
 
 1. Start by creating a new class that implements the `ISeedProvider` interface:
 
-```csharp 
+```csharp
 using System;
 using RNGNeeds;
 
@@ -1627,7 +1653,7 @@ get
 
 2. Next, register your custom seed provider with the `RNGNeedsCore` class:
 
-```csharp 
+```csharp
 RNGNeedsCore.SetSeedProvider(new MySeedProvider());
 ```
 
@@ -1643,20 +1669,20 @@ Source: https://docs.rngneeds.com/documentation/pick-history
 # Pick History
 
 Pick History serves as a powerful tool for users to explore their recent selections, recreate specific scenarios, or even pre-select items to streamline gameplay.
-It provides a comprehensive record, enabling users to monitor selections, utilize the data in-game, or share insights with players for enhanced gameplay dynamics. 
+It provides a comprehensive record, enabling users to monitor selections, utilize the data in-game, or share insights with players for enhanced gameplay dynamics.
 
 ---
 
 ## History Structure
 
-Let's begin by understanding the fundamental concepts of Pick History. 
+Let's begin by understanding the fundamental concepts of Pick History.
 We'll explore how it archives records, the way selections are channeled through history, and the mechanics of history capacity.
 
 **Each List has its own History** - Every Probability List features its unique history, and this history plays an integral role in the selection mechanism.
 When you select values, the system first determines the outcome based on the set probabilities.
 This result is then logged into the history. Finally, the system maps the most recently picked indices from the history to produce the actual values you receive.
 
-**History records Indices** - The history structure is optimized for performance and clarity. Instead of logging the actual values of items, it records their indices, ensuring a minimal memory footprint. 
+**History records Indices** - The history structure is optimized for performance and clarity. Instead of logging the actual values of items, it records their indices, ensuring a minimal memory footprint.
 Alongside each index, the exact date and time of the pick are stored, offering a chronological insight into the selection process.
 
 > **Note:**
@@ -1667,10 +1693,10 @@ Alongside each index, the exact date and time of the pick are stored, offering a
 
 **History Capacity** - Every history has a set limit on the number of items it can store, known as its capacity. You can adjust this capacity up or down based on your requirements.
 
-**PickHistory Object** - An integral part of the `ProbabilityList`, functions as both the storage for the list's history and the primary access point to historical data and settings. 
+**PickHistory Object** - An integral part of the `ProbabilityList`, functions as both the storage for the list's history and the primary access point to historical data and settings.
 Every time you request values from your Probability List, the results are first recorded in its history as indices before being relayed as the actual values.
 
-**HistoryEntry Object** - This is a *pooled object* that captures both the index and the time of a pick. 
+**HistoryEntry Object** - This is a *pooled object* that captures both the index and the time of a pick.
 The Pick History maintains a list of these HistoryEntry objects, serving as a chronological log of recent selections.
 
 > **Note:**
@@ -1684,11 +1710,11 @@ The Pick History maintains a list of these HistoryEntry objects, serving as a ch
 
 ## History Capacity
 
-By default, each List's History can accommodate up to 1000 entries. This means that, unless you expand this capacity, you can pick a maximum of 1000 values in one go. 
-As you make more selections, older entries are pushed downwards, and once they exceed the set capacity, they're removed. 
+By default, each List's History can accommodate up to 1000 entries. This means that, unless you expand this capacity, you can pick a maximum of 1000 values in one go.
+As you make more selections, older entries are pushed downwards, and once they exceed the set capacity, they're removed.
 For instance, if you first select 1000 items and then make another selection of 500, the history will showcase the 500 recent picks, followed by the latter half of the initial 1000-item selection.
 
-```csharp 
+```csharp
 // Setting the history capacity directly via the PickHistory property
 myProbabilityList.PickHistory.Capacity = 100;
 
@@ -1696,16 +1722,16 @@ myProbabilityList.PickHistory.Capacity = 100;
 myProbabilityList.SetHistoryCapacity(100);
 ```
 
-Adjusting the List's History capacity lets you fine-tune the memory usage of the list. 
-If history isn't a priority for you, you can set this value quite low. 
-However, remember that the capacity also limits the number of values you can select in one go. 
+Adjusting the List's History capacity lets you fine-tune the memory usage of the list.
+If history isn't a priority for you, you can set this value quite low.
+However, remember that the capacity also limits the number of values you can select in one go.
 For instance, calling `SelectValues(10)` on a list with a history capacity of 5 will yield only 5 values.
 
 ---
 
 ## Retrieving History
 
-```csharp 
+```csharp
 // Access the PickHistory object
 PickHistory pickHistory = myProbabilityList.PickHistory;
 
@@ -1730,7 +1756,7 @@ Alternatively, you can utilize the history's convenience methods or properties t
 Methods that return a list prioritize efficiency by providing a reference to an internal list, ensuring no additional memory allocation for a new list.
 This approach is especially beneficial for frequent operations where performance is crucial.
 
-```csharp 
+```csharp
 int latestIndex = myProbabilityList.PickHistory.LatestIndex;
 List<int> latestIndices = myProbabilityList.PickHistory.GetLatestPicks(5);
 
@@ -1755,7 +1781,7 @@ List<string> latestValues = myProbabilityList.LastPickedValues;
 For those seeking more control or wishing to preserve the results, methods are available that take a list as an argument and populate it with the specified records.
 To obtain the latest entries, just indicate the number of records you want.
 
-```csharp 
+```csharp
 // Methods that return a reference to a private list
 HistoryEntry latestEntryRef = myProbabilityList.PickHistory.LatestEntry;
 List<HistoryEntry> latestEntriesRef = myProbabilityList.PickHistory.GetLatestEntries(5);
@@ -1773,19 +1799,19 @@ myProbabilityList.PickHistory.GetLatestEntries(latestEntriesFill, 5);
 ## HistoryEntry Pool
 
 HistoryEntry is a **pooled object** designed to efficiently store the index and time of each pick.
-During the selection process, these objects are dynamically created and, once they're no longer in use (e.g., when history is cleared or exceeds its capacity), 
+During the selection process, these objects are dynamically created and, once they're no longer in use (e.g., when history is cleared or exceeds its capacity),
 they're returned to the pool for reuse.
 
 This pooling mechanism is shared across all histories, ensuring that memory usage is optimized and that there's a consistent supply of ready-to-use HistoryEntry objects.
 Initially, the pool starts empty. As individual lists begin to exceed their capacity, the pool gradually fills up with HistoryEntry objects that have been released.
-Up to this point, minor memory allocations occur for each selected item. 
+Up to this point, minor memory allocations occur for each selected item.
 However, these allocations cease once the pool accumulates a sufficient number of unused objects, which are then reclaimed by the histories.
 
-To immediately benefit from the pool's efficiency, you can pre-populate or "warm-up" the pool. 
-Depending on the number of Probability Lists you employ and their set capacities, you can gauge the optimal pool size. 
+To immediately benefit from the pool's efficiency, you can pre-populate or "warm-up" the pool.
+Depending on the number of Probability Lists you employ and their set capacities, you can gauge the optimal pool size.
 This ensures that memory is allocated during initialization, and subsequent selections will pull from this pool of pre-existing objects.
 
-```csharp 
+```csharp
 RNGNeedsCore.WarmupHistoryEntries(10000);
 ```
 
@@ -1801,7 +1827,7 @@ In certain scenarios, it might be more efficient or suitable to draw values dire
 
 Here's one idea how to implement this:
 
-```csharp 
+```csharp
 public ProbabilityList<string> myProbabilityList;
 
 // First, pick values to populate the history
@@ -1860,19 +1886,19 @@ Source: https://docs.rngneeds.com/documentation/nesting-lists
 
 # Nesting Lists
 
-Nesting multiple Probability Lists within other collections significantly enhances organizational flexibility and functionality. 
-Using our specialized class, `PLCollection`, over standard C# List or Array, brings additional benefits. 
-These include the ability to name lists within the collection and select values from the entire collection, enhancing both usability and functionality. 
+Nesting multiple Probability Lists within other collections significantly enhances organizational flexibility and functionality.
+Using our specialized class, `PLCollection`, over standard C# List or Array, brings additional benefits.
+These include the ability to name lists within the collection and select values from the entire collection, enhancing both usability and functionality.
 
 > **Note:**
-    This page introduces the features and usage of PLCollection class. For practical implementation guides, visit the 
+    This page introduces the features and usage of PLCollection class. For practical implementation guides, visit the
     (see related page) page.
 
 ---
 
 ## PLCollection Class
 
-The `PLCollection<T>`, short for **Probability List Collection**, is a generic class designed to hold multiple Probability Lists of the same type `T`. 
+The `PLCollection<T>`, short for **Probability List Collection**, is a generic class designed to hold multiple Probability Lists of the same type `T`.
 This class offers useful methods that help manage these lists and also enables the selection of values from the entire collection.
 
 For game designers, `PLCollection` provides a significant advantage with its special inspector drawer in the Unity Editor. This feature makes it easier to manage and visualize the lists, enhancing the design process.
@@ -1881,12 +1907,12 @@ For game designers, `PLCollection` provides a significant advantage with its spe
 
 To begin organizing your lists, simply declare a `PLCollection<T>` within your **MonoBehaviour** or **ScriptableObject** scripts. This is done in a manner similar to declaring a `ProbabilityList` of your chosen type.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
-public class MyScript : MonoBehaviour 
-{    
+public class MyScript : MonoBehaviour
+{
     public PLCollection<string> myCollection;
 }
 ```
@@ -1899,11 +1925,11 @@ Lists can be added by clicking the **Add List to Collection** button.
 
 ### Naming Lists
 
-Newly created lists within the `PLCollection` are automatically assigned a name that corresponds to their position in the collection. 
-The default format for these names is `#index`, such as `#0`, `#1`, `#2`, and so forth. 
+Newly created lists within the `PLCollection` are automatically assigned a name that corresponds to their position in the collection.
+The default format for these names is `#index`, such as `#0`, `#1`, `#2`, and so forth.
 You can easily rename any list by clicking on the name field and entering a new name.
 
-The name is stored within the `ProbabilityList` object itself, rather than in the `PLCollection` class. 
+The name is stored within the `ProbabilityList` object itself, rather than in the `PLCollection` class.
 This allows flexibility in naming as you can set the `ListName` property for any list, regardless of whether it is part of a collection.
 
 ```csharp
@@ -1912,7 +1938,7 @@ myProbabilityList.ListName = "My List";
 
 If a list is added without a specified name, `PLCollection` will automatically assign a default name based on its position.
 
-```csharp 
+```csharp
 // Adding an unnamed list
 myCollection.AddList(myList);               // List Name will be '#0'
 myCollection.AddList(myList, "My List");    // List Name will be 'My List'
@@ -1935,7 +1961,7 @@ Arrows will then appear next to each list, allowing you to adjust their order by
 
 Lists can also be reordered programmatically using the `MoveListUp` and `MoveListDown` methods.
 
-```csharp 
+```csharp
 myCollection.MoveListUp(1);     // Move list at index 1 up
 myCollection.MoveListDown(1);   // Move list at index 1 down
 ```
@@ -1955,7 +1981,7 @@ Additionally, the entire collection can be cleared by clicking the **Clear Colle
     Removing a list or clearing the collection are significant actions, underscored by the red color of the buttons.
     Although these actions do not trigger a confirmation popup, they can be reversed using the Unity Editor's Undo feature.
 
-```csharp 
+```csharp
 myCollection.RemoveList(1);             // Remove list at index 1
 myCollection.RemoveList("My List");     // Remove list by name "My List"
 
@@ -1968,10 +1994,10 @@ The `RemoveList` methods return `true` if the list was successfully found and re
 
 PLCollection also provides handy methods for clearing the individual lists, i.e., removing all items from a list.
 This feature is useful when you want to maintain the structural framework of the collection but eliminate the contents of the lists.
-Note that clearing a list will also remove its History. For more details on History, refer to the 
+Note that clearing a list will also remove its History. For more details on History, refer to the
 (see related page) section.
 
-```csharp 
+```csharp
 myCollection.ClearList(1);              // Clear list at index 1
 myCollection.ClearList("My List");      // Clear list by name "My List"
 myCollection.ClearAllLists();           // Clear all lists in the collection
@@ -1991,10 +2017,10 @@ To select values from a specific list in the collection, you can retrieve the li
 ### Selecting Directly from Probability List
 
 Access a list from the collection either by its index or name, and then select a value from it as you would with any standard Probability List.
-For more information on how to select values from a list, visit the 
+For more information on how to select values from a list, visit the
 (see related page) page.
 
-```csharp 
+```csharp
 // Retrieving list from collection
 var list = myCollection.GetList(0);                     // Get list at index 0
 
@@ -2006,7 +2032,7 @@ if (myCollection.GetList("MyList", out var list))       // Get list by name "MyL
 
 ### Selecting via PLCollection
 
-The PLCollection class provides a set of methods for selecting values from the lists within. 
+The PLCollection class provides a set of methods for selecting values from the lists within.
 These methods are named after the corresponding methods in the ProbabilityList class and their summary clearly indicates which method is used and how are the results returned.
 
 It's important to understand the returns when using these methods, as some operations in `ProbabilityList` check if a value was successfully picked.
@@ -2018,8 +2044,8 @@ Determining the success of a pick is especially important with value types, wher
 > **Note:**
     Excerpt from [Selecting Values](/documentation/selecting-values#disabled-items) page:
 
-    *"However, if you are working with `value types`, the result of an unsuccessful pick would be the `default` value of your Type. 
-    In some cases, the value returned from an unsuccessful pick might be indistinguishable from a real one. 
+    *"However, if you are working with `value types`, the result of an unsuccessful pick would be the `default` value of your Type.
+    In some cases, the value returned from an unsuccessful pick might be indistinguishable from a real one.
     For example, with value types such as `string`, `boolean`, or `int`, an empty string, a `false`, or a `0` would be returned, respectively."*
 
 Here are the various families of methods available for picking values from the collection:
@@ -2056,7 +2082,7 @@ With the addition of (see related page) in RNGNeeds v0.9.7, the `PLCollection` c
 
 Here is an example demonstrating how to select values from a list within the collection using the `TryPickValueFrom` method.
 
-```csharp 
+```csharp
 var result = myCollection.TryPickValueFrom(0, out var value);
 result.ListFound        // Indicates whether the list was found
 result.ValuePicked      // Indicates whether the value was picked
@@ -2069,21 +2095,21 @@ else
 {
     // Value was not picked - the selection was unsuccessful
     // could also mean the list was not found or was empty
-}    
+}
 ```
 
 ---
 
 ### Summary
 
-The PLCollection class streamlines the management of Probability Lists in Unity, enabling easy organization, modification, and value selection from multiple lists. 
-It offers practical features like list naming, reordering, and removal, coupled with a variety of methods for accessing values efficiently. 
+The PLCollection class streamlines the management of Probability Lists in Unity, enabling easy organization, modification, and value selection from multiple lists.
+It offers practical features like list naming, reordering, and removal, coupled with a variety of methods for accessing values efficiently.
 
-For a practical use cases, explore the 
-(see related page), which provides a detailed guide for implementing `PLCollection` in your projects. 
+For a practical use cases, explore the
+(see related page), which provides a detailed guide for implementing `PLCollection` in your projects.
 For more complex use cases utilizing a modular loot table approach, check out the **Treasure Chest** and **Deck Builder** samples included with the plugin.
 
-Learn more about these and other examples on the 
+Learn more about these and other examples on the
 Samples (see related page).
 
 ---
@@ -2093,8 +2119,8 @@ Source: https://docs.rngneeds.com/documentation/customizing-lists
 
 # Customizing Lists
 
-As game developers, we often find ourselves immersed in Unity's Inspector. 
-Recognizing this, RNGNeeds' custom drawer for Probability List has been meticulously crafted to be both intuitive and feature-rich, offering a plethora of customization options to enhance your workflow. 
+As game developers, we often find ourselves immersed in Unity's Inspector.
+Recognizing this, RNGNeeds' custom drawer for Probability List has been meticulously crafted to be both intuitive and feature-rich, offering a plethora of customization options to enhance your workflow.
 
 ---
 
@@ -2140,7 +2166,7 @@ The **Monochrome** option at the end of the palette dropdown is particularly not
 Dive deeper into customization with the drawer's Additional Options Sub-menu. Access it by clicking the RNGNeeds symbol located at the top left corner of the drawer.
 
 > **Note:**
-    By default, the drawer displays only the essential options. 
+    By default, the drawer displays only the essential options.
     If you're missing some options shown in the screenshot, switch the Drawer Options Level to Advanced in the (see related page) window.
 
 ### Basic Drawer Options
@@ -2176,7 +2202,7 @@ The `IProbabilityItemInfoProvider` interface allows you to supply custom informa
 
 Below is a code snippet illustrating how to implement the interface:
 
-```csharp 
+```csharp
 [Serializable]
 public class MyCustomType : IProbabilityItemInfoProvider
 {
@@ -2192,7 +2218,7 @@ By implementing the interface, we can direct the `string customInfo` to the inte
 
 Of course, the logic behind the custom information is entirely up to the user. In the following example, we've opted to forgo the `customInfo` field and instead relay the `Vector3 somePosition` to the interface property.
 
-```csharp 
+```csharp
 [Serializable]
 public class MyCustomType : IProbabilityItemInfoProvider
 {
@@ -2216,7 +2242,7 @@ The `IProbabilityItemColorProvider` interface allows you to bring custom colors 
 
 Consider the following example, taken from our **Treasure Chest** sample. Here, the `ItemRarity` ScriptableObject implements both provider interfaces.
 
-```csharp 
+```csharp
 [CreateAssetMenu(fileName = "New Item Rarity", menuName = "RNGNeeds/Treasure Chest/Item Rarity")]
 public class ItemRarity : ScriptableObject, IProbabilityItemColorProvider, IProbabilityItemInfoProvider
 {
@@ -2227,18 +2253,18 @@ public class ItemRarity : ScriptableObject, IProbabilityItemColorProvider, IProb
 }
 ```
 
-By implementing the interface, the `customColor` field feeds into the interface property `Color ItemColor`. 
+By implementing the interface, the `customColor` field feeds into the interface property `Color ItemColor`.
 This means the Probability List drawer will now display the items with the colors you've specified, making it easier to visually identify different types or categories.
 In the screenshot below, the drawer employs the Monochrome theme, but the designated item rarities introduce their unique colors. The Color Provider can be merged with any palette.
 
-Just like with the `IProbabilityItemInfoProvider`, the logic behind the custom color is entirely up to you. For instance, you might want to color-code items based on certain conditions or attributes. 
+Just like with the `IProbabilityItemInfoProvider`, the logic behind the custom color is entirely up to you. For instance, you might want to color-code items based on certain conditions or attributes.
 You can also explore our **Deck Builder** and **Treasure Chest** samples, which utilize the color provider to easily distinguish between item rarity colors.
 
 > **Note:**
-    The Info and Color provider interfaces are tailored to complement the RNGNeeds Editor features. While they can be beneficial and utilized at runtime, if you don't require the info during runtime, 
+    The Info and Color provider interfaces are tailored to complement the RNGNeeds Editor features. While they can be beneficial and utilized at runtime, if you don't require the info during runtime,
     you can exclude them from the build.
 
-```csharp 
+```csharp
 public class MyComponent : MonoBehaviour
     #if UNITY_EDITOR
     , IProbabilityItemColorProvider, IProbabilityItemInfoProvider
@@ -2257,7 +2283,6 @@ public class MyComponent : MonoBehaviour
 ```
 
 ---
-
 ---
 
 Source: https://docs.rngneeds.com/documentation/change-log
@@ -2265,8 +2290,44 @@ Source: https://docs.rngneeds.com/documentation/change-log
 # Changelog
 
 Welcome to the RNGNeeds Changelog page. Here, you'll find a detailed history of updates and improvements made to the plugin.
-Our documentation currently matches the latest version available on the Asset Store. 
-Once a new version is approved by the Asset Store, we'll promptly update the documentation to reflect those changes. 
+Our documentation currently matches the latest version available on the Asset Store.
+Once a new version is approved by the Asset Store, we'll promptly update the documentation to reflect those changes.
+
+---
+
+## v1.1.0 Released 22 April 2026
+
+*RNGNeeds v1.1 is a major update. As always, make a backup of your project before updating.*
+
+### New Major Feature - Card Deck Extensions
+
+RNGNeeds v1.1 adds a large new set of extension methods that let you use `ProbabilityList` more naturally as a card deck, pile, hand, or discard stack.
+
+Highlights include:
+
+- **Draw** from the top, bottom, specific index, or a random position
+- **Peek** without removing items
+- **Place** cards on top, bottom, specific index, or random position
+- **Move** and **Deal** cards between decks
+- **Swap** cards, **Cut** decks, **Reverse** order, and **Shuffle**
+
+Deck shuffling now also supports an **extensible shuffle-method workflow** built around creating and executing **shuffle plans and steps**.
+
+### New Samples
+
+- **Intermediate Sample: Card Game Basics** - a new sample demonstrating a straightforward card flow: draw pile -> hand -> table -> discard.
+- **Advanced Sample: Card Battle** - a more advanced sample exploring a Hearthstone-like card battle concept built with RNGNeeds and the new deck extensions.
+
+### Bug Fixes
+
+- Fixed an issue where the drawer could throw errors with some special enum setups.
+- Fixed external influence provider serialization in `ProbabilityItem` to use standard Unity object references, matching the intended MonoBehaviour / ScriptableObject workflow.
+- Reducing pick history capacity now trims existing entries safely.
+
+### Notes
+
+- Some advanced deck-extension areas may evolve in future updates as they get broader production use.
+- More deck- and gameplay-focused improvements are planned for future releases.
 
 ---
 
@@ -2337,8 +2398,8 @@ In addition to the default percentile-based workflow, you can now use weights to
 
 ### New Major Feature - Depletable Lists
 
-Depletable Lists are a powerful feature that allows items to have limited availability. 
-By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics. 
+Depletable Lists are a powerful feature that allows items to have limited availability.
+By setting the maximum and available units for each item, you can unlock a wide range of possibilities for your game mechanics.
 Depletable items can be utilized in various ways, such as ensuring unique selections for game rewards or managing multiple instances of the same item, like in card decks or loot tables.
 
 ### Inspector Improvements
@@ -2470,14 +2531,14 @@ Source: https://docs.rngneeds.com/samples/samples-overview
 
 # Samples Overview
 
-RNGNeeds comes with a variety of samples to help you get started and explore the many possibilities of the plugin. 
-These samples range from simple dice rolls to complex loot tables and more. In this section, we'll guide you through the process of importing these samples into your Unity project. 
+RNGNeeds comes with a variety of samples to help you get started and explore the many possibilities of the plugin.
+These samples range from simple dice rolls to complex loot tables and more. In this section, we'll guide you through the process of importing these samples into your Unity project.
 
 ---
 
 ## Importing Samples
 
-Since RNGNeeds is distributed as a package, it doesn't appear in the Assets folder but inside the Packages folder. 
+Since RNGNeeds is distributed as a package, it doesn't appear in the Assets folder but inside the Packages folder.
 This design keeps your project clean and organized. However, the samples need to be brought in separately. Here's how you can do it:
 
 **Step 1: Open Package Manager**
@@ -2504,14 +2565,14 @@ Once the samples are imported, you'll find them in the Assets folder of your pro
     **Upgrading to URP** - Use the *Render Pipeline Converter* following
     <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@16.0/manual/features/rp-converter.html" target="_blank" rel="noopener noreferrer">this guide.</a>
 
-    **Upgrading to HDRP** - Follow the guide provided 
+    **Upgrading to HDRP** - Follow the guide provided
     <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.high-definition@16.0/manual/Upgrading-To-HDRP.html" target="_blank" rel="noopener noreferrer">here.</a>
 
 ---
 
 ## Exploring the Samples
 
-The samples provided with RNGNeeds cover various use cases and scenarios. Feel free to dive into the code, tweak settings, and see how everything works. 
+The samples provided with RNGNeeds cover various use cases and scenarios. Feel free to dive into the code, tweak settings, and see how everything works.
 These samples are designed to be both educational and inspirational, giving you a solid foundation to build upon.
 
 Here's a brief overview of some of the samples you'll find:
@@ -2530,8 +2591,8 @@ Your feedback on these samples is valuable to us! If you have suggestions or ide
 
 ## On the Roadmap: Exciting Samples for Inspiration and Exploration
 
-We're committed to providing hands-on examples to inspire and guide your use of RNGNeeds. 
-These samples are designed to showcase the creative possibilities and practical applications of our plugin in Unity game development. 
+We're committed to providing hands-on examples to inspire and guide your use of RNGNeeds.
+These samples are designed to showcase the creative possibilities and practical applications of our plugin in Unity game development.
 Here's a look at two exciting samples we're working on, with more to come:
 
 - **The Improbable Lab:** An adventure mini-game designed to highlight the principles of RNG in game design. Through this sample, you'll explore how RNGNeeds can be used to create engaging and unpredictable gameplay elements. It's a playful demonstration of how probabilities can shape unique and thrilling gaming experiences.
@@ -2542,7 +2603,7 @@ Stay tuned as we continue to develop and release more samples, each offering a u
 
 **Need Help?**
 
-If you encounter any issues or have questions about the samples, don't hesitate to reach out through our 
+If you encounter any issues or have questions about the samples, don't hesitate to reach out through our
 (see related page) or join our <a href= target="_blank" rel="noopener noreferrer">Discord Community</a>. We're here to help!
 
 ---
@@ -2554,8 +2615,8 @@ Source: https://docs.rngneeds.com/samples/dice-playground
 
 # Dice Playground
 
-Explore the world of virtual dice rolling with RNGNeeds' Dice Playground. This sample demonstrates how you can simulate various dice rolls and combinations, from simple 6-sided dice to complex biased rolls. 
-Whether you're looking to create a tabletop game or just want to experiment with probability, the Dice Playground offers a fun and interactive way to dive into the mechanics of randomness. 
+Explore the world of virtual dice rolling with RNGNeeds' Dice Playground. This sample demonstrates how you can simulate various dice rolls and combinations, from simple 6-sided dice to complex biased rolls.
+Whether you're looking to create a tabletop game or just want to experiment with probability, the Dice Playground offers a fun and interactive way to dive into the mechanics of randomness.
 
 ---
 
@@ -2599,7 +2660,7 @@ In the scene, you can control how many dice are rolled with a slider. You can al
 If disabled, the actual number of rolled dice will be lower - just the ones that make it through the selection.
 
 You can learn more about pick counts on the
-(see related page) page, and how disabled items work on the 
+(see related page) page, and how disabled items work on the
 (see related page) page.
 
 > **Note:**
@@ -2617,18 +2678,18 @@ Source: https://docs.rngneeds.com/samples/random-audio
 
 # Random Audio
 
-Bring your game characters to life with RNGNeeds' Random Audio sample. 
-This example showcases how you can randomize unit responses, dialogue choices, and ambient sounds to create a more immersive and dynamic audio experience. 
-From quirky character lines to rare responses, learn how to fine-tune your game's auditory landscape with ease. 
+Bring your game characters to life with RNGNeeds' Random Audio sample.
+This example showcases how you can randomize unit responses, dialogue choices, and ambient sounds to create a more immersive and dynamic audio experience.
+From quirky character lines to rare responses, learn how to fine-tune your game's auditory landscape with ease.
 
 ---
 
 ## AudioClip with Probability
 
 Randomizing a game's audio is a common scenario where RNG can truly shine, whether it's for unit responses, dialogue choices, or ambient sounds. RNGNeeds is perfectly suited for these tasks, handling them as easily as a simple integer dice roll.
-To achieve this, you can define a `ProbabilityList` of type `AudioClip`. Picking a value from such a list returns the AudioClip, ready to be played. 
+To achieve this, you can define a `ProbabilityList` of type `AudioClip`. Picking a value from such a list returns the AudioClip, ready to be played.
 
-```csharp 
+```csharp
 public ProbabilityList<AudioClip> randomAudio;
 
 if(audioSource.isPlaying == false) audioSource.PlayOneShot(randomAudio.PickValue());
@@ -2661,15 +2722,15 @@ Source: https://docs.rngneeds.com/samples/monster-spawner
 
 # Monster Spawner
 
-Unleash the beasts with RNGNeeds' Monster Spawner sample. Utilizing Probability Influence, this example dynamically controls the spawning of various monsters based on location and other factors. 
-Whether you're designing a horror game or a fantasy adventure, the Monster Spawner provides an inspiration how to dynamically alter odds in runtime. 
+Unleash the beasts with RNGNeeds' Monster Spawner sample. Utilizing Probability Influence, this example dynamically controls the spawning of various monsters based on location and other factors.
+Whether you're designing a horror game or a fantasy adventure, the Monster Spawner provides an inspiration how to dynamically alter odds in runtime.
 
 ---
 
 ## Dynamic Probability
 
 The Monster Spawner sample showcases the usage of **Probability Influence** system, which allows dynamic control over individual probabilities based on external factors.
-This is a very powerful feature of RNGNeeds, which opens up a world of creative game design by breathing life into fixed odds, turning them into engaging game mechanics. 
+This is a very powerful feature of RNGNeeds, which opens up a world of creative game design by breathing life into fixed odds, turning them into engaging game mechanics.
 
 In our sample, monsters will spawn with varying probability based on the player's distance to spawn locations. Their designed odds will dynamically change, ensuring the hero is attacked from locations close to him,
 yet still having some small chance of spawning them in all locations. This time you control **Chancellor, the Unlucky**, a misfortunate fellow who happened to pop into existence in the middle of a monster graveyard.
@@ -2687,8 +2748,8 @@ The attached `MonsterSpawner` script holds three Probability Lists of different 
 As you can see, all items in lists have a designed probability. However, take a closer look at Spawn Locations. The Center location has 40% chance, East and West locations have 30% each.
 In addition, all locations are **"influenced"** - instead of a probability bar similar to items in other lists, sliders with handles are displayed in their place for items that are influenced.
 
-The sliders define the minimum and maximum **Influence Spread** - setting limits for positive or negative influence. 
-For instance, maximum positive influence will raise the probability to the value of the right (maximum) slider handle. 
+The sliders define the minimum and maximum **Influence Spread** - setting limits for positive or negative influence.
+For instance, maximum positive influence will raise the probability to the value of the right (maximum) slider handle.
 While playing the mini-game, try moving the handles to change the degree of influence.
 
 > **Note:**
@@ -2706,7 +2767,7 @@ Take a closer look at the `MonsterSpawner` MonoBehaviour code. The logic for det
 - Then, the **Monster Prefab** is spawned at the selected location.
 - Finally, a random monster level and the player's location are sent to the `MonsterController` MonoBehaviour Component. The level will define the monster's speed at which it will chase the player, knowing its location.
 
-```csharp 
+```csharp
 public class MonsterSpawner : MonoBehaviour
 {
     // non-relevant code was omitted
@@ -2754,7 +2815,6 @@ Source: https://docs.rngneeds.com/samples/basic-samples
 # Basic Examples
 
 ---
-
 ---
 
 Source: https://docs.rngneeds.com/samples/intermediate-samples
@@ -2762,7 +2822,6 @@ Source: https://docs.rngneeds.com/samples/intermediate-samples
 # Intermediate Examples
 
 ---
-
 ---
 
 Source: https://docs.rngneeds.com/samples/advanced-samples
@@ -2794,7 +2853,7 @@ Source: https://docs.rngneeds.com/guides/guides-overview
 
 # Overview
 
-Welcome to our collection of Guides. In this section, we will explore some specific use cases related to RNGNeeds' probability distribution system. 
+Welcome to our collection of Guides. In this section, we will explore some specific use cases related to RNGNeeds' probability distribution system.
 
 > **Note:**
     Have a use case in mind that we should explore on this page?
@@ -2809,7 +2868,6 @@ Explore our guides to enhance your understanding and application of RNGNeeds:
 - (see related page) - Take the next step in organizing and managing your Probability Lists with the PLCollection class.
 
 ---
-
 ---
 
 Source: https://docs.rngneeds.com/guides/guide-selecting-distinct-values
@@ -2817,7 +2875,7 @@ Source: https://docs.rngneeds.com/guides/guide-selecting-distinct-values
 # Selecting Distinct Values
 
 Often, it's essential to ensure that each value you select from a set is unique.
-While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieving this using the Depletable Lists feature of RNGNeeds.  
+While selecting distinct values alters the inherent probabilities, this guide will walk you through a straightforward approach to achieving this using the Depletable Lists feature of RNGNeeds.
 
 ---
 
@@ -2834,7 +2892,7 @@ Firstly, let's establish a basic `Reward` class. This class will:
 - Contain details about the in-game currency.
 - Provide relevant information to the drawer through the info provider interface.
 
-```csharp 
+```csharp
 using System;
 using RNGNeeds;
 
@@ -2849,7 +2907,7 @@ public class Reward : IProbabilityItemInfoProvider
 
 Subsequently, we'll introduce a `LevelCompletionRewards` component that will be responsible for housing our range of potential rewards.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
@@ -2864,7 +2922,7 @@ After attaching the component to a GameObject, you can begin shaping your array 
 With the reward pool in place, it's time to set the list as Depletable. First, ensure the Advanced options are enabled:
 
 1. **Activate Advanced Drawer Options Level**: Navigate to the
-(see related page) 
+(see related page)
 window and switch Drawer Options Level to **Advanced**. Activating this global setting will reveal advanced features across all your Probability List inspectors.
 
 2. Open the **PICK** section of the drawer and click the **Depletable** button. By default, each Probability Item is marked as **Depletable** with `1 / 1` available / maximum units.
@@ -2873,18 +2931,18 @@ window and switch Drawer Options Level to **Advanced**. Activating this global s
 
 4. Enable the **Visualize Units in the Stripe** option to better display the remaining units for each item.
 
-When you click the **TEST** button, it selects three distinct items from the list, taking into account the probability distributions and the units available. 
-Since each item has only one unit available, each is selected just once. 
-The remaining units are clearly displayed on the stripe, and the unit counts beside each item decrease accordingly. 
+When you click the **TEST** button, it selects three distinct items from the list, taking into account the probability distributions and the units available.
+Since each item has only one unit available, each is selected just once.
+The remaining units are clearly displayed on the stripe, and the unit counts beside each item decrease accordingly.
 With repeated testing, the list is depleted until no items remain selectable.
 
 > **Note:**
     Hint: Hold **Control** (or **Command** on Mac) while clicking the **TEST** button to automatically refill the units of items before initiating the test. Alternatively, you can manually refill items through the **Action Menu** by clicking the **Arrow Button** adjacent to the selected action, typically set to **Refill Items** by default.
 
-Now that we've established our list of unique rewards and tested the outcomes, the final step involves implementing the code to select the rewards. 
+Now that we've established our list of unique rewards and tested the outcomes, the final step involves implementing the code to select the rewards.
 Incorporate the following method into the `LevelCompletionRewards` component:
 
-```csharp 
+```csharp
 public List<Reward> PickRewards(int count)
 {
     rewards.RefillItems();
@@ -2899,7 +2957,7 @@ Before selecting values, the `PickRewards` method performs the following operati
 
 To see this in action, invoke the `PickRewards` method:
 
-```csharp 
+```csharp
 var pickedRewards = PickRewards(rewardsToPick);
 
 foreach (var reward in pickedRewards)
@@ -2918,7 +2976,7 @@ foreach (var reward in pickedRewards)
 ## Alternative Approach
 
 > **Note:**
-    Before the introduction of the **Depletable Lists** feature in v0.9.7, selecting distinct values was commonly achieved by disabling the item just picked, preventing its selection in subsequent picks. 
+    Before the introduction of the **Depletable Lists** feature in v0.9.7, selecting distinct values was commonly achieved by disabling the item just picked, preventing its selection in subsequent picks.
     While this method is less efficient in terms of code and performance—each picked item required a unique selection call within a loop—we're retaining this guide should you choose not to use depletable items.
 
 First, create the `Reward` and `LevelCompletionRewards` classes following the guide above.
@@ -2927,7 +2985,7 @@ After attaching the component to a GameObject, you can start shaping your array 
 
 With the reward pool in place, it's time to introduce the logic ensuring that only distinct rewards are chosen. Incorporate the following segment into the `LevelCompletionRewards` component.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 using System.Collections.Generic;
@@ -2966,7 +3024,7 @@ Let's break down the `PickRewards` method:
 
 To see this in action, invoke the `PickRewards` method:
 
-```csharp 
+```csharp
 var pickedRewards = PickRewards(rewardsToPick);
 
 foreach (var reward in pickedRewards)
@@ -2995,10 +3053,10 @@ Source: https://docs.rngneeds.com/guides/guide-probability-influence
 # Probability Influence Guides
 
 This collection of guides is dedicated to utilizing the concept of dynamic probability. To learn more about the concept, visit the
-(see related page) page of our documentation. 
+(see related page) page of our documentation.
 
 > **Note:**
-    Have a use case in mind that we should explore on this page? 
+    Have a use case in mind that we should explore on this page?
     <a href= target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
 
 ---
@@ -3011,7 +3069,7 @@ For a quick start with dynamic probability, let's use a `ProbabilityList<bool>` 
 public ProbabilityList<bool> hackingSuccess;
 ```
 
-Then, add two items: **True** and **False** and set the probability of True value to 40%. 
+Then, add two items: **True** and **False** and set the probability of True value to 40%.
 This will be the base probability of a player succeeding in a hacking attempt.
 
 Dynamic probability settings are hidden by default to keep the interface clean for newcomers. Let's go ahead and enable them.
@@ -3021,11 +3079,11 @@ Dynamic probability settings are hidden by default to keep the interface clean f
 Probability Influence is nestled within the Advanced Features, which are not visible by default. To access these capabilities, follow these steps:
 
 1. **Activate Advanced Drawer Options Level**: Navigate to the
-(see related page) 
+(see related page)
 window and switch Drawer Options Level to **Advanced**. Activating this global setting will reveal advanced features across all your Probability List inspectors.
 
 2. **Access Additional Drawer Options**: Click on the RNGNeeds symbol located at the top left corner of your Probability List inspector to unveil the
-Additional Drawer Options. 
+Additional Drawer Options.
 
 3. **Enable Influence Display**: Toggle the **Show Influence Toggle** button to on. This action will introduce a **link** button adjacent to the probability preview bars within your list items.
 
@@ -3033,12 +3091,12 @@ Additional Drawer Options.
 
 ### Creating an Influence Provider
 
-We need something to adjust our item's chances based on what's happening in the game. Let's make a `ScriptableObject` that keeps track of the player's stats. 
+We need something to adjust our item's chances based on what's happening in the game. Let's make a `ScriptableObject` that keeps track of the player's stats.
 This object will serve as the provider of influence.
 
 Here's a simple way to make a manager for the player's stats:
 
-```csharp 
+```csharp
 using RNGNeeds;
 using StarphaseTools.Core;
 using UnityEngine;
@@ -3061,7 +3119,7 @@ The Player Manager implements the `IProbabilityInfluenceProvider` interface, fea
 
 Once you've created the Player Manager Scriptable Object, simply drag it into the **Influence Provider Object Field** for the True item.
 
-After assigning the provider to the item, you'll notice a new slider with adjustable handles replaces the original probability preview bar. 
+After assigning the provider to the item, you'll notice a new slider with adjustable handles replaces the original probability preview bar.
 These handles let you set the **Spread** - limits for how much the player's skill can affect the hacking success chance — essentially controlling the influence's impact.
 
 We've configured the spread to ensure that the **maximum negative influence** reduces the success chance to 25%, while the **maximum positive influence** boosts it to 50%.
@@ -3111,14 +3169,14 @@ if (shouldSpawnMonster.PickValue())
 
 In this guide, we'll explore how to implement and manage dynamic probability through code. RNGNeeds facilitates equal control for both coders and game designers over Probability Lists, ensuring a collaborative workflow.
 
-Our focus will be on creating a **Weapon MonoBehaviour Component**. 
+Our focus will be on creating a **Weapon MonoBehaviour Component**.
 This component will not only manage the logic for critical strike chances based on weapon attributes but will also act as an **Influence Provider** for its Probability List.
 
 ### Setting up the Weapon Component
 
 Begin by crafting a **Weapon.cs** script that extends `MonoBehaviour` and conforms to the `IProbabilityInfluenceProvider` interface.
 
-```csharp 
+```csharp
 using RNGNeeds;
 using StarphaseTools.Core;
 using UnityEngine;
@@ -3144,13 +3202,13 @@ public class Weapon : MonoBehaviour, IProbabilityInfluenceProvider
 }
 ```
 
-The **Weapon Setup** section is designed for game designers to define fundamental weapon characteristics. 
-By attaching this component to a GameObject, they can configure essential stats such as `damage`, `criticalMultiplier`, and the `baseCriticalStrikeChance`, which represents the chance of a critical hit without any influence. 
+The **Weapon Setup** section is designed for game designers to define fundamental weapon characteristics.
+By attaching this component to a GameObject, they can configure essential stats such as `damage`, `criticalMultiplier`, and the `baseCriticalStrikeChance`, which represents the chance of a critical hit without any influence.
 
 The `baseInfluenceSpread` Vector2 value sets the range for minimum and maximum influence on critical strike chance, customizing the dynamic probability to fit the weapon's gameplay purpose.
 
-The **Weapon Setup** section contains attributes that are dynamically calculated during gameplay to adjust the critical strike odds based on the weapon's `Effectiveness` property. 
-In this example, `Effectiveness` is determined by multiplying weapon proficiency by durability. 
+The **Weapon Setup** section contains attributes that are dynamically calculated during gameplay to adjust the critical strike odds based on the weapon's `Effectiveness` property.
+In this example, `Effectiveness` is determined by multiplying weapon proficiency by durability.
 As proficiency increases with use, decreasing durability serves as a balancing factor on influence, encouraging players to maintain their weapon's condition.
 
 Finally, in the Interface Implementation part, the influence is determined by mapping the Effectiveness (0 to 1) to an Influence range of `-1 to 1`.
@@ -3159,7 +3217,7 @@ Finally, in the Interface Implementation part, the influence is determined by ma
 
 Now, let's initialize the Probability List and configure its influence settings. Add the following `Start()` method to your **Weapon** Component:
 
-```csharp 
+```csharp
 private void Start()
 {
     criticalStrike.ClearList();
@@ -3189,7 +3247,7 @@ For the **False** item, we assign the same Influence Provider but with an invert
 
 The final step is to implement some logic for our weapon. Let's create an `Attack()` method with the following code:
 
-```csharp 
+```csharp
 public (float damage, bool critical) Attack()
 {
     if (criticalStrike.PickValue())
@@ -3204,9 +3262,9 @@ return (damage * criticalMultiplier, true); // Return increased damage for criti
 }
 ```
 
-This method simulates an attack with the weapon, adjusting the weapon's **proficiency** and **durability** based on whether the attack is critical. 
-Each attack slightly increases the weapon's proficiency, encouraging continuous use. 
-Critical hits, while more powerful, also reduce the weapon's durability, adding a strategic layer to weapon usage. 
+This method simulates an attack with the weapon, adjusting the weapon's **proficiency** and **durability** based on whether the attack is critical.
+Each attack slightly increases the weapon's proficiency, encouraging continuous use.
+Critical hits, while more powerful, also reduce the weapon's durability, adding a strategic layer to weapon usage.
 
 The method returns the damage dealt and a boolean indicating whether the attack was critical, allowing for easy integration into broader game mechanics.
 
@@ -3215,7 +3273,6 @@ The method returns the damage dealt and a boolean indicating whether the attack 
 > **Note:**
     Have a use case in mind that we should explore on this page?
     <a href= target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
-
 ---
 
 Source: https://docs.rngneeds.com/guides/guide-plcollection
@@ -3224,9 +3281,9 @@ Source: https://docs.rngneeds.com/guides/guide-plcollection
 
 # PLCollection Guides
 
-These guides are designed to help you implement and utilize the PLCollection class for nesting and organizing Probability Lists in your Unity projects. 
-To learn more about PLCollection, visit the 
-(see related page) page of our documentation. 
+These guides are designed to help you implement and utilize the PLCollection class for nesting and organizing Probability Lists in your Unity projects.
+To learn more about PLCollection, visit the
+(see related page) page of our documentation.
 
 > **Note:**
     Have a use case in mind that we should explore on this page?
@@ -3241,7 +3298,7 @@ Let's create a simple example where we have a collection of responses for NPC ch
 First, create a MonoBehaviour class called `CharacterResponses` that will hold our collection of responses.
 We will include method `SelectResponse` that will select a response from a specific category.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
@@ -3278,7 +3335,7 @@ Here, we added three lists of responses with the categories **Friendly**, **Neut
 
 Now, you can call the `SelectResponse` method to get a response from a specific category.
 
-```csharp 
+```csharp
 Debug.Log(characterResponses.SelectResponse("Friendly"));   // Output: "Welcome back, friend! What’s new?"
 Debug.Log(characterResponses.SelectResponse("Neutral"));    // Output: "Can I help you with something?"
 Debug.Log(characterResponses.SelectResponse("Hostile"));    // Output: "Careful here. I’m watching."
@@ -3303,7 +3360,7 @@ Source: https://docs.rngneeds.com/guides/guide-depletable-list-examples
 
 # Depletable List Examples
 
-On this page, we'll explore practical examples of using Depletable Lists to achieve unique outcomes in common game mechanics. Limited item availability can be a powerful tool in game design, enabling you to create diverse and engaging gameplay experiences. 
+On this page, we'll explore practical examples of using Depletable Lists to achieve unique outcomes in common game mechanics. Limited item availability can be a powerful tool in game design, enabling you to create diverse and engaging gameplay experiences.
 
 > **Note:**
     Looking to learn more about Depletable Lists and how they work? Check out the (see related page) page for an in-depth guide.
@@ -3324,7 +3381,7 @@ Each mining attempt allows the player to extract 1 to 3 items, determined by the
 
 Often, it's beneficial to limit a resource deposit and introduce a logic of depletion. One effective approach is to assign a fixed number of mining attempts before the deposit is considered depleted.
 
-```csharp 
+```csharp
 using System.Collections.Generic;
 using RNGNeeds;
 using UnityEngine;
@@ -3351,7 +3408,7 @@ return resourceDeposit.PickValues();
 }
 ```
 
-In this code, we increment the `miningAttempts` counter each time the deposit is mined. 
+In this code, we increment the `miningAttempts` counter each time the deposit is mined.
 Once the `miningAttempts` reaches or exceeds the `maxMiningAttempts`, the deposit is considered depleted and is thus made unavailable for further mining.
 
 ### Depleting Deposit by Resource Availability
@@ -3360,7 +3417,7 @@ An alternative approach involves monitoring if a particular resource in the depo
 
 We have introduced a **Check For Depleted Resource** variable and changed the **Iron Ore** item to be depletable with 5 available units. The logic below checks if the specified resource is depleted and disables the deposit accordingly.
 
-```csharp 
+```csharp
 public Resource checkForDepletedResource;
 public ProbabilityList<Resource> resourceDeposit;
 
@@ -3381,7 +3438,7 @@ if(depositResource.IsDepleted)
 
 This particular deposit will allow mining until the **Iron Ore** is depleted, at which point the deposit will be disabled.
 
-The great thing about this approach is that the game designer has full control over which resource will trigger the depletion of the deposit. 
+The great thing about this approach is that the game designer has full control over which resource will trigger the depletion of the deposit.
 By setting the individual items as depletable and assigning their units, each resource deposit can be customized to fit the game's unique mechanics or needs.
 
 ---
@@ -3389,14 +3446,15 @@ By setting the individual items as depletable and assigning their units, each re
 > **Note:**
     Have a use case in mind that we should explore on this page?
     <a href= target="_blank" rel="noopener noreferrer">Join our Discord community</a> and share your thoughts.
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/api-overview
 
 # API Overview
 
-New to this section? Start with the Documentation Overview if you want the bigger picture first, then use this page as your quick map of the runtime types and extension points in the API. 
+This page is the shortest path to understanding the shape of the RNGNeeds runtime API. If you are asking questions like *which type owns the real list state?*, *where do custom selection methods plug in?*, or *what should I read before extending the plugin?*, start here.
+
+New to this section? Start with the Documentation Overview if you want the bigger picture first, then use this page as your quick map of the runtime types and extension points in the API.
 
 The API Reference is the code-facing companion to the rest of the docs.
 
@@ -3510,14 +3568,13 @@ Go to the curated sections when you want intent, workflow, and examples:
 > **Note:**
     **Want to bounce an idea off us?**
     If you are extending RNGNeeds and want feedback on the shape of your API, your custom selection method, or your overall setup, feel free to drop by our (see related page) page and join the Discord from there.
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/rngneeds
 
 # RNGNeedsCore
 
-`RNGNeedsCore` is the static integration and extension entry point for RNGNeeds. Use it when you want to customize package-wide behavior such as selection method registration, seed provider setup, logging, or other global integration points. For day-to-day list creation and picking values, start with <a href="/api-reference/probability-list">ProbabilityList<T></a>. 
+`RNGNeedsCore` is the static integration and extension entry point for RNGNeeds. Use it when you want to customize package-wide behavior such as selection method registration, seed provider setup, logging, or other global integration points. For day-to-day list creation and picking values, start with <a href="/api-reference/probability-list">ProbabilityList<T></a>.
 
 ## When to use this type
 
@@ -3637,14 +3694,13 @@ This section covers the global helpers used for debugging and allocation-sensiti
 > **Note:**
   **Need help or guidance?**
   If you want help shaping a custom extension, choosing an approach, or troubleshooting a setup, feel free to drop by our (see related page) page and join the Discord from there.
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/probability-list
 
 # ProbabilityList<T>
 
-If you are learning RNGNeeds from the top down, start with the guides and conceptual docs first, then come back here when you want the exact runtime shape of the main list type. 
+If you are learning RNGNeeds from the top down, start with the guides and conceptual docs first, then come back here when you want the exact runtime shape of the main list type.
 
 `ProbabilityList<T>` is the core runtime type in RNGNeeds.
 
@@ -3948,14 +4004,13 @@ See also (see related page).
 - (see related page)
 - (see related page)
 - (see related page)
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/probability-item
 
 # ProbabilityItem<T>
 
-`ProbabilityItem<T>` represents a single entry inside a `ProbabilityList<T>`. It stores the value itself plus the state and metadata that control how that item behaves during selection. 
+`ProbabilityItem<T>` represents a single entry inside a `ProbabilityList<T>`. It stores the value itself plus the state and metadata that control how that item behaves during selection.
 
 ## What this type is responsible for
 
@@ -4092,14 +4147,13 @@ item.SetDepletable(true, units: 3, maxUnits: 3);
 ## Related page
 
 - <a href="/api-reference/probability-list">ProbabilityList<T></a>
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/pick-history
 
 # PickHistory
 
-`PickHistory` stores the recent picks made by a `ProbabilityList<T>`. It is the small helper type behind convenience properties such as `LastPickedIndex`, `LastPickedValues`, and other history-related APIs on the list itself. 
+`PickHistory` stores the recent picks made by a `ProbabilityList<T>`. It is the small helper type behind convenience properties such as `LastPickedIndex`, `LastPickedValues`, and other history-related APIs on the list itself.
 
 Each history entry records:
 
@@ -4169,14 +4223,13 @@ Each history entry records:
 > **Note:**
   **History entries are pooled.**
   RNGNeeds reuses <code>HistoryEntry</code> objects to reduce garbage creation. You can pre-warm the pool via <code>RNGNeedsCore.WarmupHistoryEntries(...)</code> if needed.
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/selection-methods
 
 # Selection Methods
 
-Selection methods decide **how RNGNeeds chooses item indices from a probability list**. Your list still defines probabilities, enabled state, locked items, depletion, and repeat prevention — the selection method is the algorithm that turns that data into a result. 
+Selection methods decide **how RNGNeeds chooses item indices from a probability list**. Your list still defines probabilities, enabled state, locked items, depletion, and repeat prevention — the selection method is the algorithm that turns that data into a result.
 
 ## Which path should you use?
 
@@ -4362,14 +4415,13 @@ RNGNeedsCore.RegisterSelectionMethod(new MySelectionMethod());
 ## Need help with a custom method?
 
 If you want help choosing an approach, shaping a custom method, or sanity-checking the behavior of your algorithm, feel free to drop by our (see related page) page and join the Discord from there.
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/seed-provider
 
 # Seed Providers
 
-Seed providers control how RNGNeeds generates new seeds. This page is most useful when you care about deterministic behavior, reproducible debugging, automated tests, or a custom game-wide randomness policy. 
+Seed providers control how RNGNeeds generates new seeds. This page is most useful when you care about deterministic behavior, reproducible debugging, automated tests, or a custom game-wide randomness policy.
 
 ## The two layers to understand
 
@@ -4448,14 +4500,13 @@ RNGNeedsCore.SetSeedProvider(new FixedSeedProvider());
     Returns a new seed generated by the active provider.
   </Member>
 </MemberGroup>
-
 ---
 
 Source: https://docs.rngneeds.com/api-reference/pl-collection
 
 # PLCollection<T>
 
-Need the practical walkthrough first? Start with (see related page), then use this page as the compact code reference for the collection API itself. 
+Need the practical walkthrough first? Start with (see related page), then use this page as the compact code reference for the collection API itself.
 
 `PLCollection<T>` organizes multiple `ProbabilityList<T>` instances into one collection.
 
@@ -4577,4 +4628,3 @@ responses.PickValueFrom("Friendly", out var line);
 > **Note:**
   **Building something with PLCollection and want feedback?**
   If you want to compare approaches, ask about naming strategy, or sanity-check a setup, the (see related page) page will point you to our Discord community.
-

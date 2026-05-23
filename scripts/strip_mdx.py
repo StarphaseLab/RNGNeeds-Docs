@@ -89,6 +89,9 @@ def strip_mdx(text: str) -> str:
     # Collapse 3+ consecutive blank lines to 2
     text = re.sub(r"\n{3,}", "\n\n", text)
 
+    # Remove whitespace left behind by stripped inline MDX annotations.
+    text = "\n".join(line.rstrip() for line in text.splitlines())
+
     # Strip leading blank lines
     text = text.lstrip("\n")
 

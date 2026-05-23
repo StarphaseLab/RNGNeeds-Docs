@@ -6,7 +6,7 @@
 ---
 # Introduction
 
-Welcome to RNGNeeds, a Unity plugin designed to make probability-driven systems feel more creative, more controllable, and far easier to work with. Whether you're shaping loot tables, enemy spawns, dialogue choices, card draws, or other gameplay moments built around chance, RNGNeeds helps you design them with clarity and confidence. 
+Welcome to RNGNeeds, a Unity plugin designed to make probability-driven systems feel more creative, more controllable, and far easier to work with. Whether you're shaping loot tables, enemy spawns, dialogue choices, card draws, or other gameplay moments built around chance, RNGNeeds helps you design them with clarity and confidence.
 
 At its heart, RNGNeeds is about giving both designers and developers a better way to work with randomness in Unity, one that feels visual, flexible, and practical from the very start.
 
@@ -19,7 +19,7 @@ Every game thrives on an element of surprise, that tantalizing unpredictability 
 
 Beyond the dice rolls and item drops, RNGNeeds offers you a canvas of opportunity. Imagine dynamically adjusting the frequency of in-game storms as your player progresses through the storyline, modulating NPC behavior based on time of day, or making the battle more intense if the music volume is loud.
 
-RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.        
+RNGNeeds puts you in the director's seat, allowing you to craft unique, immersive experiences that respond and adapt to your game world. Because RNG isn't just about luck - it's about creating living, breathing worlds where anything is possible.
 
 ## What is RNGNeeds?
 RNGNeeds is a powerful plugin that enables you to design and manage probability lists for any value, type, or custom object directly within the Unity Inspector. With this plugin, you can take control of your dice rolls, monster spawns, card decks, item drops, damage modifiers, or even organic animations using probability distribution with unparalleled simplicity and ease-of-use. Whether you want to design your lists, variable pick counts, and seeding right in the inspector, or harness the powerful API to control everything from code, RNGNeeds has you covered.

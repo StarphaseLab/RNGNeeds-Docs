@@ -6,7 +6,7 @@
 ---
 # Getting Started
 
-This page shows the fastest path from installing RNGNeeds to making your first working weighted list in Unity. If you are evaluating the plugin, this is the best page to confirm what the setup flow actually looks like and how little code you need to get value from it. 
+This page shows the fastest path from installing RNGNeeds to making your first working weighted list in Unity. If you are evaluating the plugin, this is the best page to confirm what the setup flow actually looks like and how little code you need to get value from it.
 
 By the end of this guide, you will have RNGNeeds imported, a `ProbabilityList<int>` visible in the Inspector, and a small reusable die example that demonstrates how weighted picks work in practice.
 
@@ -63,7 +63,7 @@ Inherit from `ScriptableObject` and add a Probability List of type `int`.
     Once this script is created, you can make many different die assets from the same class, each with its own values and probabilities.
     If you prefer working with `MonoBehaviour` scripts attached to GameObjects, the same `ProbabilityList<int>` field works there as well — only the surrounding class setup is different.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
@@ -89,7 +89,7 @@ Click on the 'side 6' probability `16.67%` and type in `0.2` (for 20%) and hit `
 
 Now it's time to roll the die. In RNGNeeds, you can select a value from the ProbabilityList easily by calling `.PickValue()`. Let's make our die object useful by adding a function that returns the roll.
 
-```csharp 
+```csharp
 using UnityEngine;
 using RNGNeeds;
 
