@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { Router, useRouter } from 'next/router'
 import { MDXProvider } from '@mdx-js/react'
-import { Analytics } from '@vercel/analytics/react';
+import Script from 'next/script'
 import { Layout } from '@/components/Layout'
 import * as mdxComponents from '@/components/mdx'
 import { useMobileNavigationStore } from '@/components/MobileNavigation'
@@ -17,6 +17,11 @@ import {
 
 import '@/styles/tailwind.css'
 import 'focus-visible'
+
+// Cloudflare Web Analytics (cookieless). Set NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN at
+// build time (Workers Builds > Variables) to load the beacon; without it nothing is
+// loaded. Not needed if the site's Web Analytics uses Cloudflare's automatic setup.
+const CF_WEB_ANALYTICS_TOKEN = process.env.NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN
 
 function onRouteChange() {
   useMobileNavigationStore.getState().close()
@@ -61,7 +66,13 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
-        <Analytics />
+        {CF_WEB_ANALYTICS_TOKEN && (
+          <Script
+            strategy="afterInteractive"
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon={JSON.stringify({ token: CF_WEB_ANALYTICS_TOKEN, spa: true })}
+          />
+        )}
         {/*<Script strategy="afterInteractive" src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}`}/>*/}
         {/*<Script*/}
         {/*    id='google-analytics'*/}

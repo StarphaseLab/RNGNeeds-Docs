@@ -1,0 +1,12 @@
+# Redirects for Cloudflare Workers static assets (copied into ./out by next build).
+# Replaces redirects() in next.config.mjs.
+/        /user-guide/introduction        308
+/zh-CN   /zh-CN/user-guide/introduction  308
+/ja-JP   /ja-JP/user-guide/introduction  308
+
+# Section roots. The pages also redirect client-side (src/pages/*/index.js);
+# answering on the server saves a blank page and gives crawlers a real redirect.
+/user-guide     /user-guide/introduction       308
+/documentation  /documentation/docs-overview   308
+/samples        /samples/samples-overview      308
+/api-reference  /api-reference/api-overview    308

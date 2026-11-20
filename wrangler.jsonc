@@ -1,0 +1,19 @@
+// Cloudflare Workers static-assets config for docs.rngneeds.com.
+// `npm run build` (next build with output: 'export') writes the site to ./out.
+// No Worker script: every request is served straight from the assets.
+// The custom domain (docs.rngneeds.com) is attached in the dashboard at cut-over,
+// not here, so a deploy from a branch can never grab the production hostname.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "rngneeds-docs",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./out",
+    // Same URL shape as Vercel: /foo serves foo.html, /foo/ and /foo.html redirect to /foo.
+    "html_handling": "drop-trailing-slash",
+    // Unknown paths get Next's 404.html with a 404 status.
+    "not_found_handling": "404-page"
+  }
+}

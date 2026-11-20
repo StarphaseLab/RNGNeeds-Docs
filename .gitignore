@@ -37,3 +37,6 @@ yarn-error.log*
 # IDE and editor files
 .idea/
 *.DotSettings.user
+
+# cloudflare
+.wrangler

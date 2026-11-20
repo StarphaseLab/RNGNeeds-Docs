@@ -16,6 +16,12 @@ const withMDX = nextMDX({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Static export: `next build` writes plain HTML/JS to ./out, which Cloudflare
+  // Workers serves as static assets (see wrangler.jsonc). Response headers and
+  // redirects that used to live here are in public/_headers and public/_redirects;
+  // the sticky-locale redirect that used to be src/middleware.js is a small inline
+  // script in src/pages/_document.jsx.
+  output: 'export',
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   outputFileTracingRoot: path.resolve('.'),
@@ -24,69 +30,6 @@ const nextConfig = {
   },
   experimental: {
     scrollRestoration: true,
-  },
-  async headers() {
-    return [
-      {
-        source: '/:path*',
-        headers: [
-          {
-            key: 'X-Robots-Tag',
-            value: 'index, follow',
-          },
-        ],
-      },
-      {
-        source: '/llms.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain; charset=utf-8',
-          },
-        ],
-      },
-      {
-        source: '/llms-full.txt',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'text/plain; charset=utf-8',
-          },
-        ],
-      },
-      {
-        source: '/.well-known/ai-plugin.json',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/json; charset=utf-8',
-          },
-          {
-            key: 'Access-Control-Allow-Origin',
-            value: '*',
-          },
-        ],
-      },
-    ]
-  },
-  async redirects() {
-    return [
-      {
-        source: '/',
-        destination: '/user-guide/introduction',
-        permanent: true,
-      },
-      {
-        source: '/zh-CN',
-        destination: '/zh-CN/user-guide/introduction',
-        permanent: true,
-      },
-      {
-        source: '/ja-JP',
-        destination: '/ja-JP/user-guide/introduction',
-        permanent: true,
-      },
-    ]
   },
 }
 

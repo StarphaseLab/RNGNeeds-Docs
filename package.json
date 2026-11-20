@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "generate-locales": "node scripts/generate-locale-pages.mjs",
-    "generate-markdown-mirrors": "node scripts/generate-markdown-mirrors.mjs"
+    "generate-markdown-mirrors": "node scripts/generate-markdown-mirrors.mjs",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "upload": "wrangler versions upload"
   },
   "browserslist": "defaults, not ie <= 11",
   "dependencies": {
@@ -19,7 +22,6 @@
     "@next/mdx": "^15.5.28",
     "@sindresorhus/slugify": "^2.1.1",
     "@tailwindcss/typography": "^0.5.8",
-    "@vercel/analytics": "^1.0.1",
     "acorn": "^8.8.1",
     "autoprefixer": "^10.4.7",
     "clsx": "^1.2.0",
@@ -53,7 +55,8 @@
     "eslint-config-next": "^15.5.28",
     "prettier": "^2.8.7",
     "prettier-plugin-tailwindcss": "^0.2.6",
-    "tailwindcss-tooltip-arrow-after": "^1.0.0"
+    "tailwindcss-tooltip-arrow-after": "^1.0.0",
+    "wrangler": "4.158.0"
   },
   "overrides": {
     "postcss": "8.5.25",
