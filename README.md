@@ -58,8 +58,11 @@ This site provides [llms.txt](https://docs.rngneeds.com/llms.txt) and [llms-full
 `npm run build` runs the generators, builds `llms-full.txt` and does a static export
 (`output: 'export'`) to `./out`, which `wrangler.jsonc` serves as Workers static assets.
 
-- Workers Builds (Cloudflare Git integration), Worker name `rngneeds-docs`.
-  Build command `npm run build`, deploy command `npx wrangler deploy`.
+- Workers Builds (Cloudflare Git integration), Worker name `rngneeds-docs`, production branch `deploy`
+  (work on `dev`, merge to `deploy`); other branches get preview URLs.
+  Build command `test -f wrangler.jsonc && npm run build`, deploy command `test -f wrangler.jsonc && npx wrangler deploy`,
+  version (preview) command `test -f wrangler.jsonc && npx wrangler versions upload`. The `test -f` guard skips
+  branches from before the Cloudflare move.
   The build needs `bash` and Python 3 (both in the Workers Builds image).
 - Headers and redirects: `public/_headers`, `public/_redirects` (copied into `./out`).
 - Sticky locale (`NEXT_LOCALE` cookie): inline script in `src/pages/_document.jsx`.
