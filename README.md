@@ -63,7 +63,8 @@ This site provides [llms.txt](https://docs.rngneeds.com/llms.txt) and [llms-full
   Build command `test -f wrangler.jsonc && npm run build`, deploy command `test -f wrangler.jsonc && npx wrangler deploy`,
   version (preview) command `test -f wrangler.jsonc && npx wrangler versions upload`. The `test -f` guard skips
   branches from before the Cloudflare move.
-  The build needs `bash` and Python 3 (both in the Workers Builds image).
+  Build variable `NODE_OPTIONS=--max-old-space-size=6144` (set in the dashboard): with Node's default
+  heap the build runs out of memory. The build needs `bash` and Python 3 (both in the Workers Builds image).
 - Headers and redirects: `public/_headers`, `public/_redirects` (copied into `./out`).
 - Sticky locale (`NEXT_LOCALE` cookie): inline script in `src/pages/_document.jsx`.
 - Analytics: Cloudflare Web Analytics; optional build variable `NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN`.
