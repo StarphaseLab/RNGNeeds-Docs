@@ -108,8 +108,9 @@ export const sections = [
             SamplesDicePlaygroundPage,
             SamplesRandomAudioPage,
             SamplesMonsterSpawnerPage
-            // SamplesTreasureChestPage,
         ],
+        // Pages that exist in this section but are not listed in the navigation yet.
+        hiddenPages: [SamplesTreasureChestPage],
     },
     {
         title: 'Guides',
@@ -141,7 +142,8 @@ export const sections = [
 // Function to find full link for a page
 export function getFullLinkForPage(page) {
     // Find the section that contains the page
-    const section = sections.find(section => section.pages.includes(page));
+    const section = sections.find(section =>
+        section.pages.includes(page) || section.hiddenPages?.includes(page));
 
     // If the page isn't in any section, return just the relative link
     if (!section) return page.RelativeLink;

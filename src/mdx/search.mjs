@@ -58,8 +58,16 @@ export default function (nextConfig = {}) {
 
             let files = glob.sync('**/*.mdx', { cwd: pagesDir })
             let data = files.map((file) => {
-              let url =
-                file === 'index.mdx' ? '/' : `/${file.replace(/\.mdx$/, '')}`
+              // Translations live next to the English page (foo.zh-CN.mdx) but are
+              // served under the locale prefix (/zh-CN/foo), so link results there.
+              let localized = file.match(/^(.*)\.(zh-CN|ja-JP)\.mdx$/)
+              let url = localized
+                ? localized[1] === 'index'
+                  ? `/${localized[2]}`
+                  : `/${localized[2]}/${localized[1]}`
+                : file === 'index.mdx'
+                  ? '/'
+                  : `/${file.replace(/\.mdx$/, '')}`
               let mdx = fs.readFileSync(path.join(pagesDir, file), 'utf8')
 
               let sections = []

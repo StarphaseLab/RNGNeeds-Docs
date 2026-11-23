@@ -10,3 +10,6 @@
 /documentation  /documentation/docs-overview   308
 /samples        /samples/samples-overview      308
 /api-reference  /api-reference/api-overview    308
+
+# Old client-side redirect page (src/pages/_index.js, removed)
+/_index  /user-guide/introduction  308
